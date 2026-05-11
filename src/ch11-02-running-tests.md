@@ -30,7 +30,8 @@ $ cargo test -- --test-threads=1
 <Listing number="11-10" file-name="src/lib.rs" caption="`println!` কল করে এমন একটি ফাংশনের জন্য টেস্ট">
 
 ```rust,panics,noplayground
-{{#rustdoc_include ../listings/ch11-writing-automated-tests/listing-11-10/src/lib.rs}}```
+{{#rustdoc_include ../listings/ch11-writing-automated-tests/listing-11-10/src/lib.rs}}
+```
 
 </Listing>
 

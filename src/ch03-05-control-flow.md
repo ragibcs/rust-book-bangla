@@ -33,7 +33,8 @@
 প্রোগ্রামটি আবার চালান, এবং আউটপুট দেখুন:
 
 ```console
-{{#include ../listings/ch03-common-programming-concepts/no-listing-27-if-false/output.txt}}```
+{{#include ../listings/ch03-common-programming-concepts/no-listing-27-if-false/output.txt}}
+```
 
 এটিও উল্লেখ করার মতো যে এই কোডের শর্তটি _অবশ্যই_ একটি `bool` হতে হবে। যদি শর্তটি `bool` না হয়, আমরা একটি এরর পাব। উদাহরণস্বরূপ, নিম্নলিখিত কোডটি চালানোর চেষ্টা করুন:
 

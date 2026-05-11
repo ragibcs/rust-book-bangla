@@ -85,14 +85,16 @@
 যদি আমরা এররগুলো পড়া চালিয়ে যাই, আমরা এই সহায়ক নোটটি খুঁজে পাব:
 
 ```text
-{{#include ../listings/ch05-using-structs-to-structure-related-data/listing-05-11/output.txt:9:10}}```
+{{#include ../listings/ch05-using-structs-to-structure-related-data/listing-05-11/output.txt:9:10}}
+```
 
 চলুন চেষ্টা করি! `println!` ম্যাক্রো কলটি এখন `println!("rect1 is {rect1:?}");`-এর মতো দেখাবে। কার্লি ব্র্যাকেটের ভিতরে স্পেসিফায়ার `:?` রাখলে `println!`-কে বলা হয় আমরা `Debug` নামে একটি আউটপুট ফরম্যাট ব্যবহার করতে চাই। `Debug` ট্রেইটটি আমাদের `struct`-কে এমনভাবে প্রিন্ট করতে সক্ষম করে যা ডেভেলপারদের জন্য দরকারী যাতে আমরা আমাদের কোড ডিবাগ করার সময় এর মান দেখতে পারি।
 
 এই পরিবর্তন সহ কোডটি কম্পাইল করুন। ধুর! আমরা এখনও একটি এরর পাচ্ছি:
 
 ```text
-{{#include ../listings/ch05-using-structs-to-structure-related-data/output-only-01-debug/output.txt:3}}```
+{{#include ../listings/ch05-using-structs-to-structure-related-data/output-only-01-debug/output.txt:3}}
+```
 
 কিন্তু আবারও, কম্পাইলার আমাদের একটি সহায়ক নোট দেয়:
 

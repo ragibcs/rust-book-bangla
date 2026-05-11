@@ -156,7 +156,8 @@ trait Add<Rhs=Self> {
 <Listing number="20-20" file-name="src/main.rs" caption="একটি associated function সহ একটি trait এবং একই নামের একটি associated function সহ একটি টাইপ যা trait-টিও ইমপ্লিমেন্ট করে">
 
 ```rust
-{{#rustdoc_include ../listings/ch20-advanced-features/listing-20-20/src/main.rs}}```
+{{#rustdoc_include ../listings/ch20-advanced-features/listing-20-20/src/main.rs}}
+```
 
 </Listing>
 

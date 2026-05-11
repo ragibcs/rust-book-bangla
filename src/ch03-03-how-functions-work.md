@@ -57,7 +57,8 @@
 চলুন এই কোডটি চালানোর চেষ্টা করি। আপনার _functions_ প্রজেক্টের _src/main.rs_ ফাইলের বর্তমান প্রোগ্রামটিকে পূর্ববর্তী উদাহরণ দিয়ে প্রতিস্থাপন করুন এবং `cargo run` ব্যবহার করে এটি চালান:
 
 ```console
-{{#include ../listings/ch03-common-programming-concepts/no-listing-18-functions-with-multiple-parameters/output.txt}}```
+{{#include ../listings/ch03-common-programming-concepts/no-listing-18-functions-with-multiple-parameters/output.txt}}
+```
 
 যেহেতু আমরা `value`-এর জন্য `5` এবং `unit_label`-এর জন্য `'h'` মান দিয়ে ফাংশনটি কল করেছি, তাই প্রোগ্রামের আউটপুটে সেই মানগুলো রয়েছে।
 

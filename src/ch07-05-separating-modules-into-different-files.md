@@ -19,7 +19,8 @@
 <Listing number="7-22" file-name="src/front_of_house.rs" caption="*src/front_of_house.rs* ফাইলের মধ্যে `front_of_house` মডিউলের ডেফিনিশন">
 
 ```rust,ignore
-{{#rustdoc_include ../listings/ch07-managing-growing-projects/listing-07-21-and-22/src/front_of_house.rs}}```
+{{#rustdoc_include ../listings/ch07-managing-growing-projects/listing-07-21-and-22/src/front_of_house.rs}}
+```
 
 </Listing>
 

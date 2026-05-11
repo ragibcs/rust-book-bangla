@@ -14,7 +14,7 @@
 
 কোনো কালেকশনের সমস্ত ফিউচার পরীক্ষা করার জন্য, আমাদের সেগুলোর সবগুলোর উপর ইটারেট করতে হবে এবং জয়েন করতে হবে। `trpl::join_all` ফাংশনটি যেকোনো টাইপ গ্রহণ করে যা `Iterator` ট্রেইট ইমপ্লিমেন্ট করে, যা আপনি চ্যাপ্টার ১৩-এর [The Iterator Trait and the `next` Method][iterator-trait]<!-- ignore -->-এ শিখেছেন, তাই এটি ঠিক কাজের জিনিস বলে মনে হচ্ছে। আসুন আমাদের ফিউচারগুলোকে একটি ভেক্টরে রাখি এবং `join!`-কে `join_all` দিয়ে প্রতিস্থাপন করার চেষ্টা করি যেমনটি লিস্টিং 17-15-এ দেখানো হয়েছে।
 
-<Listing  number="17-15" caption="একটি ভেক্টরে নামহীন ফিউচার সংরক্ষণ করা এবং `join_all` কল করা">
+<Listing number="17-15" caption="একটি ভেক্টরে নামহীন ফিউচার সংরক্ষণ করা এবং `join_all` কল করা">
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch17-async-await/listing-17-15/src/main.rs:here}}

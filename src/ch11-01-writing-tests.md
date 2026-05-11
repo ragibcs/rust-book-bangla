@@ -169,7 +169,8 @@ check the line number of the panic matches the line number in the following para
 এখন টেস্ট চালালে নিম্নলিখিত ফলাফল পাওয়া যাবে:
 
 ```console
-{{#include ../listings/ch11-writing-automated-tests/no-listing-03-introducing-a-bug/output.txt}}```
+{{#include ../listings/ch11-writing-automated-tests/no-listing-03-introducing-a-bug/output.txt}}
+```
 
 আমাদের টেস্ট বাগটি ধরে ফেলেছে! যেহেতু `larger.width` হলো `8` এবং `smaller.width` হলো `5`, `can_hold`-এ প্রস্থের তুলনা এখন `false` রিটার্ন করছে: ৮, ৫-এর থেকে ছোট নয়।
 

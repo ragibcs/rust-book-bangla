@@ -41,7 +41,8 @@ $ cargo run -- searchstring example-filename.txt
 সবশেষে, আমরা ডিবাগ ম্যাক্রো ব্যবহার করে vector-টি প্রিন্ট করি। চলুন কোডটি প্রথমে কোনো আর্গুমেন্ট ছাড়া এবং তারপর দুটি আর্গুমেন্ট দিয়ে চালিয়ে দেখি:
 
 ```console
-{{#include ../listings/ch12-an-io-project/listing-12-01/output.txt}}```
+{{#include ../listings/ch12-an-io-project/listing-12-01/output.txt}}
+```
 
 ```console
 {{#include ../listings/ch12-an-io-project/output-only-01-with-args/output.txt}}

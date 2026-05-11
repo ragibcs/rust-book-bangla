@@ -231,7 +231,8 @@ error[E0432]: unresolved import `rand`
 <span class="filename">ফাইলের নাম: add_one/src/lib.rs</span>
 
 ```rust,noplayground
-{{#rustdoc_include ../listings/ch14-more-about-cargo/no-listing-04-workspace-with-tests/add/add_one/src/lib.rs}}```
+{{#rustdoc_include ../listings/ch14-more-about-cargo/no-listing-04-workspace-with-tests/add/add_one/src/lib.rs}}
+```
 
 এখন টপ-লেভেল _add_ ডিরেক্টরিতে `cargo test` চালান। এই ধরনের গঠনযুক্ত একটি ওয়ার্কস্পেসে `cargo test` চালালে ওয়ার্কস্পেসের সমস্ত ক্রেটের জন্য টেস্টগুলো চলবে:
 
@@ -246,7 +247,7 @@ paths properly
 $ cargo test
    Compiling add_one v0.1.0 (file:///projects/add/add_one)
    Compiling adder v0.1.0 (file:///projects/add/adder)
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.20s
+    Finished \`test\` profile [unoptimized + debuginfo] target(s) in 0.20s
      Running unittests src/lib.rs (target/debug/deps/add_one-93c49ee75dc46543)
 
 running 1 test
@@ -279,7 +280,7 @@ copy output below; the output updating script doesn't handle subdirectories in p
 
 ```console
 $ cargo test -p add_one
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.00s
+    Finished \`test\` profile [unoptimized + debuginfo] target(s) in 0.00s
      Running unittests src/lib.rs (target/debug/deps/add_one-93c49ee75dc46543)
 
 running 1 test

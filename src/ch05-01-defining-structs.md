@@ -39,7 +39,8 @@
 <Listing number="5-4" file-name="src/main.rs" caption="একটি `build_user` ফাংশন যা একটি ইমেল এবং ব্যবহারকারীর নাম নেয় এবং একটি `User` ইনস্ট্যান্স রিটার্ন করে">
 
 ```rust
-{{#rustdoc_include ../listings/ch05-using-structs-to-structure-related-data/listing-05-04/src/main.rs:here}}```
+{{#rustdoc_include ../listings/ch05-using-structs-to-structure-related-data/listing-05-04/src/main.rs:here}}
+```
 
 </Listing>
 

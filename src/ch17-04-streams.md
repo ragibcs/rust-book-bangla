@@ -281,13 +281,14 @@ Interval: 12
 <Listing number="17-40" caption="ত্রুটি পরিচালনা করা এবং লুপগুলি বন্ধ করা">
 
 ```rust
-{{#rustdoc_include ../listings/ch17-async-await/listing-17-40/src/main.rs:errors}}```
+{{#rustdoc_include ../listings/ch17-async-await/listing-17-40/src/main.rs:errors}}
+```
 
 </Listing>
 
 যথারীতি, একটি বার্তা পাঠানোর ত্রুটি পরিচালনা করার সঠিক উপায় পরিবর্তিত হবে; শুধু নিশ্চিত করুন যে আপনার একটি কৌশল আছে।
 
-এখন যেহেতু আমরা বাস্তবে অনেক async দেখেছি, আসুন এক ধাপ পিছিয়ে গিয়ে `Future`, `Stream`, এবং রাস্ট async কাজ করানোর জন্য যে অন্যান্য মূল ট্রেইটগুলি ব্যবহার করে সেগুলির কিছু বিশদ বিবরণে যাই।
+এখন যেহেতু আমরা বাস্তবে অনেক async দেখেছি, আসুন এক ধাপ পিছিয়ে গিয়ে 'Future', 'Stream', এবং রাস্ট async কাজ করানোর জন্য যে অন্যান্য মূল ট্রেইটগুলি ব্যবহার করে সেগুলির কিছু বিশদ বিবরণে যাই।
 
-[17-02-messages]: ch17-02-concurrency-with-async.html#message-passing
-[iterator-trait]: ch13-02-iterators.html#the-iterator-trait-and-the-next-method
+[17-02-messages]: ch17-02-concurrency-with-async.html #message-passing
+[iterator-trait]: ch13-02-iterators.html #the-iterator-trait-and-the-next-method

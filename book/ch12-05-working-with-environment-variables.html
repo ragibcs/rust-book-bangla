@@ -163,7 +163,7 @@
 <p>আমরা <code>minigrep</code> বাইনারিটিকে একটি অতিরিক্ত ফিচার যোগ করে উন্নত করব: case-insensitive (ছোট বা বড় হাতের অক্ষর নির্বিশেষে) সার্চিংয়ের একটি অপশন, যা ব্যবহারকারী একটি এনভায়রনমেন্ট ভেরিয়েবলের মাধ্যমে চালু করতে পারবেন। আমরা এই ফিচারটিকে একটি কমান্ড লাইন অপশন হিসেবে তৈরি করতে পারতাম এবং ব্যবহারকারীদের প্রতিবার এটি ব্যবহার করার জন্য টাইপ করতে বলতে পারতাম। কিন্তু এর পরিবর্তে এটিকে একটি এনভায়রনমেন্ট ভেরিয়েবল হিসেবে তৈরি করার মাধ্যমে আমরা আমাদের ব্যবহারকারীদের একবার এনভায়রনমেন্ট ভেরিয়েবল সেট করার সুযোগ দিচ্ছি, এবং সেই টার্মিনাল সেশনে তাদের সমস্ত সার্চ case-insensitive হবে।</p>
 <h3 id="case-insensitive-search-ফাংশনের-জনয-একটি-ফেইলিং-টেসট-লেখা"><a class="header" href="#case-insensitive-search-ফাংশনের-জনয-একটি-ফেইলিং-টেসট-লেখা">Case-Insensitive <code>search</code> ফাংশনের জন্য একটি ফেইলিং টেস্ট লেখা</a></h3>
 <p>প্রথমে আমরা <code>minigrep</code> লাইব্রেরিতে একটি নতুন <code>search_case_insensitive</code> ফাংশন যোগ করব যা এনভায়রনমেন্ট ভেরিয়েবলের ভ্যালু থাকলে কল করা হবে। আমরা TDD প্রক্রিয়া অনুসরণ করা চালিয়ে যাব, তাই প্রথম ধাপটি হলো আবার একটি ফেইলিং টেস্ট লেখা। আমরা নতুন <code>search_case_insensitive</code> ফাংশনের জন্য একটি নতুন টেস্ট যোগ করব এবং আমাদের পুরনো টেস্টের নাম <code>one_result</code> থেকে <code>case_sensitive</code>-এ পরিবর্তন করব যাতে দুটি টেস্টের মধ্যে পার্থক্য স্পষ্ট হয়, যেমনটি লিস্টিং ১২-২০-এ দেখানো হয়েছে।</p>
-<p>src/lib.rs</p>
+<Listing number="12-20" file-name="src/lib.rs" caption="আমরা যে case-insensitive ফাংশনটি যোগ করতে চলেছি তার জন্য একটি নতুন ফেইলিং টেস্ট যোগ করা">
 <pre><code class="language-rust ignore does_not_compile"><span class="boring">pub fn search&lt;'a&gt;(query: &amp;str, contents: &amp;'a str) -&gt; Vec&lt;&amp;'a str&gt; {
 </span><span class="boring">    let mut results = Vec::new();
 </span><span class="boring">
@@ -207,12 +207,12 @@ Trust me.";
         );
     }
 }</code></pre>
-<p>Listing 12-20: আমরা যে case-insensitive ফাংশনটি যোগ করতে চলেছি তার জন্য একটি নতুন ফেইলিং টেস্ট যোগ করা</p>
+</Listing>
 <p>লক্ষ্য করুন যে আমরা পুরনো টেস্টের <code>contents</code>-ও এডিট করেছি। আমরা একটি নতুন লাইন যোগ করেছি <code>"Duct tape."</code> টেক্সট সহ, যেখানে একটি বড় হাতের <em>D</em> ব্যবহার করা হয়েছে, যা case-sensitive ভাবে সার্চ করার সময় <code>"duct"</code> কোয়েরির সাথে ম্যাচ করা উচিত নয়। পুরনো টেস্টটি এভাবে পরিবর্তন করা নিশ্চিত করতে সাহায্য করে যে আমরা ইতোমধ্যে প্রয়োগ করা case-sensitive সার্চ ফাংশনালিটি দুর্ঘটনাক্রমে নষ্ট করে ফেলছি না। এই টেস্টটি এখন পাস করা উচিত এবং case-insensitive সার্চ নিয়ে কাজ করার সময়ও পাস করা উচিত।</p>
 <p>case-<em>insensitive</em> সার্চের জন্য নতুন টেস্টটি তার কোয়েরি হিসেবে <code>"rUsT"</code> ব্যবহার করে। আমরা যে <code>search_case_insensitive</code> ফাংশনটি যোগ করতে চলেছি, সেখানে <code>"rUsT"</code> কোয়েরিটি বড় হাতের <em>R</em> সহ <code>"Rust:"</code> লাইনটির সাথে ম্যাচ করা উচিত এবং <code>"Trust me."</code> লাইনটির সাথেও ম্যাচ করা উচিত, যদিও উভয়ের কেসিং কোয়েরি থেকে ভিন্ন। এটি আমাদের ফেইলিং টেস্ট, এবং এটি কম্পাইল করতে ব্যর্থ হবে কারণ আমরা এখনও <code>search_case_insensitive</code> ফাংশনটি ডিফাইন করিনি। আপনি নির্দ্বিধায় একটি স্কেলেটন ইমপ্লিমেন্টেশন যোগ করতে পারেন যা সর্বদা একটি খালি ভেক্টর রিটার্ন করে, যেমনটি আমরা লিস্টিং ১২-১৬-তে <code>search</code> ফাংশনের জন্য করেছিলাম, যাতে টেস্টটি কম্পাইল হয় এবং ফেইল করে।</p>
 <h3 id="search_case_insensitive-ফাংশন-ইমপলিমেনট-করা"><a class="header" href="#search_case_insensitive-ফাংশন-ইমপলিমেনট-করা"><code>search_case_insensitive</code> ফাংশন ইমপ্লিমেন্ট করা</a></h3>
 <p><code>search_case_insensitive</code> ফাংশনটি, যা লিস্টিং ১২-২১-এ দেখানো হয়েছে, প্রায় <code>search</code> ফাংশনের মতোই হবে। একমাত্র পার্থক্য হলো আমরা <code>query</code> এবং প্রতিটি <code>line</code>-কে লোয়ারকেস (lowercase) করব, যাতে ইনপুট আর্গুমেন্টের কেস যাই হোক না কেন, লাইনটিতে কোয়েরি আছে কিনা তা পরীক্ষা করার সময় তারা একই কেস-এ থাকবে।</p>
-<p>src/lib.rs</p>
+<Listing number="12-21" file-name="src/lib.rs" caption="কোয়েরি এবং লাইন তুলনা করার আগে সেগুলোকে লোয়ারকেস করার জন্য `search_case_insensitive` ফাংশন ডিফাইন করা">
 <pre><code class="language-rust noplayground"><span class="boring">pub fn search&lt;'a&gt;(query: &amp;str, contents: &amp;'a str) -&gt; Vec&lt;&amp;'a str&gt; {
 </span><span class="boring">    let mut results = Vec::new();
 </span><span class="boring">
@@ -272,7 +272,7 @@ Trust me.";
 </span><span class="boring">        );
 </span><span class="boring">    }
 </span><span class="boring">}</span></code></pre>
-<p>Listing 12-21: কোয়েরি এবং লাইন তুলনা করার আগে সেগুলোকে লোয়ারকেস করার জন্য <code>search_case_insensitive</code> ফাংশন ডিফাইন করা</p>
+</Listing>
 <p>প্রথমে আমরা <code>query</code> স্ট্রিংকে লোয়ারকেস করি এবং এটিকে একই নামের একটি নতুন ভেরিয়েবলে সংরক্ষণ করি, যা মূল <code>query</code>-কে শ্যাডো (shadow) করে। কোয়েরির উপর <code>to_lowercase</code> কল করা প্রয়োজন যাতে ব্যবহারকারীর কোয়েরি <code>"rust"</code>, <code>"RUST"</code>, <code>"Rust"</code>, বা <code>"</code>rUsT<code>"</code> যাই হোক না কেন, আমরা কোয়েরিটিকে <code>"rust"</code> হিসেবে বিবেচনা করব এবং কেস-এর প্রতি সংবেদনশীল থাকব না। যদিও <code>to_lowercase</code> বেসিক ইউনিকোড (Unicode) হ্যান্ডেল করবে, এটি ১০০ শতাংশ সঠিক হবে না। যদি আমরা একটি বাস্তব অ্যাপ্লিকেশন লিখতাম, তবে আমাদের এখানে আরও কিছু কাজ করতে হতো, কিন্তু এই বিভাগটি এনভায়রনমেন্ট ভেরিয়েবল সম্পর্কে, ইউনিকোড সম্পর্কে নয়, তাই আমরা এখানেই এটি ছেড়ে দেব।</p>
 <p>লক্ষ্য করুন যে <code>query</code> এখন একটি স্ট্রিং স্লাইসের পরিবর্তে একটি <code>String</code>, কারণ <code>to_lowercase</code> কল করা বিদ্যমান ডেটাকে রেফারেন্স করার পরিবর্তে নতুন ডেটা তৈরি করে। উদাহরণস্বরূপ, ধরুন কোয়েরিটি <code>"rUsT"</code>: সেই স্ট্রিং স্লাইসে আমাদের ব্যবহারের জন্য ছোট হাতের <code>u</code> বা <code>t</code> নেই, তাই আমাদের <code>"rust"</code> ধারণকারী একটি নতুন <code>String</code> অ্যালোকেট করতে হবে। যখন আমরা এখন <code>contains</code> মেথডের আর্গুমেন্ট হিসেবে <code>query</code> পাস করব, আমাদের একটি অ্যামপারস্যান্ড (&amp;) যোগ করতে হবে কারণ <code>contains</code>-এর সিগনেচার একটি স্ট্রিং স্লাইস নেওয়ার জন্য ডিফাইন করা হয়েছে।</p>
 <p>এরপরে, আমরা প্রতিটি <code>line</code>-এ <code>to_lowercase</code>-এ একটি কল যোগ করি সমস্ত ক্যারেক্টার লোয়ারকেস করতে। এখন যেহেতু আমরা <code>line</code> এবং <code>query</code> উভয়কেই লোয়ারকেসে রূপান্তর করেছি, কোয়েরির কেস যাই হোক না কেন আমরা ম্যাচ খুঁজে পাব।</p>
@@ -362,7 +362,7 @@ test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 </span><span class="boring">    Ok(())
 </span><span class="boring">}</span></code></pre>
 <p>আমরা <code>ignore_case</code> ফিল্ডটি যোগ করেছি যা একটি বুলিয়ান (boolean) ধারণ করে। এরপরে, আমাদের <code>run</code> ফাংশনটিকে <code>ignore_case</code> ফিল্ডের ভ্যালু পরীক্ষা করতে হবে এবং <code>search</code> ফাংশন বা <code>search_case_insensitive</code> ফাংশন কল করার সিদ্ধান্ত নিতে হবে, যেমনটি লিস্টিং ১২-২২-এ দেখানো হয়েছে। এটি এখনও কম্পাইল হবে না।</p>
-<p>src/main.rs</p>
+<Listing number="12-22" file-name="src/main.rs" caption="`config.ignore_case`-এর ভ্যালুর উপর ভিত্তি করে `search` বা `search_case_insensitive` কল করা">
 <pre><code class="language-rust ignore does_not_compile"><span class="boring">use std::env;
 </span><span class="boring">use std::error::Error;
 </span><span class="boring">use std::fs;
@@ -421,9 +421,9 @@ test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 
     Ok(())
 }</code></pre>
-<p>Listing 12-22: <code>config.ignore_case</code>-এর ভ্যালুর উপর ভিত্তি করে <code>search</code> বা <code>search_case_insensitive</code> কল করা</p>
+</Listing>
 <p>অবশেষে, আমাদের এনভায়রনমেন্ট ভেরিয়েবল পরীক্ষা করতে হবে। এনভায়রনমেন্ট ভেরিয়েবলের সাথে কাজ করার ফাংশনগুলো standard library-র <code>env</code> মডিউলে রয়েছে, যা ইতোমধ্যে <em>src/main.rs</em>-এর শীর্ষে স্কোপে রয়েছে। আমরা <code>env</code> মডিউলের <code>var</code> ফাংশনটি ব্যবহার করে দেখব <code>IGNORE_CASE</code> নামের কোনো এনভায়রনমেন্ট ভেরিয়েবলের জন্য কোনো ভ্যালু সেট করা হয়েছে কিনা, যেমনটি লিস্টিং ১২-২৩-এ দেখানো হয়েছে।</p>
-<p>src/main.rs</p>
+<Listing number="12-23" file-name="src/main.rs" caption="`IGNORE_CASE` নামের এনভায়রনমেন্ট ভেরিয়েবলে কোনো ভ্যালু আছে কিনা তা পরীক্ষা করা">
 <pre><code class="language-rust ignore noplayground"><span class="boring">use std::env;
 </span><span class="boring">use std::error::Error;
 </span><span class="boring">use std::fs;
@@ -485,7 +485,7 @@ test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 </span><span class="boring">
 </span><span class="boring">    Ok(())
 </span><span class="boring">}</span></code></pre>
-<p>Listing 12-23: <code>IGNORE_CASE</code> নামের এনভায়রনমেন্ট ভেরিয়েবলে কোনো ভ্যালু আছে কিনা তা পরীক্ষা করা</p>
+</Listing>
 <p>এখানে, আমরা একটি নতুন ভেরিয়েবল <code>ignore_case</code> তৈরি করি। এর ভ্যালু সেট করতে, আমরা <code>env::var</code> ফাংশন কল করি এবং এতে <code>IGNORE_CASE</code> এনভায়রনমেন্ট ভেরিয়েবলের নাম পাস করি। <code>env::var</code> ফাংশনটি একটি <code>Result</code> রিটার্ন করে যা সফল <code>Ok</code> ভ্যারিয়েন্ট হবে এবং এনভায়রনমেন্ট ভেরিয়েবলের ভ্যালু ধারণ করবে যদি এনভায়রনমেন্ট ভেরিয়েবলটি কোনো ভ্যালুতে সেট করা থাকে। যদি এনভায়রনমেন্ট ভেরিয়েবলটি সেট না করা থাকে তবে এটি <code>Err</code> ভ্যারিয়েন্ট রিটার্ন করবে।</p>
 <p>এনভায়রনমেন্ট ভেরিয়েবলটি সেট করা আছে কিনা তা পরীক্ষা করার জন্য আমরা <code>Result</code>-এর <code>is_ok</code> মেথড ব্যবহার করছি, যার মানে প্রোগ্রামটি একটি case-insensitive সার্চ করবে। যদি <code>IGNORE_CASE</code> এনভায়রনমেন্ট ভেরিয়েবলটি কিছুতেই সেট না করা থাকে, <code>is_ok</code> <code>false</code> রিটার্ন করবে এবং প্রোগ্রামটি একটি case-sensitive সার্চ করবে। আমরা এনভায়রনমেন্ট ভেরিয়েবলের <em>ভ্যালু</em> নিয়ে চিন্তিত নই, শুধু এটি সেট করা আছে নাকি নেই তা নিয়েই ভাবছি, তাই আমরা <code>unwrap</code>, <code>expect</code>, বা <code>Result</code>-এ আমরা দেখেছি এমন অন্য কোনো মেথড ব্যবহার না করে <code>is_ok</code> পরীক্ষা করছি।</p>
 <p>আমরা <code>ignore_case</code> ভেরিয়েবলের ভ্যালুটি <code>Config</code> ইনস্ট্যান্সে পাস করি যাতে <code>run</code> ফাংশনটি সেই ভ্যালুটি পড়তে পারে এবং <code>search_case_insensitive</code> বা <code>search</code> কল করার সিদ্ধান্ত নিতে পারে, যেমনটি আমরা লিস্টিং ১২-২২-এ ইমপ্লিমেন্ট করেছি।</p>

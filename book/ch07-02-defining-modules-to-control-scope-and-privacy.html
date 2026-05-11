@@ -194,7 +194,7 @@
     └── main.rs
 </code></pre>
 <p>এই ক্ষেত্রে ক্রেট রুট ফাইলটি হলো <em>src/main.rs</em>, এবং এতে রয়েছে:</p>
-<p>src/main.rs</p>
+<Listing file-name="src/main.rs">
 <pre><code class="language-rust noplayground ignore">use crate::garden::vegetables::Asparagus;
 
 pub mod garden;
@@ -203,9 +203,11 @@ fn main() {
     let plant = Asparagus {};
     println!("I'm growing {plant:?}!");
 }</code></pre>
+</Listing>
 <p><code>pub mod garden;</code> লাইনটি কম্পাইলারকে <em>src/garden.rs</em>-এ পাওয়া কোড অন্তর্ভুক্ত করতে বলে, যা হলো:</p>
-<p>src/garden.rs</p>
+<Listing file-name="src/garden.rs">
 <pre><code class="language-rust noplayground ignore">pub mod vegetables;</code></pre>
+</Listing>
 <p>এখানে, <code>pub mod vegetables;</code> মানে <em>src/garden/vegetables.rs</em>-এর কোডও অন্তর্ভুক্ত করা হয়েছে। সেই কোডটি হলো:</p>
 <pre><code class="language-rust noplayground ignore">#[derive(Debug)]
 pub struct Asparagus {}</code></pre>
@@ -215,7 +217,7 @@ pub struct Asparagus {}</code></pre>
 <p>একটি উদাহরণ হিসাবে, চলুন একটি লাইব্রেরি ক্রেট লিখি যা একটি রেস্তোরাঁর কার্যকারিতা প্রদান করে। আমরা ফাংশনের সিগনেচারগুলো ডিফাইন করব কিন্তু তাদের বডি খালি রাখব, যাতে একটি রেস্তোরাঁর ইমপ্লিমেন্টেশনের পরিবর্তে কোডের অর্গানাইজেশনের উপর মনোযোগ দিতে পারি।</p>
 <p>রেস্তোরাঁ শিল্পে, একটি রেস্তোরাঁর কিছু অংশকে <em>ফ্রন্ট অফ হাউস</em> (front of house) এবং অন্যগুলোকে <em>ব্যাক অফ হাউস</em> (back of house) বলা হয়। ফ্রন্ট অফ হাউস হলো যেখানে গ্রাহকরা থাকেন; এর মধ্যে রয়েছে যেখানে হোস্টরা গ্রাহকদের বসান, সার্ভাররা অর্ডার এবং পেমেন্ট নেন, এবং বারটেন্ডাররা ড্রিঙ্ক তৈরি করেন। ব্যাক অফ হাউস হলো যেখানে শেফ এবং বাবুর্চিরা রান্নাঘরে কাজ করেন, ডিশওয়াশাররা থালাবাসন পরিষ্কার করেন, এবং ম্যানেজাররা প্রশাসনিক কাজ করেন।</p>
 <p>আমাদের ক্রেটকে এইভাবে গঠন করার জন্য, আমরা এর ফাংশনগুলোকে নেস্টেড মডিউলে অর্গানাইজ করতে পারি। <code>cargo new restaurant --lib</code> চালিয়ে <code>restaurant</code> নামে একটি নতুন লাইব্রেরি তৈরি করুন। তারপর কিছু মডিউল এবং ফাংশন সিগনেচার ডিফাইন করতে Listing 7-1-এর কোডটি <em>src/lib.rs</em>-এ লিখুন; এই কোডটি হলো ফ্রন্ট অফ হাউস সেকশন।</p>
-<p>src/lib.rs</p>
+<Listing number="7-1" file-name="src/lib.rs" caption="একটি `front_of_house` মডিউল যাতে অন্য মডিউল এবং ফাংশন রয়েছে">
 <pre><code class="language-rust noplayground">mod front_of_house {
     mod hosting {
         fn add_to_waitlist() {}
@@ -231,11 +233,12 @@ pub struct Asparagus {}</code></pre>
         fn take_payment() {}
     }
 }</code></pre>
-<p>Listing 7-1: একটি <code>front_of_house</code> মডিউল যাতে অন্য মডিউল এবং ফাংশন রয়েছে</p>
+</Listing>
 <p>আমরা <code>mod</code> কীওয়ার্ড এবং তারপরে মডিউলের নাম (এই ক্ষেত্রে, <code>front_of_house</code>) দিয়ে একটি মডিউল ডিফাইন করি। মডিউলের বডি তখন কোঁকড়া বন্ধনীর ভিতরে যায়। মডিউলের ভিতরে, আমরা অন্য মডিউল রাখতে পারি, যেমন এই ক্ষেত্রে <code>hosting</code> এবং <code>serving</code> মডিউল। মডিউল অন্যান্য আইটেম, যেমন struct, enum, constant, trait এবং Listing 7-1-এর মতো ফাংশনের ডেফিনিশনও রাখতে পারে।</p>
 <p>মডিউল ব্যবহার করে, আমরা সম্পর্কিত ডেফিনিশনগুলোকে একসাথে গ্রুপ করতে পারি এবং কেন তারা সম্পর্কিত তার নামকরণ করতে পারি। এই কোড ব্যবহারকারী প্রোগ্রামাররা সমস্ত ডেফিনিশন পড়ার পরিবর্তে গ্রুপগুলোর উপর ভিত্তি করে কোড নেভিগেট করতে পারবেন, যা তাদের জন্য প্রাসঙ্গিক ডেফিনিশন খুঁজে পাওয়া সহজ করে তোলে। যে প্রোগ্রামাররা এই কোডে নতুন ফাংশনালিটি যোগ করবেন, তারা জানবেন প্রোগ্রামকে অর্গানাইজড রাখতে কোডটি কোথায় রাখতে হবে।</p>
 <p>পূর্বে, আমরা উল্লেখ করেছি যে <em>src/main.rs</em> এবং <em>src/lib.rs</em>-কে ক্রেট রুট বলা হয়। তাদের এই নামের কারণ হলো এই দুটি ফাইলের বিষয়বস্তু ক্রেটের মডিউল স্ট্রাকচারের রুটে <code>crate</code> নামে একটি মডিউল তৈরি করে, যা <em>মডিউল ট্রি</em> (module tree) নামে পরিচিত।</p>
 <p>Listing 7-2, Listing 7-1-এর স্ট্রাকচারের জন্য মডিউল ট্রি দেখায়।</p>
+<Listing number="7-2" caption="Listing 7-1 এর কোডের জন্য মডিউল ট্রি">
 <pre><code class="language-text">crate
  └── front_of_house
      ├── hosting
@@ -246,7 +249,7 @@ pub struct Asparagus {}</code></pre>
          ├── serve_order
          └── take_payment
 </code></pre>
-<p>Listing 7-2: Listing 7-1 এর কোডের জন্য মডিউল ট্রি</p>
+</Listing>
 <p>এই ট্রি দেখায় কিভাবে কিছু মডিউল অন্য মডিউলের ভিতরে নেস্ট করা আছে; উদাহরণস্বরূপ, <code>hosting</code> <code>front_of_house</code>-এর ভিতরে নেস্ট করা। ট্রি এটিও দেখায় যে কিছু মডিউল <em>সিবলিং</em> (siblings), যার মানে তারা একই মডিউলে ডিফাইন করা হয়েছে; <code>hosting</code> এবং <code>serving</code> হলো <code>front_of_house</code>-এর মধ্যে ডিফাইন করা সিবলিং। যদি মডিউল A মডিউল B-এর ভিতরে থাকে, আমরা বলি যে মডিউল A হলো মডিউল B-এর <em>চাইল্ড</em> (child) এবং মডিউল B হলো মডিউল A-এর <em>প্যারেন্ট</em> (parent)। লক্ষ্য করুন যে পুরো মডিউল ট্রি-টি <code>crate</code> নামের একটি অন্তর্নিহিত (implicit) মডিউলের অধীনে রুট করা হয়েছে।</p>
 <p>মডিউল ট্রি আপনাকে আপনার কম্পিউটারের ফাইলসিস্টেমের ডিরেক্টরি ট্রি-এর কথা মনে করিয়ে দিতে পারে; এটি একটি খুব উপযুক্ত তুলনা! ফাইলসিস্টেমের ডিরেক্টরির মতো, আপনি আপনার কোড অর্গানাইজ করতে মডিউল ব্যবহার করেন। এবং একটি ডিরেক্টরিতে ফাইলের মতো, আমাদের মডিউলগুলো খুঁজে বের করার একটি উপায় প্রয়োজন।</p>
 

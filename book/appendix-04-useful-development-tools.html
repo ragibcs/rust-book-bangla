@@ -207,12 +207,13 @@ warning: variable does not need to be mutable
 <pre><code class="language-console">$ cargo clippy
 </code></pre>
 <p>উদাহরণস্বরূপ, ধরুন আপনি একটি প্রোগ্রাম লিখেছেন যা একটি গাণিতিক ধ্রুবক, যেমন পাই (pi)-এর একটি আনুমানিক মান ব্যবহার করে, যেমন এই প্রোগ্রামটি করে:</p>
-<p>src/main.rs</p>
+<Listing number="D-1" file-name="src/main.rs">
 <pre><pre class="playground"><code class="language-rust edition2024">fn main() {
     let x = 3.1415;
     let r = 8.0;
     println!("the area of the circle is {}", x * r * r);
 }</code></pre></pre>
+</Listing>
 <p>এই প্রজেক্টে <code>cargo clippy</code> চালালে এই এররটি আসে:</p>
 <pre><code class="language-text">error: approximate value of `f{32, 64}::consts::PI` found
  --&gt; src/main.rs:2:13
@@ -226,12 +227,13 @@ warning: variable does not need to be mutable
 </code></pre>
 <p>এই এররটি আপনাকে জানায় যে Rust-এ ইতোমধ্যে আরও নির্ভুল একটি <code>PI</code> ধ্রুবক ডিফাইন করা আছে, এবং আপনি যদি সেই ধ্রুবকটি ব্যবহার করেন তবে আপনার প্রোগ্রামটি আরও সঠিক হবে। এরপর আপনি <code>PI</code> ধ্রুবকটি ব্যবহার করার জন্য আপনার কোড পরিবর্তন করবেন।</p>
 <p>নিম্নলিখিত কোডটি Clippy থেকে কোনো এরর বা ওয়ার্নিং তৈরি করে না:</p>
-<p>src/main.rs</p>
+<Listing number="D-2" file-name="src/main.rs">
 <pre><pre class="playground"><code class="language-rust edition2024">fn main() {
     let x = std::f64::consts::PI;
     let r = 8.0;
     println!("the area of the circle is {}", x * r * r);
 }</code></pre></pre>
+</Listing>
 <p>Clippy সম্পর্কে আরও তথ্যের জন্য, <a href="https://github.com/rust-lang/rust-clippy">এর ডকুমেন্টেশন</a> দেখুন।</p>
 <h3 id="rust-analyzer-বযবহার-করে-ide-ইনটিগরেশন"><a class="header" href="#rust-analyzer-বযবহার-করে-ide-ইনটিগরেশন"><code>rust-analyzer</code> ব্যবহার করে IDE ইন্টিগ্রেশন</a></h3>
 <p>IDE ইন্টিগ্রেশনে সাহায্য করার জন্য, Rust কমিউনিটি <a href="https://rust-analyzer.github.io"><code>rust-analyzer</code></a> ব্যবহার করার সুপারিশ করে। এই টুলটি হলো কম্পাইলার-কেন্দ্রিক ইউটিলিটিগুলোর একটি সেট যা <a href="http://langserver.org/">Language Server Protocol</a> (LSP) ব্যবহার করে কথা বলে, যা IDE এবং প্রোগ্রামিং ল্যাঙ্গুয়েজগুলোর একে অপরের সাথে যোগাযোগের জন্য একটি স্পেসিফিকেশন। বিভিন্ন ক্লায়েন্ট <code>rust-analyzer</code> ব্যবহার করতে পারে, যেমন <a href="https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer">Visual Studio Code-এর জন্য Rust analyzer প্লাগ-ইন</a>।</p>

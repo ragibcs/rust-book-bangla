@@ -79,7 +79,7 @@ $ cargo clippy
 
 উদাহরণস্বরূপ, ধরুন আপনি একটি প্রোগ্রাম লিখেছেন যা একটি গাণিতিক ধ্রুবক, যেমন পাই (pi)-এর একটি আনুমানিক মান ব্যবহার করে, যেমন এই প্রোগ্রামটি করে:
 
-<Listing file-name="src/main.rs">
+<Listing number="D-1" file-name="src/main.rs">
 
 ```rust
 fn main() {
@@ -109,7 +109,7 @@ error: approximate value of `f{32, 64}::consts::PI` found
 
 নিম্নলিখিত কোডটি Clippy থেকে কোনো এরর বা ওয়ার্নিং তৈরি করে না:
 
-<Listing file-name="src/main.rs">
+<Listing number="D-2" file-name="src/main.rs">
 
 ```rust
 fn main() {

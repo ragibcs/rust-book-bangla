@@ -160,8 +160,8 @@
                 <div id="content" class="content">
                     <main>
                         <h2 id="ফাইল-পড়া-reading-a-file"><a class="header" href="#ফাইল-পড়া-reading-a-file">ফাইল পড়া (Reading a File)</a></h2>
-<p>এখন আমরা <code>file_path</code> আর্গুমেন্টে নির্দিষ্ট করা ফাইলটি পড়ার জন্য ফাংশনালিটি যোগ করব। প্রথমে, এটি পরীক্ষা করার জন্য আমাদের একটি স্যাম্পল ফাইল দরকার: আমরা একাধিক লাইনে কিছু টেক্সট এবং কিছু পুনরাবৃত্তিমূলক শব্দসহ একটি ফাইল ব্যবহার করব। লিস্টিং ১২-৩-এ এমিলি ডিকিনসনের একটি কবিতা রয়েছে যা এই কাজের জন্য বেশ উপযুক্ত হবে! আপনার প্রজেক্টের রুট লেভেলে <em>poem.txt</em> নামে একটি ফাইল তৈরি করুন এবং “I’m Nobody! Who are you?” কবিতাটি লিখুন।</p>
-<p>poem.txt</p>
+<p>এখন আমরা <code>file_path</code> আর্গুমেন্টে নির্দিষ্ট করা ফাইলটি পড়ার জন্য ফাংশনালিটি যোগ করব। প্রথমে, এটি পরীক্ষা করার জন্য আমাদের একটি স্যাম্পল ফাইল দরকার: আমরা একাধিক লাইনে কিছু টেক্সট এবং কিছু পুনরাবৃত্তিমূলক শব্দসহ একটি ফাইল ব্যবহার করব। লিস্টিং ১২-৩-এ এমিলি ডিকিনসনের একটি কবিতা রয়েছে যা এই কাজের জন্য বেশ উপযুক্ত হবে! আপনার প্রজেক্টের রুট লেভেলে <em>poem.txt</em> নামে একটি ফাইল তৈরি করুন এবং "I’m Nobody! Who are you?" কবিতাটি লিখুন।</p>
+<Listing number="12-3" file-name="poem.txt" caption="এমিলি ডিকিনসনের একটি কবিতা একটি ভালো টেস্ট কেস হতে পারে।">
 <pre><code class="language-text">I'm nobody! Who are you?
 Are you nobody, too?
 Then there's a pair of us - don't tell!
@@ -172,9 +172,9 @@ How public, like a frog
 To tell your name the livelong day
 To an admiring bog!
 </code></pre>
-<p>Listing 12-3: এমিলি ডিকিনসনের একটি কবিতা একটি ভালো টেস্ট কেস হতে পারে।</p>
+</Listing>
 <p>টেক্সট প্রস্তুত হয়ে গেলে, <em>src/main.rs</em> ফাইলটি এডিট করুন এবং ফাইলটি পড়ার জন্য কোড যোগ করুন, যেমনটি লিস্টিং ১২-৪-এ দেখানো হয়েছে।</p>
-<p>src/main.rs</p>
+<Listing number="12-4" file-name="src/main.rs" caption="দ্বিতীয় আর্গুমেন্টে নির্দিষ্ট করা ফাইলের কন্টেন্ট পড়া">
 <pre><code class="language-rust should_panic noplayground">use std::env;
 use std::fs;
 
@@ -193,7 +193,7 @@ fn main() {
 
     println!("With text:\n{contents}");
 }</code></pre>
-<p>Listing 12-4: দ্বিতীয় আর্গুমেন্টে নির্দিষ্ট করা ফাইলের কন্টেন্ট পড়া</p>
+</Listing>
 <p>প্রথমে আমরা <code>use</code> স্টেটমেন্টের মাধ্যমে standard library-র একটি প্রাসঙ্গিক অংশ নিয়ে আসি: ফাইল হ্যান্ডেল করার জন্য আমাদের <code>std::fs</code> প্রয়োজন।</p>
 <p><code>main</code> ফাংশনের নতুন স্টেটমেন্ট <code>fs::read_to_string</code> <code>file_path</code> আর্গুমেন্টটি গ্রহণ করে, সেই ফাইলটি খোলে এবং ফাইলের কন্টেন্ট সহ একটি <code>std::io::Result&lt;String&gt;</code> টাইপের ভ্যালু রিটার্ন করে।</p>
 <p>এর পরে, আমরা আবার একটি অস্থায়ী <code>println!</code> স্টেটমেন্ট যোগ করেছি যা ফাইল পড়ার পরে <code>contents</code>-এর ভ্যালু প্রিন্ট করে, যাতে আমরা পরীক্ষা করতে পারি যে প্রোগ্রামটি এখন পর্যন্ত ঠিকভাবে কাজ করছে কিনা।</p>

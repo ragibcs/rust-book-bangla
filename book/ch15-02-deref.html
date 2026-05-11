@@ -164,7 +164,7 @@
 <p>চলুন প্রথমে দেখি dereference অপারেটর সাধারণ reference-এর সাথে কীভাবে কাজ করে। তারপর আমরা <code>Box&lt;T&gt;</code>-এর মতো আচরণ করে এমন একটি কাস্টম টাইপ সংজ্ঞায়িত করার চেষ্টা করব এবং দেখব কেন dereference অপারেটর আমাদের নতুন সংজ্ঞায়িত টাইপের উপর reference-এর মতো কাজ করে না। আমরা দেখব কীভাবে <code>Deref</code> ট্রেইট ইমপ্লিমেন্ট করা smart pointer-গুলোকে reference-এর মতো কাজ করতে সক্ষম করে। এরপর আমরা রাস্টের <em>deref coercion</em> ফিচারটি দেখব এবং জানব এটি কীভাবে আমাদের reference বা smart pointer উভয়ের সাথেই কাজ করতে দেয়।</p>
 <h3 id="reference-অনুসরণ-করে-ভযালু-পরযনত-পৌঁছানো"><a class="header" href="#reference-অনুসরণ-করে-ভযালু-পরযনত-পৌঁছানো">Reference অনুসরণ করে ভ্যালু পর্যন্ত পৌঁছানো</a></h3>
 <p>একটি সাধারণ reference হলো এক ধরনের pointer, এবং একটি pointer-কে ভাবা যেতে পারে অন্য কোথাও সংরক্ষিত একটি ভ্যালুর দিকে নির্দেশকারী একটি তীর হিসাবে। Listing 15-6-এ, আমরা একটি <code>i32</code> ভ্যালুর একটি reference তৈরি করেছি এবং তারপর dereference অপারেটর ব্যবহার করে reference অনুসরণ করে সেই ভ্যালু পর্যন্ত গিয়েছি।</p>
-<p>src/main.rs</p>
+<Listing number="15-6" file-name="src/main.rs" caption="একটি `i32` ভ্যালুর reference অনুসরণ করতে dereference অপারেটরের ব্যবহার">
 <pre><pre class="playground"><code class="language-rust edition2024">fn main() {
     let x = 5;
     let y = &amp;x;
@@ -172,7 +172,7 @@
     assert_eq!(5, x);
     assert_eq!(5, *y);
 }</code></pre></pre>
-<p>Listing 15-6: একটি <code>i32</code> ভ্যালুর reference অনুসরণ করতে dereference অপারেটরের ব্যবহার</p>
+</Listing>
 <p><code>x</code> ভেরিয়েবলটি একটি <code>i32</code> ভ্যালু <code>5</code> ধারণ করে। আমরা <code>y</code>-কে <code>x</code>-এর একটি reference-এর সমান সেট করেছি। আমরা assert করতে পারি যে <code>x</code> এর মান <code>5</code>। কিন্তু, যদি আমরা <code>y</code>-এর ভ্যালু সম্পর্কে একটি assertion করতে চাই, তাহলে আমাদের <code>*y</code> ব্যবহার করে reference-টিকে অনুসরণ করে তার নির্দেশিত ভ্যালু পর্যন্ত যেতে হবে (এজন্যই <em>dereference</em>) যাতে কম্পাইলার আসল ভ্যালুটি তুলনা করতে পারে। একবার আমরা <code>y</code>-কে dereference করলে, আমরা <code>y</code>-এর নির্দেশিত ইন্টিজার ভ্যালুটি অ্যাক্সেস করতে পারি এবং সেটিকে <code>5</code>-এর সাথে তুলনা করতে পারি।</p>
 <p>যদি আমরা এর পরিবর্তে <code>assert_eq!(5, y);</code> লেখার চেষ্টা করতাম, আমরা এই কম্পাইলেশন এররটি পেতাম:</p>
 <pre><code class="language-console">$ cargo run
@@ -192,7 +192,7 @@ error: could not compile `deref-example` (bin "deref-example") due to 1 previous
 <p>একটি সংখ্যা এবং একটি সংখ্যার reference-এর তুলনা করার অনুমতি নেই কারণ তারা ভিন্ন টাইপের। আমাদের অবশ্যই dereference অপারেটর ব্যবহার করে reference-টিকে তার নির্দেশিত ভ্যালু পর্যন্ত অনুসরণ করতে হবে।</p>
 <h3 id="boxt-কে-reference-এর-মতো-বযবহার-করা"><a class="header" href="#boxt-কে-reference-এর-মতো-বযবহার-করা"><code>Box&lt;T&gt;</code>-কে Reference-এর মতো ব্যবহার করা</a></h3>
 <p>আমরা Listing 15-6-এর কোডটি reference-এর পরিবর্তে <code>Box&lt;T&gt;</code> ব্যবহার করে পুনরায় লিখতে পারি; Listing 15-7-এ <code>Box&lt;T&gt;</code>-এর উপর ব্যবহৃত dereference অপারেটরটি Listing 15-6-এ reference-এর উপর ব্যবহৃত dereference অপারেটরের মতোই কাজ করে।</p>
-<p>src/main.rs</p>
+<Listing number="15-7" file-name="src/main.rs" caption="একটি `Box<i32>`-এর উপর dereference অপারেটরের ব্যবহার">
 <pre><pre class="playground"><code class="language-rust edition2024">fn main() {
     let x = 5;
     let y = Box::new(x);
@@ -200,7 +200,7 @@ error: could not compile `deref-example` (bin "deref-example") due to 1 previous
     assert_eq!(5, x);
     assert_eq!(5, *y);
 }</code></pre></pre>
-<p>Listing 15-7: একটি <code>Box&lt;i32&gt;</code>-এর উপর dereference অপারেটরের ব্যবহার</p>
+</Listing>
 <p>Listing 15-7 এবং Listing 15-6-এর মধ্যে প্রধান পার্থক্য হলো এখানে আমরা <code>y</code>-কে <code>x</code>-এর ভ্যালুকে নির্দেশকারী একটি reference-এর পরিবর্তে <code>x</code>-এর একটি কপি করা ভ্যালুকে নির্দেশকারী একটি box-এর ইনস্ট্যান্স হিসাবে সেট করেছি। শেষ assertion-এ, আমরা box-এর pointer অনুসরণ করতে dereference অপারেটর ব্যবহার করতে পারি, ঠিক সেভাবেই যেভাবে আমরা <code>y</code> যখন একটি reference ছিল তখন করেছিলাম। এরপর, আমরা দেখব <code>Box&lt;T&gt;</code>-এর মধ্যে বিশেষ কী আছে যা আমাদের নিজস্ব box টাইপ সংজ্ঞায়িত করে dereference অপারেটর ব্যবহার করতে সক্ষম করে।</p>
 <h3 id="আমাদের-নিজসব-smart-pointer-তৈরি-করা"><a class="header" href="#আমাদের-নিজসব-smart-pointer-তৈরি-করা">আমাদের নিজস্ব Smart Pointer তৈরি করা</a></h3>
 <p>চলুন, স্ট্যান্ডার্ড লাইব্রেরি দ্বারা প্রদত্ত <code>Box&lt;T&gt;</code> টাইপের মতো একটি wrapper টাইপ তৈরি করি যাতে ডিফল্টভাবে smart pointer টাইপগুলো reference-এর থেকে কীভাবে ভিন্ন আচরণ করে তা অনুভব করা যায়। তারপর আমরা দেখব কীভাবে dereference অপারেটর ব্যবহার করার ক্ষমতা যোগ করা যায়।</p>
@@ -208,7 +208,7 @@ error: could not compile `deref-example` (bin "deref-example") due to 1 previous
 <p>দ্রষ্টব্য: আমরা যে <code>MyBox&lt;T&gt;</code> টাইপটি তৈরি করতে যাচ্ছি এবং আসল <code>Box&lt;T&gt;</code>-এর মধ্যে একটি বড় পার্থক্য আছে: আমাদের সংস্করণটি তার ডেটা হিপ-এ সংরক্ষণ করবে না। আমরা এই উদাহরণে <code>Deref</code>-এর উপর ফোকাস করছি, তাই ডেটা আসলে কোথায় সংরক্ষিত আছে তা pointer-এর মতো আচরণের চেয়ে কম গুরুত্বপূর্ণ।</p>
 </blockquote>
 <p><code>Box&lt;T&gt;</code> টাইপটি মূলত একটি একটি উপাদান সহ একটি tuple struct হিসাবে সংজ্ঞায়িত করা হয়েছে, তাই Listing 15-8 একই ভাবে একটি <code>MyBox&lt;T&gt;</code> টাইপ সংজ্ঞায়িত করে। আমরা <code>Box&lt;T&gt;</code>-তে সংজ্ঞায়িত <code>new</code> ফাংশনের সাথে মেলানোর জন্য একটি <code>new</code> ফাংশনও সংজ্ঞায়িত করব।</p>
-<p>src/main.rs</p>
+<Listing number="15-8" file-name="src/main.rs" caption="একটি `MyBox<T>` টাইপ সংজ্ঞায়িত করা">
 <pre><pre class="playground"><code class="language-rust edition2024">struct MyBox&lt;T&gt;(T);
 
 impl&lt;T&gt; MyBox&lt;T&gt; {
@@ -218,10 +218,10 @@ impl&lt;T&gt; MyBox&lt;T&gt; {
 }
 <span class="boring">
 </span><span class="boring">fn main() {}</span></code></pre></pre>
-<p>Listing 15-8: একটি <code>MyBox&lt;T&gt;</code> টাইপ সংজ্ঞায়িত করা</p>
+</Listing>
 <p>আমরা <code>MyBox</code> নামে একটি struct সংজ্ঞায়িত করি এবং একটি জেনেরিক প্যারামিটার <code>T</code> ঘোষণা করি কারণ আমরা চাই আমাদের টাইপ যেকোনো টাইপের ভ্যালু ধারণ করুক। <code>MyBox</code> টাইপটি <code>T</code> টাইপের একটি উপাদান সহ একটি tuple struct। <code>MyBox::new</code> ফাংশনটি <code>T</code> টাইপের একটি প্যারামিটার নেয় এবং পাস করা ভ্যালুটি ধারণকারী একটি <code>MyBox</code> ইনস্ট্যান্স রিটার্ন করে।</p>
 <p>চলুন Listing 15-7-এর <code>main</code> ফাংশনটি Listing 15-8-এ যোগ করার চেষ্টা করি এবং এটিকে <code>Box&lt;T&gt;</code>-এর পরিবর্তে আমাদের সংজ্ঞায়িত <code>MyBox&lt;T&gt;</code> টাইপ ব্যবহার করার জন্য পরিবর্তন করি। Listing 15-9-এর কোডটি কম্পাইল হবে না কারণ রাস্ট জানে না কীভাবে <code>MyBox</code>-কে dereference করতে হয়।</p>
-<p>src/main.rs</p>
+<Listing number="15-9" file-name="src/main.rs" caption="`MyBox<T>`-কে reference এবং `Box<T>`-এর মতো একইভাবে ব্যবহার করার প্রচেষ্টা">
 <pre><code class="language-rust ignore does_not_compile"><span class="boring">struct MyBox&lt;T&gt;(T);
 </span><span class="boring">
 </span><span class="boring">impl&lt;T&gt; MyBox&lt;T&gt; {
@@ -237,7 +237,7 @@ impl&lt;T&gt; MyBox&lt;T&gt; {
     assert_eq!(5, x);
     assert_eq!(5, *y);
 }</code></pre>
-<p>Listing 15-9: <code>MyBox&lt;T&gt;</code>-কে reference এবং <code>Box&lt;T&gt;</code>-এর মতো একইভাবে ব্যবহার করার প্রচেষ্টা</p>
+</Listing>
 <p>এর ফলে এই কম্পাইলেশন এররটি আসে:</p>
 <pre><code class="language-console">$ cargo run
    Compiling deref-example v0.1.0 (file:///projects/deref-example)
@@ -252,8 +252,8 @@ error: could not compile `deref-example` (bin "deref-example") due to 1 previous
 </code></pre>
 <p>আমাদের <code>MyBox&lt;T&gt;</code> টাইপটি dereference করা যায় না কারণ আমরা আমাদের টাইপের উপর সেই ক্ষমতা ইমপ্লিমেন্ট করিনি। <code>*</code> অপারেটর দিয়ে dereferencing সক্ষম করতে, আমরা <code>Deref</code> ট্রেইট ইমপ্লিমেন্ট করি।</p>
 <h3 id="deref-trait-ইমপলিমেনট-করা"><a class="header" href="#deref-trait-ইমপলিমেনট-করা"><code>Deref</code> Trait ইমপ্লিমেন্ট করা</a></h3>
-<p>Chapter 10-এর [“Implementing a Trait on a Type”][impl-trait] অংশে যেমন আলোচনা করা হয়েছে, একটি ট্রেইট ইমপ্লিমেন্ট করার জন্য আমাদের ট্রেইটের প্রয়োজনীয় মেথডগুলির জন্য ইমপ্লিমেন্টেশন সরবরাহ করতে হবে। স্ট্যান্ডার্ড লাইব্রেরি দ্বারা প্রদত্ত <code>Deref</code> ট্রেইটের জন্য আমাদের <code>deref</code> নামে একটি মেথড ইমপ্লিমেন্ট করতে হবে যা <code>self</code> borrow করে এবং ভেতরের ডেটার একটি reference রিটার্ন করে। Listing 15-10-এ <code>MyBox&lt;T&gt;</code>-এর সংজ্ঞায় যোগ করার জন্য <code>Deref</code>-এর একটি ইমপ্লিমেন্টেশন রয়েছে।</p>
-<p>src/main.rs</p>
+<p>Chapter 10-এর ["Implementing a Trait on a Type"][impl-trait] অংশে যেমন আলোচনা করা হয়েছে, একটি ট্রেইট ইমপ্লিমেন্ট করার জন্য আমাদের ট্রেইটের প্রয়োজনীয় মেথডগুলির জন্য ইমপ্লিমেন্টেশন সরবরাহ করতে হবে। স্ট্যান্ডার্ড লাইব্রেরি দ্বারা প্রদত্ত <code>Deref</code> ট্রেইটের জন্য আমাদের <code>deref</code> নামে একটি মেথড ইমপ্লিমেন্ট করতে হবে যা <code>self</code> borrow করে এবং ভেতরের ডেটার একটি reference রিটার্ন করে। Listing 15-10-এ <code>MyBox&lt;T&gt;</code>-এর সংজ্ঞায় যোগ করার জন্য <code>Deref</code>-এর একটি ইমপ্লিমেন্টেশন রয়েছে।</p>
+<Listing number="15-10" file-name="src/main.rs" caption="`MyBox<T>`-এর উপর `Deref` ইমপ্লিমেন্ট করা">
 <pre><pre class="playground"><code class="language-rust edition2024">use std::ops::Deref;
 
 impl&lt;T&gt; Deref for MyBox&lt;T&gt; {
@@ -279,9 +279,9 @@ impl&lt;T&gt; Deref for MyBox&lt;T&gt; {
 </span><span class="boring">    assert_eq!(5, x);
 </span><span class="boring">    assert_eq!(5, *y);
 </span><span class="boring">}</span></code></pre></pre>
-<p>Listing 15-10: <code>MyBox&lt;T&gt;</code>-এর উপর <code>Deref</code> ইমপ্লিমেন্ট করা</p>
+</Listing>
 <p><code>type Target = T;</code> সিনট্যাক্সটি <code>Deref</code> ট্রেইটের ব্যবহারের জন্য একটি associated type সংজ্ঞায়িত করে। Associated type গুলো একটি জেনেরিক প্যারামিটার ঘোষণা করার একটি সামান্য ভিন্ন উপায়, কিন্তু আপনার এখন এগুলি নিয়ে চিন্তা করার দরকার নেই; আমরা Chapter 20-এ এগুলি সম্পর্কে আরও বিস্তারিতভাবে আলোচনা করব।</p>
-<p>আমরা <code>deref</code> মেথডের বডি <code>&amp;self.0</code> দিয়ে পূরণ করি যাতে <code>deref</code> সেই ভ্যালুর একটি reference রিটার্ন করে যা আমরা <code>*</code> অপারেটর দিয়ে অ্যাক্সেস করতে চাই; Chapter 5-এর [“Using Tuple Structs Without Named Fields to Create Different Types”][tuple-structs] থেকে স্মরণ করুন যে <code>.0</code> একটি tuple struct-এর প্রথম ভ্যালু অ্যাক্সেস করে। Listing 15-9-এর <code>main</code> ফাংশন যা <code>MyBox&lt;T&gt;</code> ভ্যালুর উপর <code>*</code> কল করে, তা এখন কম্পাইল হয় এবং assertion গুলো পাস করে!</p>
+<p>আমরা <code>deref</code> মেথডের বডি <code>&amp;self.0</code> দিয়ে পূরণ করি যাতে <code>deref</code> সেই ভ্যালুর একটি reference রিটার্ন করে যা আমরা <code>*</code> অপারেটর দিয়ে অ্যাক্সেস করতে চাই; Chapter 5-এর ["Using Tuple Structs Without Named Fields to Create Different Types"][tuple-structs] থেকে স্মরণ করুন যে <code>.0</code> একটি tuple struct-এর প্রথম ভ্যালু অ্যাক্সেস করে। Listing 15-9-এর <code>main</code> ফাংশন যা <code>MyBox&lt;T&gt;</code> ভ্যালুর উপর <code>*</code> কল করে, তা এখন কম্পাইল হয় এবং assertion গুলো পাস করে!</p>
 <p><code>Deref</code> ট্রেইট ছাড়া, কম্পাইলার শুধুমাত্র <code>&amp;</code> reference-গুলো dereference করতে পারে। <code>deref</code> মেথড কম্পাইলারকে যেকোনো টাইপের ভ্যালু যা <code>Deref</code> ইমপ্লিমেন্ট করে তা নিয়ে <code>deref</code> মেথড কল করে একটি <code>&amp;</code> reference পাওয়ার ক্ষমতা দেয়, যা সে dereference করতে জানে।</p>
 <p>যখন আমরা Listing 15-9-এ <code>*y</code> লিখেছিলাম, পর্দার আড়ালে রাস্ট আসলে এই কোডটি রান করেছে:</p>
 <pre><code class="language-rust ignore">*(y.deref())</code></pre>
@@ -292,15 +292,15 @@ impl&lt;T&gt; Deref for MyBox&lt;T&gt; {
 <p><em>Deref coercion</em> এমন একটি টাইপের reference-কে যা <code>Deref</code> ট্রেইট ইমপ্লিমেন্ট করে, অন্য একটি টাইপের reference-এ রূপান্তরিত করে। উদাহরণস্বরূপ, deref coercion <code>&amp;String</code>-কে <code>&amp;str</code>-এ রূপান্তরিত করতে পারে কারণ <code>String</code> <code>Deref</code> ট্রেইট এমনভাবে ইমপ্লিমেন্ট করে যা <code>&amp;str</code> রিটার্ন করে। Deref coercion একটি সুবিধা যা রাস্ট ফাংশন এবং মেথডের আর্গুমেন্টের উপর প্রয়োগ করে এবং এটি শুধুমাত্র সেইসব টাইপের উপর কাজ করে যা <code>Deref</code> ট্রেইট ইমপ্লিমেন্ট করে। এটি স্বয়ংক্রিয়ভাবে ঘটে যখন আমরা একটি নির্দিষ্ট টাইপের ভ্যালুর reference একটি ফাংশন বা মেথডের আর্গুমেন্ট হিসাবে পাস করি যা ফাংশন বা মেথড সংজ্ঞার প্যারামিটার টাইপের সাথে মেলে না। <code>deref</code> মেথডে একাধিক কলের একটি ক্রম আমাদের দেওয়া টাইপটিকে প্যারামিটারের প্রয়োজনীয় টাইপে রূপান্তরিত করে।</p>
 <p>Deref coercion রাস্ট-এ যোগ করা হয়েছিল যাতে ফাংশন এবং মেথড কল লেখার সময় প্রোগ্রামারদের <code>&amp;</code> এবং <code>*</code> দিয়ে অনেক বেশি সুস্পষ্ট reference এবং dereference যোগ করার প্রয়োজন না হয়। deref coercion ফিচারটি আমাদের আরও বেশি কোড লিখতে দেয় যা reference বা smart pointer উভয়ের জন্য কাজ করতে পারে।</p>
 <p>Deref coercion বাস্তবে দেখতে, আসুন আমরা Listing 15-8-এ সংজ্ঞায়িত <code>MyBox&lt;T&gt;</code> টাইপ এবং Listing 15-10-এ যোগ করা <code>Deref</code>-এর ইমপ্লিমেন্টেশন ব্যবহার করি। Listing 15-11 একটি ফাংশনের সংজ্ঞা দেখায় যার একটি স্ট্রিং স্লাইস প্যারামিটার রয়েছে।</p>
-<p>src/main.rs</p>
+<Listing number="15-11" file-name="src/main.rs" caption="একটি `hello` ফাংশন যার `name` প্যারামিটারটি `&str` টাইপের">
 <pre><pre class="playground"><code class="language-rust edition2024">fn hello(name: &amp;str) {
     println!("Hello, {name}!");
 }
 <span class="boring">
 </span><span class="boring">fn main() {}</span></code></pre></pre>
-<p>Listing 15-11: একটি <code>hello</code> ফাংশন যার <code>name</code> প্যারামিটারটি <code>&amp;str</code> টাইপের</p>
+</Listing>
 <p>আমরা <code>hello</code> ফাংশনটিকে একটি স্ট্রিং স্লাইস আর্গুমেন্ট দিয়ে কল করতে পারি, যেমন <code>hello("Rust");</code>। Deref coercion <code>hello</code>-কে <code>MyBox&lt;String&gt;</code> টাইপের একটি ভ্যালুর reference দিয়ে কল করা সম্ভব করে, যেমনটি Listing 15-12-এ দেখানো হয়েছে।</p>
-<p>src/main.rs</p>
+<Listing number="15-12" file-name="src/main.rs" caption="`MyBox<String>` ভ্যালুর একটি reference দিয়ে `hello` কল করা, যা deref coercion-এর কারণে কাজ করে">
 <pre><pre class="playground"><code class="language-rust edition2024"><span class="boring">use std::ops::Deref;
 </span><span class="boring">
 </span><span class="boring">impl&lt;T&gt; Deref for MyBox&lt;T&gt; {
@@ -327,10 +327,10 @@ impl&lt;T&gt; Deref for MyBox&lt;T&gt; {
     let m = MyBox::new(String::from("Rust"));
     hello(&amp;m);
 }</code></pre></pre>
-<p>Listing 15-12: <code>MyBox&lt;String&gt;</code> ভ্যালুর একটি reference দিয়ে <code>hello</code> কল করা, যা deref coercion-এর কারণে কাজ করে</p>
+</Listing>
 <p>এখানে আমরা <code>hello</code> ফাংশনটিকে <code>&amp;m</code> আর্গুমেন্ট দিয়ে কল করছি, যা একটি <code>MyBox&lt;String&gt;</code> ভ্যালুর একটি reference। যেহেতু আমরা Listing 15-10-এ <code>MyBox&lt;T&gt;</code>-এর উপর <code>Deref</code> ট্রেইট ইমপ্লিমেন্ট করেছি, তাই রাস্ট <code>deref</code> কল করে <code>&amp;MyBox&lt;String&gt;</code>-কে <code>&amp;String</code>-এ পরিণত করতে পারে। স্ট্যান্ডার্ড লাইব্রেরি <code>String</code>-এর উপর <code>Deref</code>-এর একটি ইমপ্লিমেন্টেশন প্রদান করে যা একটি স্ট্রিং স্লাইস রিটার্ন করে, এবং এটি <code>Deref</code>-এর API ডকুমেন্টেশনে রয়েছে। রাস্ট <code>&amp;String</code>-কে <code>&amp;str</code>-এ পরিণত করতে আবার <code>deref</code> কল করে, যা <code>hello</code> ফাংশনের সংজ্ঞার সাথে মেলে।</p>
 <p>যদি রাস্ট deref coercion ইমপ্লিমেন্ট না করত, তাহলে <code>hello</code>-কে <code>&amp;MyBox&lt;String&gt;</code> টাইপের একটি ভ্যালু দিয়ে কল করার জন্য আমাদের Listing 15-12-এর কোডের পরিবর্তে Listing 15-13-এর কোডটি লিখতে হতো।</p>
-<p>src/main.rs</p>
+<Listing number="15-13" file-name="src/main.rs" caption="যদি রাস্ট-এর deref coercion না থাকত তাহলে আমাদের যে কোড লিখতে হতো">
 <pre><pre class="playground"><code class="language-rust edition2024"><span class="boring">use std::ops::Deref;
 </span><span class="boring">
 </span><span class="boring">impl&lt;T&gt; Deref for MyBox&lt;T&gt; {
@@ -357,7 +357,7 @@ impl&lt;T&gt; Deref for MyBox&lt;T&gt; {
     let m = MyBox::new(String::from("Rust"));
     hello(&amp;(*m)[..]);
 }</code></pre></pre>
-<p>Listing 15-13: যদি রাস্ট-এর deref coercion না থাকত তাহলে আমাদের যে কোড লিখতে হতো</p>
+</Listing>
 <p><code>(*m)</code> <code>MyBox&lt;String&gt;</code>-কে dereference করে একটি <code>String</code>-এ পরিণত করে। তারপর <code>&amp;</code> এবং <code>[..]</code> <code>String</code>-এর একটি স্ট্রিং স্লাইস নেয় যা <code>hello</code>-এর সিগনেচারের সাথে মেলানোর জন্য পুরো স্ট্রিংয়ের সমান। এই সমস্ত চিহ্ন জড়িত থাকার কারণে deref coercion ছাড়া এই কোডটি পড়া, লেখা এবং বোঝা কঠিন। Deref coercion রাস্টকে এই রূপান্তরগুলি আমাদের জন্য স্বয়ংক্রিয়ভাবে পরিচালনা করার অনুমতি দেয়।</p>
 <p>যখন জড়িত টাইপগুলির জন্য <code>Deref</code> ট্রেইট সংজ্ঞায়িত করা হয়, রাস্ট টাইপগুলি বিশ্লেষণ করবে এবং প্যারামিটারের টাইপের সাথে মেলানোর জন্য একটি reference পেতে যতবার প্রয়োজন <code>Deref::deref</code> ব্যবহার করবে। <code>Deref::deref</code> কতবার সন্নিবেশ করা প্রয়োজন তা কম্পাইল টাইমে সমাধান করা হয়, তাই deref coercion-এর সুবিধা নেওয়ার জন্য কোনো রানটাইম পেনাল্টি নেই!</p>
 <h3 id="deref-coercion-এবং-mutability-র-সমপরক"><a class="header" href="#deref-coercion-এবং-mutability-র-সমপরক">Deref Coercion এবং Mutability-র সম্পর্ক</a></h3>

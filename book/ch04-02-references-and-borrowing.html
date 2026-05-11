@@ -162,7 +162,7 @@
                         <h2 id="রেফারেনস-এবং-ধার-করা-references-and-borrowing"><a class="header" href="#রেফারেনস-এবং-ধার-করা-references-and-borrowing">রেফারেন্স এবং ধার করা (References and Borrowing)</a></h2>
 <p>তালিকা ৪-৫ এর টাপল (tuple) কোডের সমস্যাটি হলো, <code>calculate_length</code> ফাংশনে <code>String</code> পাস করার পর সেটির মালিকানা চলে যায়, তাই ফাংশন কলের পরেও <code>String</code> ব্যবহার করতে হলে আমাদের আবার সেটি কলিং ফাংশনে ফেরত পাঠাতে হয়। এর পরিবর্তে, আমরা <code>String</code> মানটির একটি রেফারেন্স (reference) পাস করতে পারি। একটি <em>রেফারেন্স</em> অনেকটা পয়েন্টারের মতো, কারণ এটি একটি ঠিকানা যা অনুসরণ করে আমরা সেই ঠিকানায় থাকা ডেটা অ্যাক্সেস করতে পারি; সেই ডেটার মালিক অন্য কোনো ভ্যারিয়েবল। পয়েন্টারের সাথে এর পার্থক্য হলো, একটি রেফারেন্স তার জীবনকাল পর্যন্ত একটি নির্দিষ্ট টাইপের বৈধ মানের দিকে নির্দেশ করার নিশ্চয়তা দেয়।</p>
 <p>এখানে দেখানো হলো কীভাবে আপনি একটি <code>calculate_length</code> ফাংশন তৈরি ও ব্যবহার করতে পারেন যা মানের মালিকানা না নিয়ে বরং একটি অবজেক্টের রেফারেন্স প্যারামিটার হিসেবে গ্রহণ করে:</p>
-<p>src/main.rs</p>
+<Listing file-name="src/main.rs">
 <pre><pre class="playground"><code class="language-rust edition2024">fn main() {
     let s1 = String::from("hello");
 
@@ -174,6 +174,7 @@
 fn calculate_length(s: &amp;String) -&gt; usize {
     s.len()
 }</code></pre></pre>
+</Listing>
 <p>প্রথমত, লক্ষ্য করুন যে ভ্যারিয়েবল ঘোষণা এবং ফাংশনের রিটার্ন ভ্যালু থেকে সমস্ত টাপল কোড চলে গেছে। দ্বিতীয়ত, লক্ষ্য করুন যে আমরা <code>calculate_length</code> ফাংশনে <code>&amp;s1</code> পাস করেছি এবং ফাংশনের সংজ্ঞায় <code>String</code>-এর পরিবর্তে <code>&amp;String</code> নিয়েছি। এই অ্যামপারস্যান্ড (<code>&amp;</code>) চিহ্নগুলো <em>রেফারেন্স</em> বোঝায়, এবং এগুলো আপনাকে কোনো মানের মালিকানা না নিয়েই সেটিকে নির্দেশ করতে দেয়। চিত্র ৪-৬ এই ধারণাটি চিত্রিত করে।</p>
 <img alt="তিনটি টেবিল: s-এর টেবিলটিতে শুধুমাত্র s1-এর টেবিলের একটি পয়েন্টার রয়েছে। s1-এর টেবিলটিতে s1-এর জন্য স্ট্যাক ডেটা রয়েছে এবং এটি হীপের স্ট্রিং ডেটার দিকে নির্দেশ করে।" src="img/trpl04-06.svg" class="center" />
 <p><span class="caption">চিত্র ৪-৬: <code>&amp;String s</code> যেভাবে <code>String s1</code>-কে নির্দেশ করে তার একটি চিত্র</span></p>
@@ -209,7 +210,7 @@ fn calculate_length(s: &amp;String) -&gt; usize {
 <p>যে স্কোপে <code>s</code> ভ্যারিয়েবলটি বৈধ, তা যেকোনো ফাংশন প্যারামিটারের স্কোপের মতোই, কিন্তু <code>s</code>-এর ব্যবহার শেষ হলে রেফারেন্স দ্বারা নির্দেশিত মানটি ড্রপ করা হয় না, কারণ <code>s</code>-এর মালিকানা নেই। যখন ফাংশনগুলো আসল মানের পরিবর্তে রেফারেন্সকে প্যারামিটার হিসাবে ব্যবহার করে, তখন মালিকানা ফিরিয়ে দেওয়ার জন্য আমাদের মানগুলো ফেরত পাঠাতে হবে না, কারণ আমাদের কখনোই মালিকানা ছিল না।</p>
 <p>একটি রেফারেন্স তৈরি করার এই প্রক্রিয়াকে আমরা <em>ধার করা</em> (borrowing) বলি। বাস্তব জীবনের মতোই, যদি কোনো ব্যক্তির কোনো কিছুর মালিকানা থাকে, আপনি তাদের কাছ থেকে তা ধার নিতে পারেন। আপনার কাজ শেষ হলে, আপনাকে তা ফিরিয়ে দিতে হবে। আপনি সেটির মালিক নন।</p>
 <p>তাহলে, আমরা যদি ধার করা কোনো কিছু পরিবর্তন করার চেষ্টা করি তাহলে কী হবে? তালিকা ৪-৬-এর কোডটি চেষ্টা করুন। স্পয়লার অ্যালার্ট: এটি কাজ করবে না!</p>
-<p>src/main.rs</p>
+<Listing number="4-6" file-name="src/main.rs" caption="ধার করা মান পরিবর্তন করার একটি প্রচেষ্টা">
 <pre><code class="language-rust ignore does_not_compile">fn main() {
     let s = String::from("hello");
 
@@ -219,7 +220,7 @@ fn calculate_length(s: &amp;String) -&gt; usize {
 fn change(some_string: &amp;String) {
     some_string.push_str(", world");
 }</code></pre>
-<p>Listing 4-6: ধার করা মান পরিবর্তন করার একটি প্রচেষ্টা</p>
+</Listing>
 <p>এখানে এররটি হলো:</p>
 <pre><code class="language-console">$ cargo run
    Compiling ownership v0.1.0 (file:///projects/ownership)
@@ -240,7 +241,7 @@ error: could not compile `ownership` (bin "ownership") due to 1 previous error
 <p>ভ্যারিয়েবলগুলো যেমন ডিফল্টভাবে অপরিবর্তনীয় (immutable), রেফারেন্সও তেমনি। আমাদের কাছে কোনো কিছুর রেফারেন্স থাকলে আমরা তা পরিবর্তন করার অনুমতি পাই না।</p>
 <h3 id="পরিবরতনযোগয-রেফারেনস-mutable-references"><a class="header" href="#পরিবরতনযোগয-রেফারেনস-mutable-references">পরিবর্তনযোগ্য রেফারেন্স (Mutable References)</a></h3>
 <p>আমরা তালিকা ৪-৬ এর কোডটিকে কয়েকটি ছোট পরিবর্তনের মাধ্যমে ঠিক করতে পারি, যাতে আমরা একটি ধার করা মান পরিবর্তন করতে পারি। এর জন্য আমরা একটি <em>পরিবর্তনযোগ্য রেফারেন্স</em> (mutable reference) ব্যবহার করব:</p>
-<p>src/main.rs</p>
+<Listing file-name="src/main.rs">
 <pre><pre class="playground"><code class="language-rust edition2024">fn main() {
     let mut s = String::from("hello");
 
@@ -250,9 +251,10 @@ error: could not compile `ownership` (bin "ownership") due to 1 previous error
 fn change(some_string: &amp;mut String) {
     some_string.push_str(", world");
 }</code></pre></pre>
+</Listing>
 <p>প্রথমে আমরা <code>s</code>-কে <code>mut</code> করি। তারপর আমরা <code>change</code> ফাংশন কল করার সময় <code>&amp;mut s</code> দিয়ে একটি পরিবর্তনযোগ্য রেফারেন্স তৈরি করি, এবং ফাংশন সিগনেচার আপডেট করে <code>some_string: &amp;mut String</code> দিয়ে একটি পরিবর্তনযোগ্য রেফারেন্স গ্রহণ করি। এটি খুব স্পষ্ট করে দেয় যে <code>change</code> ফাংশনটি তার ধার করা মানটিকে পরিবর্তন করবে।</p>
 <p>পরিবর্তনযোগ্য রেফারেন্সের একটি বড় সীমাবদ্ধতা আছে: যদি আপনার কাছে একটি মানের একটি পরিবর্তনযোগ্য রেফারেন্স থাকে, তবে সেই মানের অন্য কোনো রেফারেন্স আপনার কাছে থাকতে পারবে না। <code>s</code>-এর জন্য দুটি পরিবর্তনযোগ্য রেফারেন্স তৈরি করার এই কোডটি ব্যর্থ হবে:</p>
-<p>src/main.rs</p>
+<Listing file-name="src/main.rs">
 <pre><code class="language-rust ignore does_not_compile"><span class="boring">fn main() {
 </span>    let mut s = String::from("hello");
 
@@ -261,6 +263,7 @@ fn change(some_string: &amp;mut String) {
 
     println!("{r1}, {r2}");
 <span class="boring">}</span></code></pre>
+</Listing>
 <p>এখানে এররটি হলো:</p>
 <pre><code class="language-console">$ cargo run
    Compiling ownership v0.1.0 (file:///projects/ownership)
@@ -343,7 +346,7 @@ error: could not compile `ownership` (bin "ownership") due to 1 previous error
 <h3 id="ডযাংলিং-রেফারেনস-dangling-references"><a class="header" href="#ডযাংলিং-রেফারেনস-dangling-references">ড্যাংলিং রেফারেন্স (Dangling References)</a></h3>
 <p>পয়েন্টারসহ ভাষাগুলোতে, ভুলবশত একটি <em>ড্যাংলিং পয়েন্টার</em> (dangling pointer)—এমন একটি পয়েন্টার যা মেমরির এমন একটি অবস্থানকে নির্দেশ করে যা হয়তো অন্য কাউকে দেওয়া হয়েছে—তৈরি করা সহজ, কোনো মেমরি মুক্ত করার সময় সেই মেমরির একটি পয়েন্টার সংরক্ষণ করে। এর বিপরীতে, রাস্টে, কম্পাইলার গ্যারান্টি দেয় যে রেফারেন্সগুলো কখনই ড্যাংলিং রেফারেন্স হবে না: যদি আপনার কাছে কিছু ডেটার একটি রেফারেন্স থাকে, কম্পাইলার নিশ্চিত করবে যে ডেটার রেফারেন্সের আগে ডেটা স্কোপের বাইরে যাবে না।</p>
 <p>আসুন একটি ড্যাংলিং রেফারেন্স তৈরি করার চেষ্টা করি যাতে দেখা যায় রাস্ট কীভাবে একটি কম্পাইল-টাইম এরর দিয়ে এগুলো প্রতিরোধ করে:</p>
-<p>src/main.rs</p>
+<Listing file-name="src/main.rs">
 <pre><code class="language-rust ignore does_not_compile">fn main() {
     let reference_to_nothing = dangle();
 }
@@ -353,6 +356,7 @@ fn dangle() -&gt; &amp;String {
 
     &amp;s
 }</code></pre>
+</Listing>
 <p>এখানে এররটি হলো:</p>
 <pre><code class="language-console">$ cargo run
    Compiling ownership v0.1.0 (file:///projects/ownership)
@@ -388,7 +392,7 @@ error: could not compile `ownership` (bin "ownership") due to 2 previous errors
 for it to be borrowed from
 </code></pre>
 <p>আসুন আমাদের <code>dangle</code> কোডের প্রতিটি পর্যায়ে ঠিক কী ঘটছে তা আরও ঘনিষ্ঠভাবে দেখি:</p>
-<p>src/main.rs</p>
+<Listing file-name="src/main.rs">
 <pre><code class="language-rust ignore does_not_compile"><span class="boring">fn main() {
 </span><span class="boring">    let reference_to_nothing = dangle();
 </span><span class="boring">}
@@ -400,6 +404,7 @@ for it to be borrowed from
     &amp;s // we return a reference to the String, s
 } // Here, s goes out of scope and is dropped, so its memory goes away.
   // Danger!</code></pre>
+</Listing>
 <p>যেহেতু <code>s</code> <code>dangle</code> এর ভিতরে তৈরি করা হয়েছে, তাই <code>dangle</code>-এর কোড শেষ হয়ে গেলে, <code>s</code> ডিঅ্যালোকেট (deallocated) করা হবে। কিন্তু আমরা এটির একটি রেফারেন্স ফেরত দেওয়ার চেষ্টা করেছি। এর মানে এই রেফারেন্সটি একটি অবৈধ <code>String</code>-কে নির্দেশ করবে। এটা মোটেও ভালো না! রাস্ট আমাদের এটা করতে দেবে না।</p>
 <p>এখানের সমাধান হলো <code>String</code> সরাসরি ফেরত দেওয়া:</p>
 <pre><pre class="playground"><code class="language-rust edition2024"><span class="boring">fn main() {

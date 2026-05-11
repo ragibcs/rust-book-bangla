@@ -242,12 +242,12 @@ add_one = { path = "../add_one" }
 </code></pre>
 <p>কার্গো ধরে নেয় না যে একটি ওয়ার্কস্পেসের ক্রেটগুলো একে অপরের উপর নির্ভর করবে, তাই আমাদের ডিপেন্ডেন্সি সম্পর্কগুলো স্পষ্টভাবে উল্লেখ করতে হবে।</p>
 <p>এরপর, আসুন <code>adder</code> ক্রেটে (<code>add_one</code> ক্রেট থেকে) <code>add_one</code> ফাংশনটি ব্যবহার করি। <em>adder/src/main.rs</em> ফাইলটি খুলুন এবং <code>main</code> ফাংশনটিকে <code>add_one</code> ফাংশন কল করার জন্য পরিবর্তন করুন, যেমনটি তালিকা ১৪-৭ এ দেখানো হয়েছে।</p>
-<p>adder/src/main.rs</p>
+<Listing number="14-7" file-name="adder/src/main.rs" caption="`adder` ক্রেট থেকে `add_one` লাইব্রেরি ক্রেট ব্যবহার করা">
 <pre><code class="language-rust ignore">fn main() {
     let num = 10;
     println!("Hello, world! {num} plus one is {}!", add_one::add_one(num));
 }</code></pre>
-<p>Listing 14-7: <code>adder</code> ক্রেট থেকে <code>add_one</code> লাইব্রেরি ক্রেট ব্যবহার করা</p>
+</Listing>
 <p>আসুন টপ-লেভেল <em>add</em> ডিরেক্টরিতে <code>cargo build</code> চালিয়ে ওয়ার্কস্পেসটি বিল্ড করি!</p>
 <!-- manual-regeneration
 cd listings/ch14-more-about-cargo/listing-14-07/add

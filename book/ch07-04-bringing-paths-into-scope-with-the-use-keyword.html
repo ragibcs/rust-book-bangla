@@ -162,7 +162,7 @@
                         <h2 id="use-কীওযারড-বযবহার-করে-সকোপে-পাথ-নিযে-আসা"><a class="header" href="#use-কীওযারড-বযবহার-করে-সকোপে-পাথ-নিযে-আসা"><code>use</code> কীওয়ার্ড ব্যবহার করে স্কোপে পাথ নিয়ে আসা</a></h2>
 <p>ফাংশন কল করার জন্য বারবার পুরো পাথ লেখাটা বেশ অসুবিধাজনক এবং পুনরাবৃত্তিমূলক মনে হতে পারে। Listing 7-7-এ, আমরা <code>add_to_waitlist</code> ফাংশনের জন্য অ্যাবসোলিউট বা রিলেটিভ পাথ যাই বেছে নিই না কেন, প্রতিবার <code>add_to_waitlist</code> কল করার সময় আমাদের <code>front_of_house</code> এবং <code>hosting</code>-ও নির্দিষ্ট করতে হয়েছিল। সৌভাগ্যবশত, এই প্রক্রিয়াটি সহজ করার একটি উপায় আছে: আমরা <code>use</code> কীওয়ার্ড দিয়ে একবার একটি পাথের শর্টকাট তৈরি করে নিতে পারি এবং তারপর স্কোপের অন্য সব জায়গায় ছোট নামটি ব্যবহার করতে পারি।</p>
 <p>Listing 7-11-এ, আমরা <code>crate::front_of_house::hosting</code> মডিউলটিকে <code>eat_at_restaurant</code> ফাংশনের স্কোপে নিয়ে এসেছি, তাই <code>eat_at_restaurant</code>-এর মধ্যে <code>add_to_waitlist</code> ফাংশনটি কল করার জন্য আমাদের কেবল <code>hosting::add_to_waitlist</code> নির্দিষ্ট করতে হবে।</p>
-<p>src/lib.rs</p>
+<Listing number="7-11" file-name="src/lib.rs" caption="`use` ব্যবহার করে একটি মডিউলকে স্কোপের মধ্যে আনা">
 <pre><code class="language-rust noplayground test_harness">mod front_of_house {
     pub mod hosting {
         pub fn add_to_waitlist() {}
@@ -174,10 +174,10 @@ use crate::front_of_house::hosting;
 pub fn eat_at_restaurant() {
     hosting::add_to_waitlist();
 }</code></pre>
-<p>Listing 7-11: <code>use</code> ব্যবহার করে একটি মডিউলকে স্কোপের মধ্যে আনা</p>
+</Listing>
 <p>একটি স্কোপে <code>use</code> এবং একটি পাথ যোগ করা ফাইলসিস্টেমে একটি সিম্বলিক লিঙ্ক তৈরি করার মতো। ক্রেট রুটে <code>use crate::front_of_house::hosting</code> যোগ করার মাধ্যমে, <code>hosting</code> এখন সেই স্কোপে একটি বৈধ নাম, ঠিক যেন <code>hosting</code> মডিউলটি ক্রেট রুটেই ডিফাইন করা হয়েছিল। <code>use</code> দিয়ে স্কোপে আনা পাথগুলোও অন্য যেকোনো পাথের মতোই প্রাইভেসি পরীক্ষা করে।</p>
 <p>মনে রাখবেন যে <code>use</code> শুধুমাত্র সেই নির্দিষ্ট স্কোপের জন্য শর্টকাট তৈরি করে যেখানে <code>use</code> ব্যবহার করা হয়েছে। Listing 7-12-এ <code>eat_at_restaurant</code> ফাংশনটিকে <code>customer</code> নামের একটি নতুন চাইল্ড মডিউলে সরানো হয়েছে, যা <code>use</code> স্টেটমেন্টের থেকে ভিন্ন একটি স্কোপ, তাই ফাংশনের বডি কম্পাইল হবে না।</p>
-<p>src/lib.rs</p>
+<Listing number="7-12" file-name="src/lib.rs" caption="একটি `use` স্টেটমেন্ট শুধুমাত্র যে স্কোপে থাকে সেখানেই প্রযোজ্য হয়।">
 <pre><code class="language-rust noplayground test_harness does_not_compile ignore">mod front_of_house {
     pub mod hosting {
         pub fn add_to_waitlist() {}
@@ -191,7 +191,7 @@ mod customer {
         hosting::add_to_waitlist();
     }
 }</code></pre>
-<p>Listing 7-12: একটি <code>use</code> স্টেটমেন্ট শুধুমাত্র যে স্কোপে থাকে সেখানেই প্রযোজ্য হয়।</p>
+</Listing>
 <p>কম্পাইলার এরর দেখায় যে শর্টকাটটি আর <code>customer</code> মডিউলের মধ্যে প্রযোজ্য নয়:</p>
 <pre><code class="language-console">$ cargo build
    Compiling restaurant v0.1.0 (file:///projects/restaurant)
@@ -221,7 +221,7 @@ error: could not compile `restaurant` (lib) due to 1 previous error; 1 warning e
 <p>লক্ষ্য করুন, একটি ওয়ার্নিংও রয়েছে যে <code>use</code> তার স্কোপে আর ব্যবহৃত হচ্ছে না! এই সমস্যাটি সমাধান করার জন্য, <code>use</code>-কে <code>customer</code> মডিউলের ভিতরেও সরিয়ে নিন, অথবা চাইল্ড <code>customer</code> মডিউলের মধ্যে প্যারেন্ট মডিউলের শর্টকাটটিকে <code>super::hosting</code> দিয়ে রেফারেন্স করুন।</p>
 <h3 id="পরচলিত-use-পাথ-তৈরি-করা"><a class="header" href="#পরচলিত-use-পাথ-তৈরি-করা">প্রচলিত <code>use</code> পাথ তৈরি করা</a></h3>
 <p>Listing 7-11-এ, আপনি হয়তো ভেবেছিলেন কেন আমরা <code>use crate::front_of_house::hosting</code> নির্দিষ্ট করেছি এবং তারপর <code>eat_at_restaurant</code>-এ <code>hosting::add_to_waitlist</code> কল করেছি, যেখানে আমরা <code>use</code> পাথটিকে <code>add_to_waitlist</code> ফাংশন পর্যন্ত প্রসারিত করে একই ফলাফল অর্জন করতে পারতাম, যেমনটি Listing 7-13-এ দেখানো হয়েছে।</p>
-<p>src/lib.rs</p>
+<Listing number="7-13" file-name="src/lib.rs" caption="`use` দিয়ে `add_to_waitlist` ফাংশনটিকে স্কোপে আনা, যা প্রচলিত নয়">
 <pre><code class="language-rust noplayground test_harness">mod front_of_house {
     pub mod hosting {
         pub fn add_to_waitlist() {}
@@ -233,20 +233,20 @@ use crate::front_of_house::hosting::add_to_waitlist;
 pub fn eat_at_restaurant() {
     add_to_waitlist();
 }</code></pre>
-<p>Listing 7-13: <code>use</code> দিয়ে <code>add_to_waitlist</code> ফাংশনটিকে স্কোপে আনা, যা প্রচলিত নয়</p>
+</Listing>
 <p>যদিও Listing 7-11 এবং Listing 7-13 উভয়ই একই কাজ সম্পন্ন করে, <code>use</code> দিয়ে একটি ফাংশনকে স্কোপে আনার প্রচলিত (idiomatic) উপায় হলো Listing 7-11। <code>use</code> দিয়ে ফাংশনের প্যারেন্ট মডিউলকে স্কোপে আনার মানে হলো ফাংশনটি কল করার সময় আমাদের প্যারেন্ট মডিউলটি নির্দিষ্ট করতে হবে। ফাংশন কল করার সময় প্যারেন্ট মডিউল নির্দিষ্ট করা এটা স্পষ্ট করে যে ফাংশনটি স্থানীয়ভাবে ডিফাইন করা হয়নি, এবং একই সাথে সম্পূর্ণ পাথের পুনরাবৃত্তিও কমায়। Listing 7-13-এর কোডটি অস্পষ্ট কারণ <code>add_to_waitlist</code> কোথায় ডিফাইন করা হয়েছে তা বোঝা যায় না।</p>
 <p>অন্যদিকে, <code>use</code> দিয়ে struct, enum এবং অন্যান্য আইটেম আনার সময়, সম্পূর্ণ পাথ নির্দিষ্ট করাই প্রচলিত রীতি। Listing 7-14 স্ট্যান্ডার্ড লাইব্রেরির <code>HashMap</code> struct-কে একটি বাইনারি ক্রেটের স্কোপে আনার প্রচলিত উপায় দেখায়।</p>
-<p>src/main.rs</p>
+<Listing number="7-14" file-name="src/main.rs" caption="প্রচলিত উপায়ে `HashMap`-কে স্কোপে আনা">
 <pre><pre class="playground"><code class="language-rust edition2024">use std::collections::HashMap;
 
 fn main() {
     let mut map = HashMap::new();
     map.insert(1, 2);
 }</code></pre></pre>
-<p>Listing 7-14: প্রচলিত উপায়ে <code>HashMap</code>-কে স্কোপে আনা</p>
+</Listing>
 <p>এই রীতির পিছনে কোনো শক্তিশালী কারণ নেই: এটি কেবল একটি কনভেনশন যা সময়ের সাথে তৈরি হয়েছে, এবং লোকেরা এইভাবেই রাস্ট কোড পড়তে এবং লিখতে অভ্যস্ত হয়ে গেছে।</p>
 <p>এই রীতির ব্যতিক্রম হলো যদি আমরা <code>use</code> স্টেটমেন্ট ব্যবহার করে একই নামের দুটি আইটেমকে স্কোপে নিয়ে আসি, কারণ রাস্ট এটির অনুমতি দেয় না। Listing 7-15 দেখায় কিভাবে একই নামের কিন্তু ভিন্ন প্যারেন্ট মডিউলের দুটি <code>Result</code> টাইপকে স্কোপে আনা যায় এবং কীভাবে তাদের রেফার করতে হয়।</p>
-<p>src/lib.rs</p>
+<Listing number="7-15" file-name="src/lib.rs" caption="একই নামের দুটি টাইপকে একই স্কোপে আনতে হলে তাদের প্যারেন্ট মডিউল ব্যবহার করতে হবে।">
 <pre><code class="language-rust noplayground">use std::fmt;
 use std::io;
 
@@ -259,11 +259,11 @@ fn function2() -&gt; io::Result&lt;()&gt; {
     // --snip--
 <span class="boring">    Ok(())
 </span>}</code></pre>
-<p>Listing 7-15: একই নামের দুটি টাইপকে একই স্কোপে আনতে হলে তাদের প্যারেন্ট মডিউল ব্যবহার করতে হবে।</p>
+</Listing>
 <p>আপনি দেখতে পাচ্ছেন, প্যারেন্ট মডিউল ব্যবহার করে দুটি <code>Result</code> টাইপকে আলাদা করা হয়েছে। যদি আমরা <code>use std::fmt::Result</code> এবং <code>use std::io::Result</code> নির্দিষ্ট করতাম, তাহলে আমাদের একই স্কোপে দুটি <code>Result</code> টাইপ থাকত, এবং যখন আমরা <code>Result</code> ব্যবহার করতাম, রাস্ট জানত না আমরা কোনটি বোঝাতে চাইছি।</p>
 <h3 id="as-কীওযারড-দিযে-নতুন-নাম-পরদান-করা"><a class="header" href="#as-কীওযারড-দিযে-নতুন-নাম-পরদান-করা"><code>as</code> কীওয়ার্ড দিয়ে নতুন নাম প্রদান করা</a></h3>
 <p><code>use</code> দিয়ে একই নামের দুটি টাইপকে একই স্কোপে আনার সমস্যার আরেকটি সমাধান আছে: পাথের পরে, আমরা <code>as</code> এবং টাইপের জন্য একটি নতুন স্থানীয় নাম বা <em>alias</em> নির্দিষ্ট করতে পারি। Listing 7-16-এ, Listing 7-15-এর কোডটি লেখার আরেকটি উপায় দেখানো হয়েছে, যেখানে <code>as</code> ব্যবহার করে দুটি <code>Result</code> টাইপের মধ্যে একটির নাম পরিবর্তন করা হয়েছে।</p>
-<p>src/lib.rs</p>
+<Listing number="7-16" file-name="src/lib.rs" caption="`as` কীওয়ার্ড দিয়ে স্কোপে আনার সময় একটি টাইপের নাম পরিবর্তন করা">
 <pre><code class="language-rust noplayground">use std::fmt::Result;
 use std::io::Result as IoResult;
 
@@ -276,12 +276,12 @@ fn function2() -&gt; IoResult&lt;()&gt; {
     // --snip--
 <span class="boring">    Ok(())
 </span>}</code></pre>
-<p>Listing 7-16: <code>as</code> কীওয়ার্ড দিয়ে স্কোপে আনার সময় একটি টাইপের নাম পরিবর্তন করা</p>
+</Listing>
 <p>দ্বিতীয় <code>use</code> স্টেটমেন্টে, আমরা <code>std::io::Result</code> টাইপের জন্য নতুন নাম <code>IoResult</code> বেছে নিয়েছি, যা <code>std::fmt</code> থেকে আনা <code>Result</code>-এর সাথে冲突 করবে না, যেটিও আমরা স্কোপে নিয়ে এসেছি। Listing 7-15 এবং Listing 7-16 উভয়ই প্রচলিত হিসাবে বিবেচিত হয়, তাই পছন্দ আপনার!</p>
 <h3 id="pub-use-দিযে-নাম-পুনরায-একসপোরট-করা"><a class="header" href="#pub-use-দিযে-নাম-পুনরায-একসপোরট-করা"><code>pub use</code> দিয়ে নাম পুনরায়-এক্সপোর্ট করা</a></h3>
 <p>যখন আমরা <code>use</code> কীওয়ার্ড দিয়ে একটি নামকে স্কোপে নিয়ে আসি, তখন নামটি সেই স্কোপের জন্য প্রাইভেট থাকে যেখানে আমরা এটি ইম্পোর্ট করেছি। সেই স্কোপের বাইরের কোডকে সেই নামটি এমনভাবে রেফার করতে সক্ষম করার জন্য যেন এটি সেই স্কোপেই ডিফাইন করা হয়েছিল, আমরা <code>pub</code> এবং <code>use</code> একত্রিত করতে পারি। এই কৌশলটিকে <em>রি-এক্সপোর্টিং</em> (re-exporting) বলা হয় কারণ আমরা একটি আইটেমকে স্কোপে নিয়ে আসছি এবং একই সাথে সেই আইটেমটিকে অন্যদের তাদের স্কোপে আনার জন্য উপলব্ধ করে দিচ্ছি।</p>
 <p>Listing 7-17-এ Listing 7-11-এর কোডটি দেখানো হয়েছে যেখানে রুট মডিউলের <code>use</code>-কে <code>pub use</code>-এ পরিবর্তন করা হয়েছে।</p>
-<p>src/lib.rs</p>
+<Listing number="7-17" file-name="src/lib.rs" caption="`pub use` দিয়ে একটি নামকে যেকোনো কোডের ব্যবহারের জন্য নতুন স্কোপ থেকে উপলব্ধ করা">
 <pre><code class="language-rust noplayground test_harness">mod front_of_house {
     pub mod hosting {
         pub fn add_to_waitlist() {}
@@ -293,7 +293,7 @@ pub use crate::front_of_house::hosting;
 pub fn eat_at_restaurant() {
     hosting::add_to_waitlist();
 }</code></pre>
-<p>Listing 7-17: <code>pub use</code> দিয়ে একটি নামকে যেকোনো কোডের ব্যবহারের জন্য নতুন স্কোপ থেকে উপলব্ধ করা</p>
+</Listing>
 <p>এই পরিবর্তনের আগে, এক্সটার্নাল কোডকে <code>restaurant::front_of_house::hosting::add_to_waitlist()</code> পাথ ব্যবহার করে <code>add_to_waitlist</code> ফাংশনটি কল করতে হতো, যার জন্য <code>front_of_house</code> মডিউলটিকেও <code>pub</code> হিসাবে চিহ্নিত করার প্রয়োজন হতো। এখন যেহেতু এই <code>pub use</code> রুট মডিউল থেকে <code>hosting</code> মডিউলটিকে রি-এক্সপোর্ট করেছে, এক্সটার্নাল কোড এর পরিবর্তে <code>restaurant::hosting::add_to_waitlist()</code> পাথ ব্যবহার করতে পারে।</p>
 <p>রি-এক্সপোর্টিং তখন উপযোগী যখন আপনার কোডের অভ্যন্তরীণ কাঠামো এবং আপনার কোড কল করা প্রোগ্রামাররা ডোমেইন সম্পর্কে যেভাবে চিন্তা করেন, তা ভিন্ন হয়। উদাহরণস্বরূপ, এই রেস্তোরাঁর রূপকে, রেস্তোরাঁ পরিচালনাকারী ব্যক্তিরা “ফ্রন্ট অফ হাউস” এবং “ব্যাক অফ হাউস” নিয়ে ভাবেন। কিন্তু রেস্তোরাঁয় আসা গ্রাহকরা সম্ভবত রেস্তোরাঁর অংশগুলো সম্পর্কে সেই পরিভাষায় ভাববেন না। <code>pub use</code>-এর মাধ্যমে, আমরা আমাদের কোড একটি কাঠামোতে লিখতে পারি কিন্তু একটি ভিন্ন কাঠামো এক্সপোজ করতে পারি। এটি করলে আমাদের লাইব্রেরিটি লাইব্রেরিতে কাজ করা প্রোগ্রামারদের জন্য এবং লাইব্রেরি কল করা প্রোগ্রামারদের জন্য সুসংগঠিত হয়। আমরা <code>pub use</code>-এর আরেকটি উদাহরণ এবং এটি কীভাবে আপনার ক্রেটের ডকুমেন্টেশনকে প্রভাবিত করে তা অধ্যায় ১৪-এর <a href="ch14-02-publishing-to-crates-io.html#exporting-a-convenient-public-api-with-pub-use">“<code>pub use</code> দিয়ে একটি সুবিধাজনক পাবলিক API এক্সপোর্ট করা”</a><!-- ignore --> বিভাগে দেখব।</p>
 <h3 id="একসটারনাল-পযাকেজ-বযবহার-করা"><a class="header" href="#একসটারনাল-পযাকেজ-বযবহার-করা">এক্সটার্নাল প্যাকেজ ব্যবহার করা</a></h3>
@@ -303,9 +303,10 @@ pub fn eat_at_restaurant() {
 * ch02-00-guessing-game-tutorial.md
 * ch14-03-cargo-workspaces.md
 -->
-<p>Cargo.toml</p>
+<Listing file-name="Cargo.toml">
 <pre><code class="language-toml">rand = "0.8.5"
 </code></pre>
+</Listing>
 <p><em>Cargo.toml</em>-এ <code>rand</code>-কে একটি ডিপেন্ডেন্সি হিসাবে যোগ করা কার্গোকে <a href="https://crates.io/">crates.io</a> থেকে <code>rand</code> প্যাকেজ এবং এর যেকোনো ডিপেন্ডেন্সি ডাউনলোড করতে এবং <code>rand</code> আমাদের প্রজেক্টের জন্য উপলব্ধ করতে বলে।</p>
 <p>তারপর, <code>rand</code> ডেফিনিশনগুলোকে আমাদের প্যাকেজের স্কোপে আনতে, আমরা ক্রেটের নাম, <code>rand</code> দিয়ে শুরু হওয়া একটি <code>use</code> লাইন যোগ করেছিলাম এবং যে আইটেমগুলো আমরা স্কোপে আনতে চেয়েছিলাম তা তালিকাভুক্ত করেছিলাম। মনে করুন যে দ্বিতীয় অধ্যায়ের <a href="ch02-00-guessing-game-tutorial.html#generating-a-random-number">“একটি র‍্যান্ডম নম্বর জেনারেট করা”</a><!-- ignore --> অংশে, আমরা <code>Rng</code> ট্রেইটটিকে স্কোপে নিয়ে এসেছিলাম এবং <code>rand::thread_rng</code> ফাংশনটি কল করেছিলাম:</p>
 <pre><code class="language-rust ignore"><span class="boring">use std::io;
@@ -338,7 +339,7 @@ fn main() {
 <p>এটি একটি অ্যাবসোলিউট পাথ যা <code>std</code> দিয়ে শুরু হয়, যা স্ট্যান্ডার্ড লাইব্রেরি ক্রেটের নাম।</p>
 <h3 id="বড়-use-তালিকা-পরিষকার-করতে-নেসটেড-পাথ-বযবহার-করা"><a class="header" href="#বড়-use-তালিকা-পরিষকার-করতে-নেসটেড-পাথ-বযবহার-করা">বড় <code>use</code> তালিকা পরিষ্কার করতে নেস্টেড পাথ ব্যবহার করা</a></h3>
 <p>যদি আমরা একই ক্রেট বা একই মডিউলে ডিফাইন করা একাধিক আইটেম ব্যবহার করি, তবে প্রতিটি আইটেমকে তার নিজস্ব লাইনে তালিকাভুক্ত করলে আমাদের ফাইলগুলিতে অনেক উল্লম্ব স্থান (vertical space) নষ্ট হতে পারে। উদাহরণস্বরূপ, Listing 2-4-এর গেসিং গেমে আমাদের এই দুটি <code>use</code> স্টেটমেন্ট <code>std</code> থেকে আইটেমগুলোকে স্কোপে এনেছিল:</p>
-<p>src/main.rs</p>
+<Listing file-name="src/main.rs">
 <pre><code class="language-rust ignore"><span class="boring">use rand::Rng;
 </span>// --snip--
 use std::cmp::Ordering;
@@ -368,8 +369,9 @@ use std::io;
 </span><span class="boring">        Ordering::Equal =&gt; println!("You win!"),
 </span><span class="boring">    }
 </span><span class="boring">}</span></code></pre>
+</Listing>
 <p>এর পরিবর্তে, আমরা একই আইটেমগুলোকে এক লাইনে স্কোপে আনতে নেস্টেড পাথ ব্যবহার করতে পারি। আমরা এটি করি পাথের সাধারণ অংশ নির্দিষ্ট করে, তারপরে দুটি কোলন, এবং তারপর কোঁকড়া বন্ধনীর (curly brackets) মধ্যে পাথের বিভিন্ন অংশগুলির একটি তালিকা দিয়ে, যেমনটি Listing 7-18-এ দেখানো হয়েছে।</p>
-<p>src/main.rs</p>
+<Listing number="7-18" file-name="src/main.rs" caption="একই উপসর্গযুক্ত একাধিক আইটেমকে স্কোপে আনার জন্য একটি নেস্টেড পাথ নির্দিষ্ট করা">
 <pre><code class="language-rust ignore"><span class="boring">use rand::Rng;
 </span>// --snip--
 use std::{cmp::Ordering, io};
@@ -400,17 +402,17 @@ use std::{cmp::Ordering, io};
 </span><span class="boring">        Ordering::Equal =&gt; println!("You win!"),
 </span><span class="boring">    }
 </span><span class="boring">}</span></code></pre>
-<p>Listing 7-18: একই উপসর্গযুক্ত একাধিক আইটেমকে স্কোপে আনার জন্য একটি নেস্টেড পাথ নির্দিষ্ট করা</p>
+</Listing>
 <p>বড় প্রোগ্রামগুলিতে, নেস্টেড পাথ ব্যবহার করে একই ক্রেট বা মডিউল থেকে অনেক আইটেম স্কোপে আনা পৃথক <code>use</code> স্টেটমেন্টের সংখ্যা অনেক কমাতে পারে!</p>
 <p>আমরা একটি পাথের যেকোনো স্তরে একটি নেস্টেড পাথ ব্যবহার করতে পারি, যা দুটি <code>use</code> স্টেটমেন্টকে একত্রিত করার সময় উপযোগী হয় যেগুলোর একটি সাবপাথ শেয়ার করা থাকে। উদাহরণস্বরূপ, Listing 7-19 দুটি <code>use</code> স্টেটমেন্ট দেখায়: একটি যা <code>std::io</code>-কে স্কোপে নিয়ে আসে এবং আরেকটি যা <code>std::io::Write</code>-কে স্কোপে নিয়ে আসে।</p>
-<p>src/lib.rs</p>
+<Listing number="7-19" file-name="src/lib.rs" caption="দুটি `use` স্টেটমেন্ট যেখানে একটি অন্যটির সাবপাথ">
 <pre><code class="language-rust noplayground">use std::io;
 use std::io::Write;</code></pre>
-<p>Listing 7-19: দুটি <code>use</code> স্টেটমেন্ট যেখানে একটি অন্যটির সাবপাথ</p>
+</Listing>
 <p>এই দুটি পাথের সাধারণ অংশ হলো <code>std::io</code>, এবং এটিই প্রথম সম্পূর্ণ পাথ। এই দুটি পাথকে একটি <code>use</code> স্টেটমেন্টে একত্রিত করতে, আমরা নেস্টেড পাথে <code>self</code> ব্যবহার করতে পারি, যেমনটি Listing 7-20-এ দেখানো হয়েছে।</p>
-<p>src/lib.rs</p>
+<Listing number="7-20" file-name="src/lib.rs" caption="Listing 7-19-এর পাথগুলোকে একটি `use` স্টেটমেন্টে একত্রিত করা">
 <pre><code class="language-rust noplayground">use std::io::{self, Write};</code></pre>
-<p>Listing 7-20: Listing 7-19-এর পাথগুলোকে একটি <code>use</code> স্টেটমেন্টে একত্রিত করা</p>
+</Listing>
 <p>এই লাইনটি <code>std::io</code> এবং <code>std::io::Write</code>-কে স্কোপে নিয়ে আসে।</p>
 <h3 id="গলোব-অপারেটর"><a class="header" href="#গলোব-অপারেটর">গ্লোব অপারেটর</a></h3>
 <p>যদি আমরা একটি পাথে ডিফাইন করা <em>সমস্ত</em> পাবলিক আইটেমকে স্কোপে আনতে চাই, আমরা সেই পাথ এবং তারপরে <code>*</code> গ্লোব অপারেটরটি নির্দিষ্ট করতে পারি:</p>

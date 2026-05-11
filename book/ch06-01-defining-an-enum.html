@@ -226,6 +226,7 @@
 </span><span class="boring">
 </span><span class="boring">fn route(ip_kind: IpAddrKind) {}</span></code></pre></pre>
 <p>enum ব্যবহার করার আরও সুবিধা আছে। আমাদের IP address type সম্পর্কে আরও ভাবলে দেখা যায়, এই মুহূর্তে আমাদের কাছে আসল IP address <em>data</em> সংরক্ষণ করার কোনো উপায় নেই; আমরা কেবল জানি এটি কোন <em>kind</em> বা প্রকারের। চ্যাপ্টার ৫-এ আপনি যেহেতু struct সম্পর্কে শিখেছেন, আপনি হয়তো এই সমস্যাটি struct দিয়ে সমাধান করার চেষ্টা করতে পারেন, যেমনটি লিস্টিং ৬-১ এ দেখানো হয়েছে।</p>
+<Listing number="6-1" caption="একটি `struct` ব্যবহার করে IP address-এর data এবং `IpAddrKind` variant সংরক্ষণ করা">
 <pre><pre class="playground"><code class="language-rust edition2024"><span class="boring">fn main() {
 </span>    enum IpAddrKind {
         V4,
@@ -247,7 +248,7 @@
         address: String::from("::1"),
     };
 <span class="boring">}</span></code></pre></pre>
-<p>Listing 6-1: একটি <code>struct</code> ব্যবহার করে IP address-এর data এবং <code>IpAddrKind</code> variant সংরক্ষণ করা</p>
+</Listing>
 <p>এখানে, আমরা একটি <code>IpAddr</code> struct ডিফাইন করেছি যার দুটি field আছে: একটি <code>kind</code> field যা <code>IpAddrKind</code> type-এর (আমাদের আগে ডিফাইন করা enum) এবং একটি <code>address</code> field যা <code>String</code> type-এর। আমাদের এই struct-এর দুটি instance আছে। প্রথমটি হলো <code>home</code>, এবং এটির <code>kind</code> হিসেবে <code>IpAddrKind::V4</code> এবং এর সাথে সম্পর্কিত address data হিসেবে <code>127.0.0.1</code> আছে। দ্বিতীয় instance হলো <code>loopback</code>। এটির <code>kind</code> হিসেবে <code>IpAddrKind</code>-এর অন্য variant, <code>V6</code> আছে এবং এর সাথে <code>::1</code> address সম্পর্কিত আছে। আমরা <code>kind</code> এবং <code>address</code> value-গুলোকে একসাথে বান্ডিল করতে একটি struct ব্যবহার করেছি, তাই এখন variant-টি value-এর সাথে সম্পর্কিত।</p>
 <p>যাইহোক, শুধু একটি enum ব্যবহার করে একই ধারণা প্রকাশ করা আরও সংক্ষিপ্ত: একটি struct-এর ভিতরে enum না রেখে, আমরা সরাসরি প্রতিটি enum variant-এর মধ্যে data রাখতে পারি। <code>IpAddr</code> enum-এর এই নতুন সংজ্ঞাটি বলছে যে <code>V4</code> এবং <code>V6</code> উভয় variant-এর সাথেই <code>String</code> value যুক্ত থাকবে:</p>
 <pre><pre class="playground"><code class="language-rust edition2024"><span class="boring">fn main() {
@@ -291,6 +292,7 @@ enum IpAddr {
 <p>এই কোডটি দেখায় যে আপনি একটি enum variant-এর ভিতরে যেকোনো ধরনের ডেটা রাখতে পারেন: উদাহরণস্বরূপ, স্ট্রিং, নিউমেরিক টাইপ, বা struct। এমনকি আপনি অন্য একটি enum-ও অন্তর্ভুক্ত করতে পারেন! এছাড়াও, স্ট্যান্ডার্ড লাইব্রেরির type-গুলো প্রায়শই আপনার নিজের ভাবনার চেয়ে খুব বেশি জটিল হয় না।</p>
 <p>লক্ষ্য করুন যে যদিও স্ট্যান্ডার্ড লাইব্রেরিতে <code>IpAddr</code>-এর একটি সংজ্ঞা রয়েছে, আমরা এখনও কোনো conflict ছাড়াই আমাদের নিজস্ব সংজ্ঞা তৈরি এবং ব্যবহার করতে পারি কারণ আমরা স্ট্যান্ডার্ড লাইব্রেরির সংজ্ঞাটি আমাদের স্কোপে নিয়ে আসিনি। আমরা চ্যাপ্টার ৭-এ স্কোপে type নিয়ে আসার বিষয়ে আরও আলোচনা করব।</p>
 <p>আসুন লিস্টিং ৬-২-এ enum-এর আরেকটি উদাহরণ দেখি: এটিতে এর variant-গুলোর মধ্যে বিভিন্ন ধরণের type এম্বেড করা আছে।</p>
+<Listing number="6-2" caption="একটি `Message` enum যার প্রতিটি variant বিভিন্ন পরিমাণ এবং ধরনের মান সংরক্ষণ করে">
 <pre><pre class="playground"><code class="language-rust edition2024">enum Message {
     Quit,
     Move { x: i32, y: i32 },
@@ -299,7 +301,7 @@ enum IpAddr {
 }
 <span class="boring">
 </span><span class="boring">fn main() {}</span></code></pre></pre>
-<p>Listing 6-2: একটি <code>Message</code> enum যার প্রতিটি variant বিভিন্ন পরিমাণ এবং ধরনের মান সংরক্ষণ করে</p>
+</Listing>
 <p>এই enum-টির চারটি variant আছে এবং তাদের সাথে বিভিন্ন ধরনের ডেটা যুক্ত আছে:</p>
 <ul>
 <li><code>Quit</code>: এর সাথে কোনো ডেটা যুক্ত নেই।</li>
@@ -342,7 +344,7 @@ struct ChangeColorMessage(i32, i32, i32); // tuple struct
 <p>এই বিভাগটি <code>Option</code>-এর একটি কেস স্টাডি নিয়ে আলোচনা করে, যা স্ট্যান্ডার্ড লাইব্রেরি দ্বারা ডিফাইন করা আরেকটি enum। <code>Option</code> type-টি একটি খুব সাধারণ পরিস্থিতি এনকোড করে যেখানে একটি মান কিছু একটা হতে পারে বা কিছুই নাও হতে পারে।</p>
 <p>উদাহরণস্বরূপ, যদি আপনি একটি খালি নয় এমন লিস্ট থেকে প্রথম আইটেমটি অনুরোধ করেন, আপনি একটি মান পাবেন। যদি আপনি একটি খালি লিস্ট থেকে প্রথম আইটেমটি অনুরোধ করেন, আপনি কিছুই পাবেন না। এই ধারণাটিকে type সিস্টেমের ভাষায় প্রকাশ করার অর্থ হলো compiler পরীক্ষা করতে পারে যে আপনি সমস্ত প্রয়োজনীয় কেসগুলি হ্যান্ডেল করেছেন কিনা; এই কার্যকারিতাটি অন্যান্য প্রোগ্রামিং ভাষায় অত্যন্ত সাধারণ বাগ প্রতিরোধ করতে পারে।</p>
 <p>প্রোগ্রামিং ভাষার ডিজাইন প্রায়শই কোন বৈশিষ্ট্যগুলি অন্তর্ভুক্ত করা হয় তার উপর ভিত্তি করে ভাবা হয়, তবে কোন বৈশিষ্ট্যগুলি বাদ দেওয়া হয় তাও গুরুত্বপূর্ণ। Rust-এ <code>null</code> বৈশিষ্ট্যটি নেই যা অনেক অন্যান্য ভাষায় রয়েছে। <em>Null</em> হলো এমন একটি মান যার অর্থ সেখানে কোনো মান নেই। যেসব ভাষায় <code>null</code> আছে, সেখানে ভেরিয়েবল সবসময় দুটি অবস্থার একটিতে থাকতে পারে: <code>null</code> অথবা <code>not-null</code>।</p>
-<p>তার ২০০৯ সালের উপস্থাপনা “Null References: The Billion Dollar Mistake”-এ, <code>null</code>-এর উদ্ভাবক টনি হোর একথা বলেছিলেন:</p>
+<p>তার ২০০৯ সালের উপস্থাপনা "Null References: The Billion Dollar Mistake"-এ, <code>null</code>-এর উদ্ভাবক টনি হোর একথা বলেছিলেন:</p>
 <blockquote>
 <p>আমি এটাকে আমার বিলিয়ন-ডলারের ভুল বলি। সেই সময়ে, আমি একটি অবজেক্ট-ওরিয়েন্টেড ভাষার জন্য রেফারেন্সের প্রথম ব্যাপক টাইপ সিস্টেম ডিজাইন করছিলাম। আমার লক্ষ্য ছিল নিশ্চিত করা যে রেফারেন্সের সমস্ত ব্যবহার একেবারে নিরাপদ হবে, এবং compiler দ্বারা স্বয়ংক্রিয়ভাবে পরীক্ষা করা হবে। কিন্তু আমি একটি null রেফারেন্স রাখার লোভ সামলাতে পারিনি, কারণ এটি বাস্তবায়ন করা খুব সহজ ছিল। এটি অগণিত ভুল, দুর্বলতা এবং সিস্টেম ক্র্যাশের কারণ হয়েছে, যা সম্ভবত গত চল্লিশ বছরে এক বিলিয়ন ডলারের কষ্ট ও ক্ষতির কারণ হয়েছে।</p>
 </blockquote>

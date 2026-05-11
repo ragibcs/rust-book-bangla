@@ -24,9 +24,9 @@
         <link rel="stylesheet" href="fonts/fonts.css">
 
         <!-- Highlight.js Stylesheets -->
-        <link rel="stylesheet" id="highlight-css" href="highlight.css">
-        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
-        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
         <link rel="stylesheet" href="ferris.css">
@@ -35,34 +35,21 @@
         <link rel="stylesheet" href="theme/listing.css">
 
 
-        <!-- Provide site root and default themes to javascript -->
+        <!-- Provide site root to javascript -->
         <script>
-            const path_to_root = "";
-            const default_light_theme = "light";
-            const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex.js";
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc.js"></script>
     </head>
     <body>
-    <div id="mdbook-help-container">
-        <div id="mdbook-help-popup">
-            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
-            <div>
-                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
-                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
-                <p>Press <kbd>?</kbd> to show this help</p>
-                <p>Press <kbd>Esc</kbd> to hide this help</p>
-            </div>
-        </div>
-    </div>
     <div id="body-container">
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
         <script>
             try {
-                let theme = localStorage.getItem('mdbook-theme');
-                let sidebar = localStorage.getItem('mdbook-sidebar');
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
 
                 if (theme.startsWith('"') && theme.endsWith('"')) {
                     localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
@@ -76,8 +63,7 @@
 
         <!-- Set the theme before any content is loaded, prevents flash -->
         <script>
-            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
-            let theme;
+            var theme;
             try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
             if (theme === null || theme === undefined) { theme = default_theme; }
             const html = document.documentElement;
@@ -90,20 +76,17 @@
 
         <!-- Hide / unhide sidebar before it is displayed -->
         <script>
-            let sidebar = null;
-            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
             if (document.body.clientWidth >= 1080) {
                 try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
                 sidebar = sidebar || 'visible';
             } else {
                 sidebar = 'hidden';
-                sidebar_toggle.checked = false;
             }
-            if (sidebar === 'visible') {
-                sidebar_toggle.checked = true;
-            } else {
-                html.classList.remove('sidebar-visible');
-            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
@@ -130,14 +113,13 @@
                             <i class="fa fa-paint-brush"></i>
                         </button>
                         <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
-                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
                         </ul>
-                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
                             <i class="fa fa-search"></i>
                         </button>
                     </div>
@@ -157,12 +139,7 @@
 
                 <div id="search-wrapper" class="hidden">
                     <form id="searchbar-outer" class="searchbar-outer">
-                        <div class="search-wrapper">
-                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
-                            <div class="spinner-wrapper">
-                                <i class="fa fa-spinner fa-spin"></i>
-                            </div>
-                        </div>
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
                     </form>
                     <div id="searchresults-outer" class="searchresults-outer hidden">
                         <div id="searchresults-header" class="searchresults-header"></div>
@@ -194,7 +171,7 @@
 <p>প্রোগ্রামিং ল্যাঙ্গুয়েজগুলো বিভিন্ন উপায়ে থ্রেড ইমপ্লিমেন্ট করে, এবং অনেক অপারেটিং সিস্টেম একটি API সরবরাহ করে যা প্রোগ্রামিং ল্যাঙ্গুয়েজ নতুন থ্রেড তৈরি করার জন্য কল করতে পারে। Rust স্ট্যান্ডার্ড লাইব্রেরি থ্রেড ইমপ্লিমেন্টেশনের জন্য একটি <em>1:1</em> মডেল ব্যবহার করে, যেখানে একটি প্রোগ্রাম প্রতিটি ল্যাঙ্গুয়েজ থ্রেডের জন্য একটি অপারেটিং সিস্টেম থ্রেড ব্যবহার করে। এমন কিছু ক্রেট আছে যা থ্রেডিংয়ের অন্যান্য মডেল ইমপ্লিমেন্ট করে যা 1:1 মডেলের থেকে ভিন্ন ট্রেড-অফ করে। (Rust-এর অ্যাসিঙ্ক সিস্টেম, যা আমরা পরবর্তী অধ্যায়ে দেখব, কনকারেন্সির জন্য আরেকটি পদ্ধতি প্রদান করে।)</p>
 <h3 id="spawn-দিযে-একটি-নতুন-থরেড-তৈরি-করা"><a class="header" href="#spawn-দিযে-একটি-নতুন-থরেড-তৈরি-করা"><code>spawn</code> দিয়ে একটি নতুন থ্রেড তৈরি করা</a></h3>
 <p>একটি নতুন থ্রেড তৈরি করতে, আমরা <code>thread::spawn</code> ফাংশনটি কল করি এবং এটিকে একটি ক্লোজার (closure) পাস করি (আমরা অধ্যায় ১৩-এ ক্লোজার নিয়ে আলোচনা করেছি) যেখানে আমরা নতুন থ্রেডে যে কোডটি চালাতে চাই তা থাকে। তালিকা ১৬-১ এর উদাহরণটি একটি প্রধান থ্রেড থেকে কিছু টেক্সট এবং একটি নতুন থ্রেড থেকে অন্য টেক্সট প্রিন্ট করে।</p>
-<Listing number="16-1" file-name="src/main.rs" caption="একটি নতুন থ্রেড তৈরি করা যা একটি জিনিস প্রিন্ট করবে যখন প্রধান থ্রেড অন্য কিছু প্রিন্ট করবে">
+<p>src/main.rs</p>
 <pre><pre class="playground"><code class="language-rust edition2024">use std::thread;
 use std::time::Duration;
 
@@ -211,7 +188,7 @@ fn main() {
         thread::sleep(Duration::from_millis(1));
     }
 }</code></pre></pre>
-</Listing>
+<p>Listing 16-1: একটি নতুন থ্রেড তৈরি করা যা একটি জিনিস প্রিন্ট করবে যখন প্রধান থ্রেড অন্য কিছু প্রিন্ট করবে</p>
 <p>লক্ষ্য করুন যে যখন একটি Rust প্রোগ্রামের প্রধান থ্রেড শেষ হয়ে যায়, তখন সমস্ত স্পন (spawned) করা থ্রেড বন্ধ হয়ে যায়, তারা তাদের কাজ শেষ করুক বা না করুক। এই প্রোগ্রামের আউটপুট প্রতিবার কিছুটা ভিন্ন হতে পারে, তবে এটি নিম্নলিখিতর মতো দেখাবে:</p>
 <!-- Not extracting output because changes to this output aren't significant;
 the changes are likely to be due to the threads running differently rather than
@@ -231,7 +208,7 @@ hi number 5 from the spawned thread!
 <h3 id="join-হযানডেল-বযবহার-করে-সমসত-থরেডের-শেষ-হওযার-জনয-অপেকষা-করা"><a class="header" href="#join-হযানডেল-বযবহার-করে-সমসত-থরেডের-শেষ-হওযার-জনয-অপেকষা-করা"><code>join</code> হ্যান্ডেল ব্যবহার করে সমস্ত থ্রেডের শেষ হওয়ার জন্য অপেক্ষা করা</a></h3>
 <p>তালিকা ১৬-১ এর কোডটি কেবল প্রধান থ্রেড শেষ হওয়ার কারণে বেশিরভাগ সময় স্পন করা থ্রেডটিকে অকালে থামিয়ে দেয় না, বরং থ্রেডগুলো কোন ক্রমে চলবে তার কোনো গ্যারান্টি না থাকায়, আমরা এটাও গ্যারান্টি দিতে পারি না যে স্পন করা থ্রেডটি überhaupt চলার সুযোগ পাবে!</p>
 <p>আমরা <code>thread::spawn</code> এর রিটার্ন ভ্যালু একটি ভ্যারিয়েবলে সংরক্ষণ করে স্পন করা থ্রেডটি না চলার বা অকালে শেষ হয়ে যাওয়ার সমস্যাটি সমাধান করতে পারি। <code>thread::spawn</code> এর রিটার্ন টাইপ হলো <code>JoinHandle&lt;T&gt;</code>। একটি <code>JoinHandle&lt;T&gt;</code> হলো একটি ওনড ভ্যালু যা, যখন আমরা এর উপর <code>join</code> মেথড কল করি, তখন তার থ্রেড শেষ হওয়ার জন্য অপেক্ষা করবে। তালিকা ১৬-২ দেখায় কীভাবে আমরা তালিকা ১৬-১ এ তৈরি করা থ্রেডের <code>JoinHandle&lt;T&gt;</code> ব্যবহার করতে পারি এবং <code>main</code> এক্সিট করার আগে স্পন করা থ্রেডটি শেষ হয়েছে তা নিশ্চিত করতে <code>join</code> কল করতে পারি।</p>
-<Listing number="16-2" file-name="src/main.rs" caption="`thread::spawn` থেকে একটি `JoinHandle<T>` সংরক্ষণ করা যাতে থ্রেডটি সম্পূর্ণভাবে চলে তা নিশ্চিত করা যায়">
+<p>src/main.rs</p>
 <pre><pre class="playground"><code class="language-rust edition2024">use std::thread;
 use std::time::Duration;
 
@@ -250,7 +227,7 @@ fn main() {
 
     handle.join().unwrap();
 }</code></pre></pre>
-</Listing>
+<p>Listing 16-2: <code>thread::spawn</code> থেকে একটি <code>JoinHandle&lt;T&gt;</code> সংরক্ষণ করা যাতে থ্রেডটি সম্পূর্ণভাবে চলে তা নিশ্চিত করা যায়</p>
 <p>হ্যান্ডেলের উপর <code>join</code> কল করা বর্তমানে চলমান থ্রেডটিকে ব্লক করে যতক্ষণ না হ্যান্ডেল দ্বারা প্রতিনিধিত্ব করা থ্রেডটি শেষ হয়। একটি থ্রেডকে <em>ব্লক</em> করার অর্থ হলো সেই থ্রেডটিকে কাজ করা বা এক্সিট করা থেকে বিরত রাখা। যেহেতু আমরা <code>join</code> এর কলটি প্রধান থ্রেডের <code>for</code> লুপের পরে রেখেছি, তালিকা ১৬-২ চালালে এই ধরনের আউটপুট তৈরি হওয়া উচিত:</p>
 <!-- Not extracting output because changes to this output aren't significant;
 the changes are likely to be due to the threads running differently rather than
@@ -271,7 +248,7 @@ hi number 9 from the spawned thread!
 </code></pre>
 <p>দুটি থ্রেড পর্যায়ক্রমে চলতে থাকে, কিন্তু প্রধান থ্রেডটি <code>handle.join()</code> কলের কারণে অপেক্ষা করে এবং স্পন করা থ্রেডটি শেষ না হওয়া পর্যন্ত শেষ হয় না।</p>
 <p>কিন্তু আসুন দেখি কী হয় যখন আমরা <code>handle.join()</code> কে <code>main</code> এর <code>for</code> লুপের আগে নিয়ে যাই, এইভাবে:</p>
-<Listing file-name="src/main.rs">
+<p>src/main.rs</p>
 <pre><pre class="playground"><code class="language-rust edition2024">use std::thread;
 use std::time::Duration;
 
@@ -290,7 +267,6 @@ fn main() {
         thread::sleep(Duration::from_millis(1));
     }
 }</code></pre></pre>
-</Listing>
 <p>প্রধান থ্রেডটি স্পন করা থ্রেডটি শেষ হওয়ার জন্য অপেক্ষা করবে এবং তারপর তার <code>for</code> লুপ চালাবে, তাই আউটপুট আর ইন্টারলিভড হবে না, যেমনটি এখানে দেখানো হয়েছে:</p>
 <!-- Not extracting output because changes to this output aren't significant;
 the changes are likely to be due to the threads running differently rather than
@@ -311,9 +287,9 @@ hi number 4 from the main thread!
 </code></pre>
 <p>ছোটখাটো বিবরণ, যেমন <code>join</code> কোথায় কল করা হয়েছে, তা আপনার থ্রেডগুলো একই সাথে চলে কিনা তা প্রভাবিত করতে পারে।</p>
 <h3 id="থরেডের-সাথে-move-কলোজার-বযবহার-করা"><a class="header" href="#থরেডের-সাথে-move-কলোজার-বযবহার-করা">থ্রেডের সাথে <code>move</code> ক্লোজার ব্যবহার করা</a></h3>
-<p>আমরা প্রায়ই <code>thread::spawn</code>-এ পাস করা ক্লোজারের সাথে <code>move</code> কীওয়ার্ড ব্যবহার করব কারণ ক্লোজারটি তখন পরিবেশ থেকে ব্যবহৃত ভ্যালুগুলোর ওনারশিপ নিয়ে নেবে, এইভাবে সেই ভ্যালুগুলোর ওনারশিপ এক থ্রেড থেকে অন্য থ্রেডে স্থানান্তর করবে। অধ্যায় ১৩ এর <a href="ch13-01-closures.html#capturing-references-or-moving-ownership">"Capturing References or Moving Ownership"</a><!-- ignore --> বিভাগে, আমরা ক্লোজারের প্রেক্ষাপটে <code>move</code> নিয়ে আলোচনা করেছি। এখন আমরা <code>move</code> এবং <code>thread::spawn</code>-এর মধ্যেকার মিথস্ক্রিয়ার উপর আরও বেশি মনোযোগ দেব।</p>
+<p>আমরা প্রায়ই <code>thread::spawn</code>-এ পাস করা ক্লোজারের সাথে <code>move</code> কীওয়ার্ড ব্যবহার করব কারণ ক্লোজারটি তখন পরিবেশ থেকে ব্যবহৃত ভ্যালুগুলোর ওনারশিপ নিয়ে নেবে, এইভাবে সেই ভ্যালুগুলোর ওনারশিপ এক থ্রেড থেকে অন্য থ্রেডে স্থানান্তর করবে। অধ্যায় ১৩ এর <a href="ch13-01-closures.html#capturing-references-or-moving-ownership">“Capturing References or Moving Ownership”</a><!-- ignore --> বিভাগে, আমরা ক্লোজারের প্রেক্ষাপটে <code>move</code> নিয়ে আলোচনা করেছি। এখন আমরা <code>move</code> এবং <code>thread::spawn</code>-এর মধ্যেকার মিথস্ক্রিয়ার উপর আরও বেশি মনোযোগ দেব।</p>
 <p>তালিকা ১৬-১ এ লক্ষ্য করুন যে আমরা <code>thread::spawn</code>-এ যে ক্লোজারটি পাস করি তা কোনো আর্গুমেন্ট নেয় না: আমরা প্রধান থ্রেড থেকে কোনো ডেটা স্পন করা থ্রেডের কোডে ব্যবহার করছি না। প্রধান থ্রেড থেকে ডেটা স্পন করা থ্রেডে ব্যবহার করার জন্য, স্পন করা থ্রেডের ক্লোজারটিকে প্রয়োজনীয় ভ্যালুগুলো ক্যাপচার করতে হবে। তালিকা ১৬-৩ প্রধান থ্রেডে একটি ভেক্টর তৈরি করে এবং এটি স্পন করা থ্রেডে ব্যবহার করার একটি প্রচেষ্টা দেখায়। যাইহোক, এটি এখনও কাজ করবে না, যেমনটি আপনি এক মুহূর্তের মধ্যে দেখতে পাবেন।</p>
-<Listing number="16-3" file-name="src/main.rs" caption="প্রধান থ্রেড দ্বারা তৈরি একটি ভেক্টর অন্য থ্রেডে ব্যবহার করার প্রচেষ্টা">
+<p>src/main.rs</p>
 <pre><code class="language-rust ignore does_not_compile">use std::thread;
 
 fn main() {
@@ -325,7 +301,7 @@ fn main() {
 
     handle.join().unwrap();
 }</code></pre>
-</Listing>
+<p>Listing 16-3: প্রধান থ্রেড দ্বারা তৈরি একটি ভেক্টর অন্য থ্রেডে ব্যবহার করার প্রচেষ্টা</p>
 <p>ক্লোজারটি <code>v</code> ব্যবহার করে, তাই এটি <code>v</code> কে ক্যাপচার করবে এবং এটিকে ক্লোজারের পরিবেশের অংশ করে তুলবে। যেহেতু <code>thread::spawn</code> এই ক্লোজারটিকে একটি নতুন থ্রেডে চালায়, তাই আমাদের সেই নতুন থ্রেডের ভিতরে <code>v</code> অ্যাক্সেস করতে সক্ষম হওয়া উচিত। কিন্তু যখন আমরা এই উদাহরণটি কম্পাইল করি, আমরা নিম্নলিখিত এররটি পাই:</p>
 <pre><code class="language-console">$ cargo run
    Compiling threads v0.1.0 (file:///projects/threads)
@@ -355,7 +331,7 @@ error: could not compile `threads` (bin "threads") due to 1 previous error
 </code></pre>
 <p>Rust <em>অনুমান</em> (infers) করে কীভাবে <code>v</code> কে ক্যাপচার করতে হবে, এবং যেহেতু <code>println!</code> শুধুমাত্র <code>v</code>-এর একটি রেফারেন্সের প্রয়োজন, ক্লোজারটি <code>v</code>-কে ধার করার চেষ্টা করে। যাইহোক, একটি সমস্যা আছে: Rust বলতে পারে না যে স্পন করা থ্রেডটি কতক্ষণ চলবে, তাই এটি জানে না যে <code>v</code>-এর রেফারেন্সটি সর্বদা বৈধ থাকবে কিনা।</p>
 <p>তালিকা ১৬-৪ এমন একটি পরিস্থিতি প্রদান করে যেখানে <code>v</code>-এর একটি রেফারেন্স অবৈধ হওয়ার সম্ভাবনা বেশি।</p>
-<Listing number="16-4" file-name="src/main.rs" caption="একটি থ্রেড যার ক্লোজারটি `v` এর একটি রেফারেন্স ক্যাপচার করার চেষ্টা করে, যেখানে প্রধান থ্রেড `v` কে ড্রপ করে দেয়">
+<p>src/main.rs</p>
 <pre><code class="language-rust ignore does_not_compile">use std::thread;
 
 fn main() {
@@ -369,7 +345,7 @@ fn main() {
 
     handle.join().unwrap();
 }</code></pre>
-</Listing>
+<p>Listing 16-4: একটি থ্রেড যার ক্লোজারটি <code>v</code> এর একটি রেফারেন্স ক্যাপচার করার চেষ্টা করে, যেখানে প্রধান থ্রেড <code>v</code> কে ড্রপ করে দেয়</p>
 <p>যদি Rust আমাদের এই কোডটি চালানোর অনুমতি দিত, তবে একটি সম্ভাবনা ছিল যে স্পন করা থ্রেডটি überhaupt না চালিয়েই অবিলম্বে ব্যাকগ্রাউন্ডে রাখা হবে। স্পন করা থ্রেডের ভিতরে <code>v</code>-এর একটি রেফারেন্স রয়েছে, কিন্তু প্রধান থ্রেডটি অবিলম্বে <code>v</code>-কে ড্রপ করে দেয়, <code>drop</code> ফাংশনটি ব্যবহার করে যা আমরা অধ্যায় ১৫-এ আলোচনা করেছি। তারপর, যখন স্পন করা থ্রেডটি এক্সিকিউট করা শুরু করে, <code>v</code> আর বৈধ থাকে না, তাই এটির একটি রেফারেন্সও অবৈধ। ওহ নো!</p>
 <p>তালিকা ১৬-৩ এর কম্পাইলার এররটি ঠিক করার জন্য, আমরা এরর মেসেজের পরামর্শ ব্যবহার করতে পারি:</p>
 <!-- manual-regeneration
@@ -381,7 +357,7 @@ after automatic regeneration, look at listings/ch16-fearless-concurrency/listing
   |                                ++++
 </code></pre>
 <p>ক্লোজারের আগে <code>move</code> কীওয়ার্ড যোগ করে, আমরা ক্লোজারটিকে তার ব্যবহৃত ভ্যালুগুলোর ওনারশিপ নিতে বাধ্য করি, Rust-কে অনুমান করতে দেওয়ার পরিবর্তে যে এটি ভ্যালুগুলো ধার করবে। তালিকা ১৬-৩ এর পরিবর্তন যা তালিকা ১৬-৫ এ দেখানো হয়েছে, তা কম্পাইল হবে এবং আমাদের উদ্দেশ্য অনুযায়ী চলবে।</p>
-<Listing number="16-5" file-name="src/main.rs" caption="`move` কীওয়ার্ড ব্যবহার করে একটি ক্লোজারকে তার ব্যবহৃত ভ্যালুগুলোর ওনারশিপ নিতে বাধ্য করা">
+<p>src/main.rs</p>
 <pre><pre class="playground"><code class="language-rust edition2024">use std::thread;
 
 fn main() {
@@ -393,7 +369,7 @@ fn main() {
 
     handle.join().unwrap();
 }</code></pre></pre>
-</Listing>
+<p>Listing 16-5: <code>move</code> কীওয়ার্ড ব্যবহার করে একটি ক্লোজারকে তার ব্যবহৃত ভ্যালুগুলোর ওনারশিপ নিতে বাধ্য করা</p>
 <p>আমরা হয়তো তালিকা ১৬-৪ এর কোডটি ঠিক করার জন্য একই জিনিস চেষ্টা করতে প্রলুব্ধ হতে পারি যেখানে প্রধান থ্রেড <code>drop</code> কল করেছিল একটি <code>move</code> ক্লোজার ব্যবহার করে। যাইহোক, এই সমাধানটি কাজ করবে না কারণ তালিকা ১৬-৪ যা করার চেষ্টা করছে তা একটি ভিন্ন কারণে নিষিদ্ধ। যদি আমরা ক্লোজারে <code>move</code> যোগ করি, আমরা <code>v</code>-কে ক্লোজারের পরিবেশে নিয়ে যাব, এবং আমরা আর প্রধান থ্রেডে এটির উপর <code>drop</code> কল করতে পারব না। আমরা পরিবর্তে এই কম্পাইলার এররটি পাব:</p>
 <pre><code class="language-console">$ cargo run
    Compiling threads v0.1.0 (file:///projects/threads)
@@ -464,7 +440,6 @@ error: could not compile `threads` (bin "threads") due to 1 previous error
 
         <!-- Custom JS scripts -->
         <script src="ferris.js"></script>
-
 
 
     </div>

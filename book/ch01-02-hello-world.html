@@ -24,9 +24,9 @@
         <link rel="stylesheet" href="fonts/fonts.css">
 
         <!-- Highlight.js Stylesheets -->
-        <link rel="stylesheet" id="highlight-css" href="highlight.css">
-        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
-        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
         <link rel="stylesheet" href="ferris.css">
@@ -35,34 +35,21 @@
         <link rel="stylesheet" href="theme/listing.css">
 
 
-        <!-- Provide site root and default themes to javascript -->
+        <!-- Provide site root to javascript -->
         <script>
-            const path_to_root = "";
-            const default_light_theme = "light";
-            const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex.js";
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc.js"></script>
     </head>
     <body>
-    <div id="mdbook-help-container">
-        <div id="mdbook-help-popup">
-            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
-            <div>
-                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
-                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
-                <p>Press <kbd>?</kbd> to show this help</p>
-                <p>Press <kbd>Esc</kbd> to hide this help</p>
-            </div>
-        </div>
-    </div>
     <div id="body-container">
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
         <script>
             try {
-                let theme = localStorage.getItem('mdbook-theme');
-                let sidebar = localStorage.getItem('mdbook-sidebar');
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
 
                 if (theme.startsWith('"') && theme.endsWith('"')) {
                     localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
@@ -76,8 +63,7 @@
 
         <!-- Set the theme before any content is loaded, prevents flash -->
         <script>
-            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
-            let theme;
+            var theme;
             try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
             if (theme === null || theme === undefined) { theme = default_theme; }
             const html = document.documentElement;
@@ -90,20 +76,17 @@
 
         <!-- Hide / unhide sidebar before it is displayed -->
         <script>
-            let sidebar = null;
-            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
             if (document.body.clientWidth >= 1080) {
                 try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
                 sidebar = sidebar || 'visible';
             } else {
                 sidebar = 'hidden';
-                sidebar_toggle.checked = false;
             }
-            if (sidebar === 'visible') {
-                sidebar_toggle.checked = true;
-            } else {
-                html.classList.remove('sidebar-visible');
-            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
@@ -130,14 +113,13 @@
                             <i class="fa fa-paint-brush"></i>
                         </button>
                         <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
-                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
                         </ul>
-                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
                             <i class="fa fa-search"></i>
                         </button>
                     </div>
@@ -157,12 +139,7 @@
 
                 <div id="search-wrapper" class="hidden">
                     <form id="searchbar-outer" class="searchbar-outer">
-                        <div class="search-wrapper">
-                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
-                            <div class="spinner-wrapper">
-                                <i class="fa fa-spinner fa-spin"></i>
-                            </div>
-                        </div>
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
                     </form>
                     <div id="searchresults-outer" class="searchresults-outer hidden">
                         <div id="searchresults-header" class="searchresults-header"></div>
@@ -189,7 +166,7 @@
 </blockquote>
 <h3 id="একটি-পরজেকট-ডিরেকটরি-তৈরি-করা"><a class="header" href="#একটি-পরজেকট-ডিরেকটরি-তৈরি-করা">একটি প্রজেক্ট ডিরেক্টরি তৈরি করা</a></h3>
 <p>আপনি আপনার রাস্ট কোড সংরক্ষণ করার জন্য একটি ডিরেক্টরি তৈরি করে শুরু করবেন। আপনার কোড কোথায় থাকবে তা রাস্টের কাছে গুরুত্বপূর্ণ নয়, তবে এই বইয়ের অনুশীলন এবং প্রজেক্টগুলোর জন্য, আমরা আপনার হোম ডিরেক্টরিতে একটি <em>projects</em> ডিরেক্টরি তৈরি করার এবং আপনার সমস্ত প্রজেক্ট সেখানে রাখার পরামর্শ দিচ্ছি।</p>
-<p>একটি টার্মিনাল খুলুন এবং একটি <em>projects</em> ডিরেক্টরি এবং তার মধ্যে "Hello, world!" প্রজেক্টের জন্য একটি ডিরেক্টরি তৈরি করতে নিম্নলিখিত কমান্ডগুলো প্রবেশ করান।</p>
+<p>একটি টার্মিনাল খুলুন এবং একটি <em>projects</em> ডিরেক্টরি এবং তার মধ্যে “Hello, world!” প্রজেক্টের জন্য একটি ডিরেক্টরি তৈরি করতে নিম্নলিখিত কমান্ডগুলো প্রবেশ করান।</p>
 <p>Linux, macOS এবং Windows-এর PowerShell-এর জন্য, এটি প্রবেশ করান:</p>
 <pre><code class="language-console">$ mkdir ~/projects
 $ cd ~/projects
@@ -205,11 +182,11 @@ $ cd hello_world
 <h3 id="একটি-রাসট-পরোগরাম-লেখা-এবং-চালানো"><a class="header" href="#একটি-রাসট-পরোগরাম-লেখা-এবং-চালানো">একটি রাস্ট প্রোগ্রাম লেখা এবং চালানো</a></h3>
 <p>এরপর, একটি নতুন সোর্স ফাইল তৈরি করুন এবং এর নাম দিন <em>main.rs</em>। রাস্ট ফাইলগুলো সর্বদা <em>.rs</em> এক্সটেনশন দিয়ে শেষ হয়। আপনি যদি আপনার ফাইলের নামে একাধিক শব্দ ব্যবহার করেন, তবে সেগুলোকে আলাদা করার জন্য আন্ডারস্কোর ব্যবহার করার নিয়ম। উদাহরণস্বরূপ, <em>helloworld.rs</em> এর পরিবর্তে <em>hello_world.rs</em> ব্যবহার করুন।</p>
 <p>এখন আপনি যে <em>main.rs</em> ফাইলটি তৈরি করেছেন সেটি খুলুন এবং লিস্টিং ১-১ এর কোডটি প্রবেশ করান।</p>
-<Listing number="1-1" file-name="main.rs" caption="`Hello, world!` প্রিন্ট করে এমন একটি প্রোগ্রাম">
+<p>main.rs</p>
 <pre><pre class="playground"><code class="language-rust edition2024">fn main() {
     println!("Hello, world!");
 }</code></pre></pre>
-</Listing>
+<p>Listing 1-1: <code>Hello, world!</code> প্রিন্ট করে এমন একটি প্রোগ্রাম</p>
 <p>ফাইলটি সংরক্ষণ করুন এবং <em>~/projects/hello_world</em> ডিরেক্টরিতে আপনার টার্মিনাল উইন্ডোতে ফিরে যান। Linux বা macOS-এ, ফাইলটি কম্পাইল এবং রান করতে নিম্নলিখিত কমান্ডগুলো প্রবেশ করান:</p>
 <pre><code class="language-console">$ rustc main.rs
 $ ./main
@@ -220,10 +197,10 @@ Hello, world!
 &gt; .\main
 Hello, world!
 </code></pre>
-<p>আপনার অপারেটিং সিস্টেম নির্বিশেষে, <code>Hello, world!</code> স্ট্রিংটি টার্মিনালে প্রিন্ট হওয়া উচিত। আপনি যদি এই আউটপুটটি না দেখেন, তাহলে সাহায্যের জন্য ইনস্টলেশন বিভাগের <a href="ch01-01-installation.html#troubleshooting">"Troubleshooting"</a><!-- ignore --> অংশে ফিরে যান।</p>
+<p>আপনার অপারেটিং সিস্টেম নির্বিশেষে, <code>Hello, world!</code> স্ট্রিংটি টার্মিনালে প্রিন্ট হওয়া উচিত। আপনি যদি এই আউটপুটটি না দেখেন, তাহলে সাহায্যের জন্য ইনস্টলেশন বিভাগের <a href="ch01-01-installation.html#troubleshooting">“Troubleshooting”</a><!-- ignore --> অংশে ফিরে যান।</p>
 <p>যদি <code>Hello, world!</code> প্রিন্ট হয়ে থাকে, অভিনন্দন! আপনি আনুষ্ঠানিকভাবে একটি রাস্ট প্রোগ্রাম লিখেছেন। এটি আপনাকে একজন রাস্ট প্রোগ্রামার করে তুলেছে—স্বাগতম!</p>
 <h3 id="একটি-রাসট-পরোগরামের-অযানাটমি"><a class="header" href="#একটি-রাসট-পরোগরামের-অযানাটমি">একটি রাস্ট প্রোগ্রামের অ্যানাটমি</a></h3>
-<p>চলুন এই "Hello, world!" প্রোগ্রামটি বিস্তারিতভাবে পর্যালোচনা করি। এখানে পাজলের প্রথম অংশ:</p>
+<p>চলুন এই “Hello, world!” প্রোগ্রামটি বিস্তারিতভাবে পর্যালোচনা করি। এখানে পাজলের প্রথম অংশ:</p>
 <pre><pre class="playground"><code class="language-rust edition2024">fn main() {
 
 }</code></pre></pre>
@@ -260,7 +237,7 @@ main.rs
 <p>এটি <em>.rs</em> এক্সটেনশন সহ সোর্স কোড ফাইল, এক্সিকিউটেবল ফাইল (Windows-এ <em>main.exe</em>, কিন্তু অন্য সব প্ল্যাটফর্মে <em>main</em>), এবং Windows ব্যবহার করার সময়, <em>.pdb</em> এক্সটেনশন সহ ডিবাগিং তথ্য সম্বলিত একটি ফাইল দেখায়। এখান থেকে, আপনি <em>main</em> বা <em>main.exe</em> ফাইলটি চালান, এইভাবে:</p>
 <pre><code class="language-console">$ ./main # or .\main on Windows
 </code></pre>
-<p>যদি আপনার <em>main.rs</em> আপনার "Hello, world!" প্রোগ্রাম হয়, এই লাইনটি আপনার টার্মিনালে <code>Hello, world!</code> প্রিন্ট করবে।</p>
+<p>যদি আপনার <em>main.rs</em> আপনার “Hello, world!” প্রোগ্রাম হয়, এই লাইনটি আপনার টার্মিনালে <code>Hello, world!</code> প্রিন্ট করবে।</p>
 <p>আপনি যদি রুবি, পাইথন বা জাভাস্ক্রিপ্টের মতো ডাইনামিক ল্যাঙ্গুয়েজের সাথে বেশি পরিচিত হন, তাহলে আপনি হয়তো একটি প্রোগ্রামকে আলাদা ধাপে কম্পাইল এবং রান করতে অভ্যস্ত নন। রাস্ট একটি <em>ahead-of-time compiled</em> ভাষা, যার মানে হল আপনি একটি প্রোগ্রাম কম্পাইল করে এক্সিকিউটেবলটি অন্য কাউকে দিতে পারেন, এবং তারা রাস্ট ইনস্টল না করেও এটি চালাতে পারবে। আপনি যদি কাউকে একটি <em>.rb</em>, <em>.py</em>, বা <em>.js</em> ফাইল দেন, তাদের যথাক্রমে রুবি, পাইথন বা জাভাস্ক্রিপ্ট ইমপ্লিমেন্টেশন ইনস্টল করা থাকতে হবে। কিন্তু সেই ভাষাগুলিতে, আপনার প্রোগ্রাম কম্পাইল এবং রান করার জন্য শুধুমাত্র একটি কমান্ড প্রয়োজন। ভাষার ডিজাইনে সবকিছুই একটি ট্রেড-অফ।</p>
 <p>সাধারণ প্রোগ্রামগুলির জন্য শুধু <code>rustc</code> দিয়ে কম্পাইল করাই ঠিক আছে, কিন্তু আপনার প্রজেক্ট বড় হওয়ার সাথে সাথে আপনি সমস্ত অপশন পরিচালনা করতে এবং আপনার কোড শেয়ার করা সহজ করতে চাইবেন। এরপর, আমরা আপনাকে কার্গো টুলের সাথে পরিচয় করিয়ে দেব, যা আপনাকে বাস্তব-বিশ্বের রাস্ট প্রোগ্রাম লিখতে সাহায্য করবে।</p>
 
@@ -311,7 +288,6 @@ main.rs
 
         <!-- Custom JS scripts -->
         <script src="ferris.js"></script>
-
 
 
     </div>

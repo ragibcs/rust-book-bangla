@@ -24,9 +24,9 @@
         <link rel="stylesheet" href="fonts/fonts.css">
 
         <!-- Highlight.js Stylesheets -->
-        <link rel="stylesheet" id="highlight-css" href="highlight.css">
-        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
-        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
         <link rel="stylesheet" href="ferris.css">
@@ -35,34 +35,21 @@
         <link rel="stylesheet" href="theme/listing.css">
 
 
-        <!-- Provide site root and default themes to javascript -->
+        <!-- Provide site root to javascript -->
         <script>
-            const path_to_root = "";
-            const default_light_theme = "light";
-            const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex.js";
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc.js"></script>
     </head>
     <body>
-    <div id="mdbook-help-container">
-        <div id="mdbook-help-popup">
-            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
-            <div>
-                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
-                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
-                <p>Press <kbd>?</kbd> to show this help</p>
-                <p>Press <kbd>Esc</kbd> to hide this help</p>
-            </div>
-        </div>
-    </div>
     <div id="body-container">
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
         <script>
             try {
-                let theme = localStorage.getItem('mdbook-theme');
-                let sidebar = localStorage.getItem('mdbook-sidebar');
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
 
                 if (theme.startsWith('"') && theme.endsWith('"')) {
                     localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
@@ -76,8 +63,7 @@
 
         <!-- Set the theme before any content is loaded, prevents flash -->
         <script>
-            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
-            let theme;
+            var theme;
             try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
             if (theme === null || theme === undefined) { theme = default_theme; }
             const html = document.documentElement;
@@ -90,20 +76,17 @@
 
         <!-- Hide / unhide sidebar before it is displayed -->
         <script>
-            let sidebar = null;
-            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
             if (document.body.clientWidth >= 1080) {
                 try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
                 sidebar = sidebar || 'visible';
             } else {
                 sidebar = 'hidden';
-                sidebar_toggle.checked = false;
             }
-            if (sidebar === 'visible') {
-                sidebar_toggle.checked = true;
-            } else {
-                html.classList.remove('sidebar-visible');
-            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
@@ -130,14 +113,13 @@
                             <i class="fa fa-paint-brush"></i>
                         </button>
                         <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
-                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
                         </ul>
-                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
                             <i class="fa fa-search"></i>
                         </button>
                     </div>
@@ -157,12 +139,7 @@
 
                 <div id="search-wrapper" class="hidden">
                     <form id="searchbar-outer" class="searchbar-outer">
-                        <div class="search-wrapper">
-                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
-                            <div class="spinner-wrapper">
-                                <i class="fa fa-spinner fa-spin"></i>
-                            </div>
-                        </div>
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
                     </form>
                     <div id="searchresults-outer" class="searchresults-outer hidden">
                         <div id="searchresults-header" class="searchresults-header"></div>
@@ -306,12 +283,12 @@ pub trait Future {
 <p>তাত্ত্বিকভাবে, রাস্ট কম্পাইলার যখনই কোনো অবজেক্ট সরানো হয় তখন সেটির প্রতিটি রেফারেন্স আপডেট করার চেষ্টা করতে পারত, কিন্তু এটি অনেক পারফরম্যান্স ওভারহেড যোগ করতে পারত, বিশেষ করে যদি রেফারেন্সের পুরো একটি জাল আপডেট করার প্রয়োজন হয়। যদি আমরা পরিবর্তে নিশ্চিত করতে পারতাম যে প্রশ্নবিদ্ধ ডেটা স্ট্রাকচারটি <em>মেমরিতে নড়াচড়া করে না</em>, তাহলে আমাদের কোনো রেফারেন্স আপডেট করতে হতো না। রাস্টের borrow checker ঠিক এটাই প্রয়োজন করে: নিরাপদ কোডে, এটি আপনাকে এমন কোনো আইটেম সরাতে বাধা দেয় যার কাছে একটি সক্রিয় রেফারেন্স রয়েছে।</p>
 <p><code>Pin</code> এর উপর ভিত্তি করে আমাদের ঠিক সেই গ্যারান্টি দেয় যা আমাদের প্রয়োজন। যখন আমরা একটি মানকে <em>পিন</em> করি সেই মানের একটি পয়েন্টারকে <code>Pin</code>-এ র‍্যাপ করে, তখন এটি আর নড়াচড়া করতে পারে না। সুতরাং, যদি আপনার <code>Pin&lt;Box&lt;SomeType&gt;&gt;</code> থাকে, আপনি আসলে <code>SomeType</code> মানটি পিন করেন, <em><code>Box</code> পয়েন্টারটি নয়</em>। চিত্র ১৭-৬ এই প্রক্রিয়াটি চিত্রিত করে।</p>
 <figure>
-<p>&lt;img alt="পাশাপাশি রাখা তিনটি বক্স। প্রথমটির লেবেল "Pin", দ্বিতীয়টির "b1", এবং তৃতীয়টির "pinned"। "pinned"-এর মধ্যে একটি টেবিল রয়েছে যার লেবেল "fut", একটি একক কলাম সহ; এটি ডেটা স্ট্রাকচারের প্রতিটি অংশের জন্য সেল সহ একটি ফিউচার প্রতিনিধিত্ব করে। এর প্রথম সেলে "0" মান রয়েছে, এর দ্বিতীয় সেল থেকে একটি তীর বেরিয়ে চতুর্থ এবং শেষ সেলে নির্দেশ করছে, যার মধ্যে "1" মান রয়েছে, এবং তৃতীয় সেলে ড্যাশড লাইন এবং একটি এলিপসিস রয়েছে যা নির্দেশ করে যে ডেটা স্ট্রাকচারের অন্যান্য অংশ থাকতে পারে। সব মিলিয়ে, "fut" টেবিলটি একটি ফিউচার প্রতিনিধিত্ব করে যা সেলফ-রেফারেনশিয়াল। "Pin" লেবেলযুক্ত বক্স থেকে একটি তীর বেরিয়ে, "b1" বক্সের মধ্য দিয়ে গিয়ে "pinned" বক্সের ভিতরে "fut" টেবিলে শেষ হয়।" src="img/trpl17-06.svg" class="center" /&gt;</p>
+<p>&lt;img alt=“পাশাপাশি রাখা তিনটি বক্স। প্রথমটির লেবেল “Pin”, দ্বিতীয়টির “b1”, এবং তৃতীয়টির “pinned”। “pinned”-এর মধ্যে একটি টেবিল রয়েছে যার লেবেল “fut”, একটি একক কলাম সহ; এটি ডেটা স্ট্রাকচারের প্রতিটি অংশের জন্য সেল সহ একটি ফিউচার প্রতিনিধিত্ব করে। এর প্রথম সেলে “0” মান রয়েছে, এর দ্বিতীয় সেল থেকে একটি তীর বেরিয়ে চতুর্থ এবং শেষ সেলে নির্দেশ করছে, যার মধ্যে “1” মান রয়েছে, এবং তৃতীয় সেলে ড্যাশড লাইন এবং একটি এলিপসিস রয়েছে যা নির্দেশ করে যে ডেটা স্ট্রাকচারের অন্যান্য অংশ থাকতে পারে। সব মিলিয়ে, “fut” টেবিলটি একটি ফিউচার প্রতিনিধিত্ব করে যা সেলফ-রেফারেনশিয়াল। “Pin” লেবেলযুক্ত বক্স থেকে একটি তীর বেরিয়ে, “b1” বক্সের মধ্য দিয়ে গিয়ে “pinned” বক্সের ভিতরে “fut” টেবিলে শেষ হয়।“ src=“img/trpl17-06.svg” class=“center” /&gt;</p>
 <figcaption>চিত্র ১৭-৬: একটি সেলফ-রেফারেনশিয়াল ফিউচার টাইপের দিকে নির্দেশকারী একটি `Box`-কে পিন করা।</figcaption>
 </figure>
 <p>আসলে, <code>Box</code> পয়েন্টারটি এখনও অবাধে নড়াচড়া করতে পারে। মনে রাখবেন: আমরা নিশ্চিত করতে চাই যে অবশেষে রেফারেন্স করা ডেটা জায়গায় থাকে। যদি একটি পয়েন্টার নড়াচড়া করে, <em>কিন্তু এটি যে ডেটার দিকে নির্দেশ করে তা একই জায়গায় থাকে</em>, যেমন চিত্র ১৭-৭-এ, কোনো সম্ভাব্য সমস্যা নেই। একটি স্বতন্ত্র অনুশীলন হিসাবে, টাইপগুলির ডকুমেন্টেশন এবং <code>std::pin</code> মডিউল দেখুন এবং একটি <code>Pin</code> র‍্যাপিং <code>Box</code>-এর সাথে এটি কীভাবে করবেন তা বের করার চেষ্টা করুন।) মূল বিষয় হলো সেলফ-রেফারেনশিয়াল টাইপটি নিজে নড়াচড়া করতে পারে না, কারণ এটি এখনও পিন করা আছে।</p>
 <figure>
-<p>&lt;img alt="তিনটি মোটামুটি কলামে রাখা চারটি বক্স, যা পূর্ববর্তী ডায়াগ্রামের মতোই তবে দ্বিতীয় কলামে একটি পরিবর্তন সহ। এখন দ্বিতীয় কলামে দুটি বক্স আছে, "b1" এবং "b2" লেবেলযুক্ত, "b1" ধূসর রঙের, এবং "Pin" থেকে তীরটি "b1"-এর পরিবর্তে "b2"-এর মধ্য দিয়ে যায়, যা নির্দেশ করে যে পয়েন্টারটি "b1" থেকে "b2"-তে সরে গেছে, কিন্তু "pinned"-এর ডেটা সরেনি।" src="img/trpl17-07.svg" class="center" /&gt;</p>
+<p>&lt;img alt=“তিনটি মোটামুটি কলামে রাখা চারটি বক্স, যা পূর্ববর্তী ডায়াগ্রামের মতোই তবে দ্বিতীয় কলামে একটি পরিবর্তন সহ। এখন দ্বিতীয় কলামে দুটি বক্স আছে, “b1” এবং “b2” লেবেলযুক্ত, “b1” ধূসর রঙের, এবং “Pin” থেকে তীরটি “b1”-এর পরিবর্তে “b2”-এর মধ্য দিয়ে যায়, যা নির্দেশ করে যে পয়েন্টারটি “b1” থেকে “b2”-তে সরে গেছে, কিন্তু “pinned”-এর ডেটা সরেনি।“ src=“img/trpl17-07.svg” class=“center” /&gt;</p>
 <figcaption>চিত্র ১৭-৭: একটি সেলফ-রেফারেনশিয়াল ফিউচার টাইপের দিকে নির্দেশকারী একটি `Box`-কে সরানো।</figcaption>
 </figure>
 <p>যাইহোক, বেশিরভাগ টাইপই চারপাশে সরানো পুরোপুরি নিরাপদ, এমনকি যদি সেগুলি একটি <code>Pin</code> র‍্যাপারের পিছনে থাকে। আমাদের কেবল তখনই পিনিং সম্পর্কে ভাবতে হবে যখন আইটেমগুলির অভ্যন্তরীণ রেফারেন্স থাকে। সংখ্যা এবং বুলিয়ানের মতো আদিম মানগুলি নিরাপদ কারণ তাদের স্পষ্টতই কোনো অভ্যন্তরীণ রেফারেন্স নেই। রাস্টে আপনি সাধারণত যে বেশিরভাগ টাইপের সাথে কাজ করেন সেগুলিও নেই। আপনি উদাহরণস্বরূপ, একটি <code>Vec</code> চারপাশে সরাতে পারেন, কোনো চিন্তা ছাড়াই। আমরা এখন পর্যন্ত যা দেখেছি তা দিয়ে, যদি আপনার একটি <code>Pin&lt;Vec&lt;String&gt;&gt;</code> থাকে, তবে আপনাকে <code>Pin</code> দ্বারা প্রদত্ত নিরাপদ কিন্তু সীমাবদ্ধ API-এর মাধ্যমে সবকিছু করতে হতো, যদিও একটি <code>Vec&lt;String&gt;</code> সর্বদা সরানো নিরাপদ যদি এর অন্য কোনো রেফারেন্স না থাকে। আমাদের কম্পাইলারকে বলার একটি উপায় প্রয়োজন যে এই ধরনের ক্ষেত্রে আইটেমগুলি চারপাশে সরানো ঠিক আছে—এবং এখানেই <code>Unpin</code> কাজে আসে।</p>
@@ -322,7 +299,7 @@ pub trait Future {
   that it is something distinct from a normal type.
 -->
 <p><code>Send</code> এবং <code>Sync</code>-এর মতোই, কম্পাইলার স্বয়ংক্রিয়ভাবে সমস্ত টাইপের জন্য <code>Unpin</code> ইমপ্লিমেন্ট করে যেখানে এটি প্রমাণ করতে পারে যে এটি নিরাপদ। একটি বিশেষ ক্ষেত্র, আবার <code>Send</code> এবং <code>Sync</code>-এর মতো, যেখানে একটি টাইপের জন্য <code>Unpin</code> ইমপ্লিমেন্ট করা <em>হয় না</em>। এর জন্য নোটেশন হলো <code>impl !Unpin for <em>SomeType</em></code>, যেখানে <code><em>SomeType</em></code> হলো এমন একটি টাইপের নাম যা সেই গ্যারান্টিগুলি বজায় রাখার <em>প্রয়োজন</em> করে যখন সেই টাইপের একটি পয়েন্টার একটি <code>Pin</code>-এ ব্যবহৃত হয়।</p>
-<p>অন্য কথায়, <code>Pin</code> এবং <code>Unpin</code>-এর মধ্যে সম্পর্ক সম্পর্কে দুটি জিনিস মনে রাখতে হবে। প্রথমত, <code>Unpin</code> হলো "স্বাভাবিক" ক্ষেত্র, এবং <code>!Unpin</code> হলো বিশেষ ক্ষেত্র। দ্বিতীয়ত, একটি টাইপ <code>Unpin</code> নাকি <code>!Unpin</code> ইমপ্লিমেন্ট করে তা <em>কেবলমাত্র</em> তখনই গুরুত্বপূর্ণ যখন আপনি সেই টাইপের একটি পিন করা পয়েন্টার ব্যবহার করছেন যেমন <code>Pin&lt;&amp;mut <em>SomeType</em>&gt;</code>।</p>
+<p>অন্য কথায়, <code>Pin</code> এবং <code>Unpin</code>-এর মধ্যে সম্পর্ক সম্পর্কে দুটি জিনিস মনে রাখতে হবে। প্রথমত, <code>Unpin</code> হলো “স্বাভাবিক” ক্ষেত্র, এবং <code>!Unpin</code> হলো বিশেষ ক্ষেত্র। দ্বিতীয়ত, একটি টাইপ <code>Unpin</code> নাকি <code>!Unpin</code> ইমপ্লিমেন্ট করে তা <em>কেবলমাত্র</em> তখনই গুরুত্বপূর্ণ যখন আপনি সেই টাইপের একটি পিন করা পয়েন্টার ব্যবহার করছেন যেমন <code>Pin&lt;&amp;mut <em>SomeType</em>&gt;</code>।</p>
 <p>এটি সুনির্দিষ্ট করতে, একটি <code>String</code> সম্পর্কে ভাবুন: এর একটি দৈর্ঘ্য এবং ইউনিকোড অক্ষর রয়েছে যা এটিকে তৈরি করে। আমরা একটি <code>String</code>-কে <code>Pin</code>-এ র‍্যাপ করতে পারি, যেমন চিত্র ১৭-৮-এ দেখা গেছে। যাইহোক, <code>String</code> স্বয়ংক্রিয়ভাবে <code>Unpin</code> ইমপ্লিমেন্ট করে, যেমন রাস্টের বেশিরভাগ অন্যান্য টাইপ করে।</p>
 <figure>
 <img alt="একটি String পিন করা; ডটেড লাইনটি নির্দেশ করে যে Stringটি Unpin ট্রেইট ইমপ্লিমেন্ট করে, এবং তাই পিন করা নয়।" src="img/trpl17-08.svg" class="center" />
@@ -442,7 +419,6 @@ in traits, since the lack thereof is the reason they do not yet have this.
 
         <!-- Custom JS scripts -->
         <script src="ferris.js"></script>
-
 
 
     </div>

@@ -24,9 +24,9 @@
         <link rel="stylesheet" href="fonts/fonts.css">
 
         <!-- Highlight.js Stylesheets -->
-        <link rel="stylesheet" id="highlight-css" href="highlight.css">
-        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
-        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
         <link rel="stylesheet" href="ferris.css">
@@ -35,34 +35,21 @@
         <link rel="stylesheet" href="theme/listing.css">
 
 
-        <!-- Provide site root and default themes to javascript -->
+        <!-- Provide site root to javascript -->
         <script>
-            const path_to_root = "";
-            const default_light_theme = "light";
-            const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex.js";
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc.js"></script>
     </head>
     <body>
-    <div id="mdbook-help-container">
-        <div id="mdbook-help-popup">
-            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
-            <div>
-                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
-                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
-                <p>Press <kbd>?</kbd> to show this help</p>
-                <p>Press <kbd>Esc</kbd> to hide this help</p>
-            </div>
-        </div>
-    </div>
     <div id="body-container">
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
         <script>
             try {
-                let theme = localStorage.getItem('mdbook-theme');
-                let sidebar = localStorage.getItem('mdbook-sidebar');
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
 
                 if (theme.startsWith('"') && theme.endsWith('"')) {
                     localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
@@ -76,8 +63,7 @@
 
         <!-- Set the theme before any content is loaded, prevents flash -->
         <script>
-            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
-            let theme;
+            var theme;
             try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
             if (theme === null || theme === undefined) { theme = default_theme; }
             const html = document.documentElement;
@@ -90,20 +76,17 @@
 
         <!-- Hide / unhide sidebar before it is displayed -->
         <script>
-            let sidebar = null;
-            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
             if (document.body.clientWidth >= 1080) {
                 try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
                 sidebar = sidebar || 'visible';
             } else {
                 sidebar = 'hidden';
-                sidebar_toggle.checked = false;
             }
-            if (sidebar === 'visible') {
-                sidebar_toggle.checked = true;
-            } else {
-                html.classList.remove('sidebar-visible');
-            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
@@ -130,14 +113,13 @@
                             <i class="fa fa-paint-brush"></i>
                         </button>
                         <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
-                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
                         </ul>
-                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
                             <i class="fa fa-search"></i>
                         </button>
                     </div>
@@ -157,12 +139,7 @@
 
                 <div id="search-wrapper" class="hidden">
                     <form id="searchbar-outer" class="searchbar-outer">
-                        <div class="search-wrapper">
-                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
-                            <div class="spinner-wrapper">
-                                <i class="fa fa-spinner fa-spin"></i>
-                            </div>
-                        </div>
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
                     </form>
                     <div id="searchresults-outer" class="searchresults-outer hidden">
                         <div id="searchresults-header" class="searchresults-header"></div>
@@ -200,7 +177,7 @@
 $ cd adder
 </code></pre>
 <p>আপনার <code>adder</code> লাইব্রেরির <em>src/lib.rs</em> ফাইলের কন্টেন্ট তালিকা ১১-১ এর মতো দেখতে হওয়া উচিত।</p>
-<Listing number="11-1" file-name="src/lib.rs" caption="`cargo new` দ্বারা স্বয়ংক্রিয়ভাবে তৈরি কোড">
+<p>src/lib.rs</p>
 <!-- manual-regeneration
 cd listings/ch11-writing-automated-tests
 rm -rf listing-11-01
@@ -225,12 +202,11 @@ mod tests {
         assert_eq!(result, 4);
     }
 }</code></pre>
-</Listing>
+<p>Listing 11-1: <code>cargo new</code> দ্বারা স্বয়ংক্রিয়ভাবে তৈরি কোড</p>
 <p>ফাইলটি একটি উদাহরণ <code>add</code> ফাংশন দিয়ে শুরু হয়, যাতে আমাদের টেস্ট করার জন্য কিছু একটা থাকে।</p>
 <p>আপাতত, আসুন আমরা শুধু <code>it_works</code> ফাংশনটির উপর মনোযোগ দিই। <code>#[test]</code> অ্যানোটেশনটি লক্ষ্য করুন: এই অ্যাট্রিবিউটটি নির্দেশ করে যে এটি একটি টেস্ট ফাংশন, তাই টেস্ট রানার জানে যে এই ফাংশনটিকে একটি টেস্ট হিসাবে গণ্য করতে হবে। আমাদের <code>tests</code> মডিউলে নন-টেস্ট ফাংশনও থাকতে পারে যা সাধারণ পরিস্থিতি সেট আপ করতে বা সাধারণ অপারেশন করতে সাহায্য করে, তাই আমাদের সবসময় নির্দিষ্ট করে দিতে হবে কোন ফাংশনগুলো টেস্ট।</p>
 <p>উদাহরণ ফাংশন বডি <code>assert_eq!</code> ম্যাক্রো ব্যবহার করে অ্যাসার্ট করে যে <code>result</code> (যেখানে ২ এবং ২ দিয়ে <code>add</code> কল করার ফলাফল রয়েছে) এর মান ৪ এর সমান। এই অ্যাসার্শনটি একটি সাধারণ টেস্টের ফরম্যাটের উদাহরণ হিসাবে কাজ করে। চলুন এটি রান করে দেখি যে এই টেস্টটি পাস করে কিনা।</p>
 <p><code>cargo test</code> কমান্ডটি আমাদের প্রজেক্টের সমস্ত টেস্ট চালায়, যা তালিকা ১১-২-এ দেখানো হয়েছে।</p>
-<Listing number="11-2" caption="স্বয়ংক্রিয়ভাবে জেনারেট হওয়া টেস্ট চালানোর আউটপুট">
 <pre><code class="language-console">$ cargo test
    Compiling adder v0.1.0 (file:///projects/adder)
     Finished `test` profile [unoptimized + debuginfo] target(s) in 0.57s
@@ -248,9 +224,9 @@ running 0 tests
 test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 
 </code></pre>
-</Listing>
+<p>Listing 11-2: স্বয়ংক্রিয়ভাবে জেনারেট হওয়া টেস্ট চালানোর আউটপুট</p>
 <p>Cargo টেস্টটি কম্পাইল এবং রান করেছে। আমরা <code>running 1 test</code> লাইনটি দেখতে পাচ্ছি। পরবর্তী লাইনটি জেনারেট হওয়া টেস্ট ফাংশনের নাম দেখায়, যা হলো <code>tests::it_works</code> এবং সেই টেস্টটি চালানোর ফলাফল হলো <code>ok</code>। সামগ্রিক সারাংশ <code>test result: ok.</code> এর মানে হলো সমস্ত টেস্ট পাস করেছে এবং <code>1 passed; 0 failed</code> অংশটি পাস বা ফেইল করা টেস্টের সংখ্যা দেখায়।</p>
-<p>একটি টেস্টকে ইগনোর (ignored) হিসেবে চিহ্নিত করা সম্ভব যাতে এটি একটি নির্দিষ্ট ক্ষেত্রে রান না হয়; আমরা এই অধ্যায়ের পরে <a href="ch11-02-running-tests.html#ignoring-some-tests-unless-specifically-requested">"Ignoring Some Tests Unless Specifically Requested"</a><!-- ignore --> বিভাগে এটি আলোচনা করব। যেহেতু আমরা এখানে তা করিনি, তাই সারাংশে <code>0 ignored</code> দেখাচ্ছে। আমরা <code>cargo test</code> কমান্ডে একটি আর্গুমেন্ট পাস করে শুধুমাত্র সেইসব টেস্ট চালাতে পারি যাদের নাম একটি স্ট্রিং এর সাথে মেলে; একে <em>ফিল্টারিং</em> বলা হয় এবং আমরা এটি <a href="ch11-02-running-tests.html#running-a-subset-of-tests-by-name">"Running a Subset of Tests by Name”</a><!-- ignore --> বিভাগে আলোচনা করব। এখানে আমরা কোনো টেস্ট ফিল্টার করিনি, তাই সারাংশের শেষে <code>0 filtered out</code> দেখাচ্ছে।</p>
+<p>একটি টেস্টকে ইগনোর (ignored) হিসেবে চিহ্নিত করা সম্ভব যাতে এটি একটি নির্দিষ্ট ক্ষেত্রে রান না হয়; আমরা এই অধ্যায়ের পরে <a href="ch11-02-running-tests.html#ignoring-some-tests-unless-specifically-requested">“Ignoring Some Tests Unless Specifically Requested”</a><!-- ignore --> বিভাগে এটি আলোচনা করব। যেহেতু আমরা এখানে তা করিনি, তাই সারাংশে <code>0 ignored</code> দেখাচ্ছে। আমরা <code>cargo test</code> কমান্ডে একটি আর্গুমেন্ট পাস করে শুধুমাত্র সেইসব টেস্ট চালাতে পারি যাদের নাম একটি স্ট্রিং এর সাথে মেলে; একে <em>ফিল্টারিং</em> বলা হয় এবং আমরা এটি <a href="ch11-02-running-tests.html#running-a-subset-of-tests-by-name">“Running a Subset of Tests by Name”</a><!-- ignore --> বিভাগে আলোচনা করব। এখানে আমরা কোনো টেস্ট ফিল্টার করিনি, তাই সারাংশের শেষে <code>0 filtered out</code> দেখাচ্ছে।</p>
 <p><code>0 measured</code> পরিসংখ্যানটি বেঞ্চমার্ক টেস্টের জন্য যা পারফরম্যান্স পরিমাপ করে। বেঞ্চমার্ক টেস্ট, এই লেখা পর্যন্ত, শুধুমাত্র নাইটলি রাস্ট-এ (nightly Rust) উপলব্ধ। বেঞ্চমার্ক টেস্ট সম্পর্কে আরও জানতে <a href="../unstable-book/library-features/test.html">the documentation about benchmark tests</a> দেখুন।</p>
 <p>টেস্ট আউটপুটের পরবর্তী অংশ যা <code>Doc-tests adder</code> দিয়ে শুরু হয়েছে, তা যেকোনো ডকুমেন্টেশন টেস্টের ফলাফলের জন্য। আমাদের এখনো কোনো ডকুমেন্টেশন টেস্ট নেই, কিন্তু Rust আমাদের API ডকুমেন্টেশনে থাকা যেকোনো কোড উদাহরণ কম্পাইল করতে পারে। এই ফিচারটি আপনার ডকুমেন্টেশন এবং আপনার কোডকে সিঙ্কে রাখতে সাহায্য করে! আমরা ১৪ অধ্যায়ের <a href="ch14-02-publishing-to-crates-io.html#documentation-comments-as-tests">“Documentation Comments as Tests”</a><!-- ignore --> বিভাগে কীভাবে ডকুমেন্টেশন টেস্ট লিখতে হয় তা আলোচনা করব। আপাতত, আমরা <code>Doc-tests</code> আউটপুটটি উপেক্ষা করব।</p>
 <p>আসুন আমাদের প্রয়োজন অনুযায়ী টেস্টটি কাস্টমাইজ করা শুরু করি। প্রথমে, <code>it_works</code> ফাংশনের নাম পরিবর্তন করে অন্য কোনো নাম দিন, যেমন <code>exploration</code>, এইভাবে:</p>
@@ -288,7 +264,7 @@ test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 
 </code></pre>
 <p>এখন আমরা আরেকটি টেস্ট যোগ করব, কিন্তু এবার আমরা এমন একটি টেস্ট তৈরি করব যা ফেইল করবে! টেস্ট তখন ফেইল করে যখন টেস্ট ফাংশনের কোনো কিছু প্যানিক (panic) করে। প্রতিটি টেস্ট একটি নতুন থ্রেডে (thread) চালানো হয়, এবং যখন প্রধান থ্রেড দেখে যে একটি টেস্ট থ্রেড মারা গেছে, তখন টেস্টটিকে ফেইল হিসেবে চিহ্নিত করা হয়। নবম অধ্যায়ে আমরা আলোচনা করেছি যে প্যানিক করার সবচেয়ে সহজ উপায় হলো <code>panic!</code> ম্যাক্রো কল করা। নতুন টেস্টটি <code>another</code> নামে একটি ফাংশন হিসাবে প্রবেশ করান, যাতে আপনার <em>src/lib.rs</em> ফাইলটি তালিকা ১১-৩ এর মতো দেখায়।</p>
-<Listing number="11-3" file-name="src/lib.rs" caption="একটি দ্বিতীয় টেস্ট যোগ করা যা `panic!` ম্যাক্রো কল করার কারণে ফেইল করবে">
+<p>src/lib.rs</p>
 <pre><code class="language-rust panics noplayground">pub fn add(left: u64, right: u64) -&gt; u64 {
     left + right
 }
@@ -308,9 +284,8 @@ mod tests {
         panic!("Make this test fail");
     }
 }</code></pre>
-</Listing>
+<p>Listing 11-3: একটি দ্বিতীয় টেস্ট যোগ করা যা <code>panic!</code> ম্যাক্রো কল করার কারণে ফেইল করবে</p>
 <p><code>cargo test</code> ব্যবহার করে আবার টেস্টগুলো চালান। আউটপুটটি তালিকা ১১-৪ এর মতো হওয়া উচিত, যা দেখায় যে আমাদের <code>exploration</code> টেস্ট পাস করেছে এবং <code>another</code> ফেইল করেছে।</p>
-<Listing number="11-4" caption="যখন একটি টেস্ট পাস করে এবং একটি ফেইল করে তখনকার টেস্ট ফলাফল">
 <pre><code class="language-console">$ cargo test
    Compiling adder v0.1.0 (file:///projects/adder)
     Finished `test` profile [unoptimized + debuginfo] target(s) in 0.72s
@@ -336,7 +311,7 @@ test result: FAILED. 1 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; 
 
 error: test failed, to rerun pass `--lib`
 </code></pre>
-</Listing>
+<p>Listing 11-4: যখন একটি টেস্ট পাস করে এবং একটি ফেইল করে তখনকার টেস্ট ফলাফল</p>
 <!-- manual-regeneration
 rg panicked listings/ch11-writing-automated-tests/listing-11-03/output.txt
 check the line number of the panic matches the line number in the following paragraph
@@ -347,7 +322,7 @@ check the line number of the panic matches the line number in the following para
 <h3 id="assert-মযাকরো-দিযে-ফলাফল-পরীকষা-করা"><a class="header" href="#assert-মযাকরো-দিযে-ফলাফল-পরীকষা-করা"><code>assert!</code> ম্যাক্রো দিয়ে ফলাফল পরীক্ষা করা</a></h3>
 <p><code>assert!</code> ম্যাক্রো, যা স্ট্যান্ডার্ড লাইব্রেরি দ্বারা সরবরাহ করা হয়, তখন খুব দরকারি যখন আপনি নিশ্চিত করতে চান যে টেস্টের কোনো একটি শর্ত <code>true</code> হিসেবে মূল্যায়ন হয়। আমরা <code>assert!</code> ম্যাক্রোকে একটি আর্গুমেন্ট দিই যা একটি বুলিয়ানে (Boolean) পরিণত হয়। যদি মান <code>true</code> হয়, কিছুই হয় না এবং টেস্ট পাস করে। যদি মান <code>false</code> হয়, <code>assert!</code> ম্যাক্রো <code>panic!</code> কল করে টেস্টটিকে ফেইল করায়। <code>assert!</code> ম্যাক্রো ব্যবহার করে আমরা পরীক্ষা করতে পারি যে আমাদের কোডটি আমাদের উদ্দেশ্য অনুযায়ী কাজ করছে কিনা।</p>
 <p>অধ্যায় ৫, তালিকা ৫-১৫-তে, আমরা একটি <code>Rectangle</code> struct এবং একটি <code>can_hold</code> মেথড ব্যবহার করেছিলাম, যা এখানে তালিকা ১১-৫-এ পুনরাবৃত্তি করা হলো। চলুন এই কোডটি <em>src/lib.rs</em> ফাইলে রাখি, তারপর <code>assert!</code> ম্যাক্রো ব্যবহার করে এর জন্য কিছু টেস্ট লিখি।</p>
-<Listing number="11-5" file-name="src/lib.rs" caption="অধ্যায় ৫ থেকে `Rectangle` struct এবং এর `can_hold` মেথড">
+<p>src/lib.rs</p>
 <pre><code class="language-rust noplayground">#[derive(Debug)]
 struct Rectangle {
     width: u32,
@@ -359,9 +334,9 @@ impl Rectangle {
         self.width &gt; other.width &amp;&amp; self.height &gt; other.height
     }
 }</code></pre>
-</Listing>
+<p>Listing 11-5: অধ্যায় ৫ থেকে <code>Rectangle</code> struct এবং এর <code>can_hold</code> মেথড</p>
 <p><code>can_hold</code> মেথডটি একটি বুলিয়ান রিটার্ন করে, যার মানে এটি <code>assert!</code> ম্যাক্রোর জন্য একটি উপযুক্ত ব্যবহারক্ষেত্র। তালিকা ১১-৬-এ, আমরা একটি টেস্ট লিখছি যা <code>can_hold</code> মেথডটি ব্যবহার করে। এতে আমরা ৮ প্রস্থ এবং ৭ উচ্চতার একটি <code>Rectangle</code> ইনস্ট্যান্স তৈরি করি এবং অ্যাসার্ট করি যে এটি ৫ প্রস্থ এবং ১ উচ্চতার আরেকটি <code>Rectangle</code> ইনস্ট্যান্সকে ধারণ করতে পারে।</p>
-<Listing number="11-6" file-name="src/lib.rs" caption="`can_hold`-এর জন্য একটি টেস্ট যা পরীক্ষা করে যে একটি বড় আয়তক্ষেত্র সত্যিই একটি ছোট আয়তক্ষেত্রকে ধারণ করতে পারে কিনা">
+<p>src/lib.rs</p>
 <pre><code class="language-rust noplayground"><span class="boring">#[derive(Debug)]
 </span><span class="boring">struct Rectangle {
 </span><span class="boring">    width: u32,
@@ -392,8 +367,8 @@ mod tests {
         assert!(larger.can_hold(&amp;smaller));
     }
 }</code></pre>
-</Listing>
-<p><code>tests</code> মডিউলের ভিতরে <code>use super::*;</code> লাইনটি লক্ষ্য করুন। <code>tests</code> মডিউলটি একটি সাধারণ মডিউল যা আমরা ৭ অধ্যায়ের <a href="ch07-03-paths-for-referring-to-an-item-in-the-module-tree.html">"Paths for Referring to an Item in the Module Tree"</a><!-- ignore --> বিভাগে আলোচনা করা সাধারণ ভিজিবিলিটি নিয়ম অনুসরণ করে। যেহেতু <code>tests</code> মডিউলটি একটি অভ্যন্তরীণ মডিউল, তাই আমাদের বাইরের মডিউলের কোডটি ভেতরের মডিউলের স্কোপে আনতে হবে। আমরা এখানে একটি গ্লব (glob) ব্যবহার করি, তাই বাইরের মডিউলে আমরা যা কিছু ডিফাইন করি তা এই <code>tests</code> মডিউলের জন্য উপলব্ধ থাকে।</p>
+<p>Listing 11-6: <code>can_hold</code>-এর জন্য একটি টেস্ট যা পরীক্ষা করে যে একটি বড় আয়তক্ষেত্র সত্যিই একটি ছোট আয়তক্ষেত্রকে ধারণ করতে পারে কিনা</p>
+<p><code>tests</code> মডিউলের ভিতরে <code>use super::*;</code> লাইনটি লক্ষ্য করুন। <code>tests</code> মডিউলটি একটি সাধারণ মডিউল যা আমরা ৭ অধ্যায়ের <a href="ch07-03-paths-for-referring-to-an-item-in-the-module-tree.html">“Paths for Referring to an Item in the Module Tree”</a><!-- ignore --> বিভাগে আলোচনা করা সাধারণ ভিজিবিলিটি নিয়ম অনুসরণ করে। যেহেতু <code>tests</code> মডিউলটি একটি অভ্যন্তরীণ মডিউল, তাই আমাদের বাইরের মডিউলের কোডটি ভেতরের মডিউলের স্কোপে আনতে হবে। আমরা এখানে একটি গ্লব (glob) ব্যবহার করি, তাই বাইরের মডিউলে আমরা যা কিছু ডিফাইন করি তা এই <code>tests</code> মডিউলের জন্য উপলব্ধ থাকে।</p>
 <p>আমরা আমাদের টেস্টের নাম দিয়েছি <code>larger_can_hold_smaller</code> এবং আমাদের প্রয়োজনীয় দুটি <code>Rectangle</code> ইনস্ট্যান্স তৈরি করেছি। তারপর আমরা <code>assert!</code> ম্যাক্রো কল করে তাতে <code>larger.can_hold(&amp;smaller)</code> এর ফলাফল পাস করেছি। এই এক্সপ্রেশনটির <code>true</code> রিটার্ন করার কথা, তাই আমাদের টেস্ট পাস করা উচিত। চলুন দেখি!</p>
 <pre><code class="language-console">$ cargo test
    Compiling rectangle v0.1.0 (file:///projects/rectangle)
@@ -548,20 +523,14 @@ failures:
 
 test result: FAILED. 1 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 
-error: test failed, to rerun pass `--lib````
-
-আমাদের টেস্ট বাগটি ধরে ফেলেছে! যেহেতু `larger.width` হলো `8` এবং `smaller.width` হলো `5`, `can_hold`-এ প্রস্থের তুলনা এখন `false` রিটার্ন করছে: ৮, ৫-এর থেকে ছোট নয়।
-
-### `assert_eq!` এবং `assert_ne!` ম্যাক্রো দিয়ে সমতা পরীক্ষা করা
-
-ফাংশনালিটি যাচাই করার একটি সাধারণ উপায় হলো, টেস্ট করা কোডের ফলাফল এবং আপনার প্রত্যাশিত মানের মধ্যে সমতা পরীক্ষা করা। আপনি `assert!` ম্যাক্রো এবং `==` অপারেটর ব্যবহার করে এটি করতে পারেন। যাইহোক, এটি এত সাধারণ একটি পরীক্ষা যে স্ট্যান্ডার্ড লাইব্রেরি এই কাজটি আরও সুবিধাজনকভাবে করার জন্য `assert_eq!` এবং `assert_ne!`—নামে একজোড়া ম্যাক্রো সরবরাহ করে। এই ম্যাক্রোগুলো দুটি আর্গুমেন্টকে যথাক্রমে সমতা বা অসমতার জন্য তুলনা করে। যদি অ্যাসার্শন ফেইল করে, তবে তারা দুটি মানই প্রিন্ট করবে, যা টেস্টটি _কেন_ ফেইল করেছে তা দেখতে সহজ করে তোলে; বিপরীতভাবে, `assert!` ম্যাক্রো শুধুমাত্র নির্দেশ করে যে এটি `==` এক্সপ্রেশনের জন্য একটি `false` মান পেয়েছে, কিন্তু যে মানগুলোর কারণে `false` হয়েছে তা প্রিন্ট করে না।
-
-তালিকা ১১-৭-এ, আমরা `add_two` নামে একটি ফাংশন লিখছি যা এর প্যারামিটারের সাথে `2` যোগ করে, তারপর আমরা `assert_eq!` ম্যাক্রো ব্যবহার করে এই ফাংশনটি টেস্ট করি।
-
-&lt;Listing number="11-7" file-name="src/lib.rs" caption="`assert_eq!` ম্যাক্রো ব্যবহার করে `add_two` ফাংশন টেস্ট করা"&gt;
-
-```rust,noplayground
-pub fn add_two(a: u64) -&gt; u64 {
+error: test failed, to rerun pass `--lib`
+</code></pre>
+<p>আমাদের টেস্ট বাগটি ধরে ফেলেছে! যেহেতু <code>larger.width</code> হলো <code>8</code> এবং <code>smaller.width</code> হলো <code>5</code>, <code>can_hold</code>-এ প্রস্থের তুলনা এখন <code>false</code> রিটার্ন করছে: ৮, ৫-এর থেকে ছোট নয়।</p>
+<h3 id="assert_eq-এবং-assert_ne-মযাকরো-দিয়ে-সমতা-পরীকষা-করা"><a class="header" href="#assert_eq-এবং-assert_ne-মযাকরো-দিয়ে-সমতা-পরীকষা-করা"><code>assert_eq!</code> এবং <code>assert_ne!</code> ম্যাক্রো দিয়ে সমতা পরীক্ষা করা</a></h3>
+<p>ফাংশনালিটি যাচাই করার একটি সাধারণ উপায় হলো, টেস্ট করা কোডের ফলাফল এবং আপনার প্রত্যাশিত মানের মধ্যে সমতা পরীক্ষা করা। আপনি <code>assert!</code> ম্যাক্রো এবং <code>==</code> অপারেটর ব্যবহার করে এটি করতে পারেন। যাইহোক, এটি এত সাধারণ একটি পরীক্ষা যে স্ট্যান্ডার্ড লাইব্রেরি এই কাজটি আরও সুবিধাজনকভাবে করার জন্য <code>assert_eq!</code> এবং <code>assert_ne!</code>—নামে একজোড়া ম্যাক্রো সরবরাহ করে। এই ম্যাক্রোগুলো দুটি আর্গুমেন্টকে যথাক্রমে সমতা বা অসমতার জন্য তুলনা করে। যদি অ্যাসার্শন ফেইল করে, তবে তারা দুটি মানই প্রিন্ট করবে, যা টেস্টটি <em>কেন</em> ফেইল করেছে তা দেখতে সহজ করে তোলে; বিপরীতভাবে, <code>assert!</code> ম্যাক্রো শুধুমাত্র নির্দেশ করে যে এটি <code>==</code> এক্সপ্রেশনের জন্য একটি <code>false</code> মান পেয়েছে, কিন্তু যে মানগুলোর কারণে <code>false</code> হয়েছে তা প্রিন্ট করে না।</p>
+<p>তালিকা ১১-৭-এ, আমরা <code>add_two</code> নামে একটি ফাংশন লিখছি যা এর প্যারামিটারের সাথে <code>2</code> যোগ করে, তারপর আমরা <code>assert_eq!</code> ম্যাক্রো ব্যবহার করে এই ফাংশনটি টেস্ট করি।</p>
+<p>src/lib.rs</p>
+<pre><code class="language-rust noplayground">pub fn add_two(a: u64) -&gt; u64 {
     a + 2
 }
 
@@ -574,9 +543,8 @@ mod tests {
         let result = add_two(2);
         assert_eq!(result, 4);
     }
-}
-</code></pre>
-</Listing>
+}</code></pre>
+<p>Listing 11-7: <code>assert_eq!</code> ম্যাক্রো ব্যবহার করে <code>add_two</code> ফাংশন টেস্ট করা</p>
 <p>চলুন পরীক্ষা করি এটি পাস করে কিনা!</p>
 <pre><code class="language-console">$ cargo test
    Compiling adder v0.1.0 (file:///projects/adder)
@@ -749,7 +717,7 @@ error: test failed, to rerun pass `--lib`
 <p>রিটার্ন ভ্যালু পরীক্ষা করার পাশাপাশি, আমাদের কোড প্রত্যাশা অনুযায়ী ত্রুটির শর্তগুলো পরিচালনা করছে কিনা তা পরীক্ষা করাও গুরুত্বপূর্ণ। উদাহরণস্বরূপ, <code>Guess</code> টাইপটি বিবেচনা করুন যা আমরা অধ্যায় ৯, তালিকা ৯-১৩-এ তৈরি করেছি। <code>Guess</code> ব্যবহারকারী অন্যান্য কোড এই গ্যারান্টির উপর নির্ভর করে যে <code>Guess</code> ইনস্ট্যান্সগুলিতে শুধুমাত্র ১ থেকে ১০০ এর মধ্যে মান থাকবে। আমরা এমন একটি টেস্ট লিখতে পারি যা নিশ্চিত করে যে সেই সীমার বাইরের কোনো মান দিয়ে একটি <code>Guess</code> ইনস্ট্যান্স তৈরি করার চেষ্টা করলে তা প্যানিক করে।</p>
 <p>আমরা আমাদের টেস্ট ফাংশনে <code>should_panic</code> অ্যাট্রিবিউট যোগ করে এটি করি। যদি ফাংশনের ভিতরের কোড প্যানিক করে তবে টেস্টটি পাস করে; যদি ফাংশনের ভিতরের কোড প্যানিক না করে তবে টেস্টটি ফেইল করে।</p>
 <p>তালিকা ১১-৮ একটি টেস্ট দেখায় যা পরীক্ষা করে যে <code>Guess::new</code> এর ত্রুটির শর্তগুলো আমাদের প্রত্যাশা অনুযায়ী ঘটে কিনা।</p>
-<Listing number="11-8" file-name="src/lib.rs" caption="একটি শর্ত `panic!` ঘটাবে কিনা তা পরীক্ষা করা">
+<p>src/lib.rs</p>
 <pre><code class="language-rust noplayground">pub struct Guess {
     value: i32,
 }
@@ -774,7 +742,7 @@ mod tests {
         Guess::new(200);
     }
 }</code></pre>
-</Listing>
+<p>Listing 11-8: একটি শর্ত <code>panic!</code> ঘটাবে কিনা তা পরীক্ষা করা</p>
 <p>আমরা <code>#[should_panic]</code> অ্যাট্রিবিউটটি <code>#[test]</code> অ্যাট্রিবিউটের পরে এবং যে টেস্ট ফাংশনে এটি প্রযোজ্য তার আগে স্থাপন করি। আসুন দেখি এই টেস্টটি পাস করলে ফলাফল কেমন হয়:</p>
 <pre><code class="language-console">$ cargo test
    Compiling guessing_game v0.1.0 (file:///projects/guessing_game)
@@ -842,7 +810,7 @@ error: test failed, to rerun pass `--lib`
 </code></pre>
 <p>এক্ষেত্রে আমরা খুব সহায়ক বার্তা পাই না, কিন্তু যখন আমরা টেস্ট ফাংশনটি দেখি, তখন আমরা দেখতে পাই যে এটি <code>#[should_panic]</code> দিয়ে অ্যানোটেটেড। আমরা যে ফেইলার পেয়েছি তার মানে হল টেস্ট ফাংশনের কোডটি প্যানিক ঘটায়নি।</p>
 <p><code>should_panic</code> ব্যবহার করা টেস্টগুলো অসম্পূর্ণ হতে পারে। একটি <code>should_panic</code> টেস্ট পাস করতে পারত এমনকি যদি টেস্টটি আমাদের প্রত্যাশিত কারণের থেকে ভিন্ন কোনো কারণে প্যানিক করত। <code>should_panic</code> টেস্টগুলোকে আরও সুনির্দিষ্ট করতে, আমরা <code>should_panic</code> অ্যাট্রিবিউটে একটি ঐচ্ছিক <code>expected</code> প্যারামিটার যোগ করতে পারি। টেস্ট হারনেস নিশ্চিত করবে যে ফেইলার মেসেজটিতে প্রদত্ত টেক্সট রয়েছে। উদাহরণস্বরূপ, তালিকা ১১-৯-এ <code>Guess</code>-এর পরিবর্তিত কোডটি বিবেচনা করুন যেখানে <code>new</code> ফাংশনটি মানটি খুব ছোট বা খুব বড় হওয়ার উপর নির্ভর করে বিভিন্ন মেসেজ দিয়ে প্যানিক করে।</p>
-<Listing number="11-9" file-name="src/lib.rs" caption="একটি নির্দিষ্ট সাবস্ট্রিং ধারণকারী প্যানিক মেসেজ দিয়ে `panic!`-এর জন্য পরীক্ষা করা">
+<p>src/lib.rs</p>
 <pre><code class="language-rust noplayground"><span class="boring">pub struct Guess {
 </span><span class="boring">    value: i32,
 </span><span class="boring">}
@@ -875,7 +843,7 @@ mod tests {
         Guess::new(200);
     }
 }</code></pre>
-</Listing>
+<p>Listing 11-9: একটি নির্দিষ্ট সাবস্ট্রিং ধারণকারী প্যানিক মেসেজ দিয়ে <code>panic!</code>-এর জন্য পরীক্ষা করা</p>
 <p>এই টেস্টটি পাস করবে কারণ <code>should_panic</code> অ্যাট্রিবিউটের <code>expected</code> প্যারামিটারে আমরা যে মানটি রেখেছি তা <code>Guess::new</code> ফাংশন যে মেসেজ দিয়ে প্যানিক করে তার একটি সাবস্ট্রিং। আমরা প্রত্যাশিত সম্পূর্ণ প্যানিক মেসেজটিও নির্দিষ্ট করতে পারতাম, যা এক্ষেত্রে <code>Guess value must be less than or equal to 100, got 200</code> হতো। আপনি কী নির্দিষ্ট করতে চান তা নির্ভর করে প্যানিক মেসেজের কতটা অংশ অনন্য বা ডাইনামিক এবং আপনি আপনার টেস্টকে কতটা সুনির্দিষ্ট করতে চান তার উপর। এক্ষেত্রে, প্যানিক মেসেজের একটি সাবস্ট্রিংই নিশ্চিত করার জন্য যথেষ্ট যে টেস্ট ফাংশনের কোডটি <code>else if value &gt; 100</code> কেসটি এক্সিকিউট করে।</p>
 <p>একটি <code>expected</code> মেসেজসহ <code>should_panic</code> টেস্ট ফেইল করলে কী হয় তা দেখতে, আসুন <code>if value &lt; 1</code> এবং <code>else if value &gt; 100</code> ব্লকগুলোর বডি অদলবদল করে আমাদের কোডে আবার একটি বাগ প্রবেশ করাই:</p>
 <pre><code class="language-rust ignore not_desired_behavior"><span class="boring">pub struct Guess {
@@ -1009,7 +977,6 @@ error: test failed, to rerun pass `--lib`
 
         <!-- Custom JS scripts -->
         <script src="ferris.js"></script>
-
 
 
     </div>

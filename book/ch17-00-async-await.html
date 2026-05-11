@@ -24,9 +24,9 @@
         <link rel="stylesheet" href="fonts/fonts.css">
 
         <!-- Highlight.js Stylesheets -->
-        <link rel="stylesheet" id="highlight-css" href="highlight.css">
-        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
-        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
         <link rel="stylesheet" href="ferris.css">
@@ -35,34 +35,21 @@
         <link rel="stylesheet" href="theme/listing.css">
 
 
-        <!-- Provide site root and default themes to javascript -->
+        <!-- Provide site root to javascript -->
         <script>
-            const path_to_root = "";
-            const default_light_theme = "light";
-            const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex.js";
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc.js"></script>
     </head>
     <body>
-    <div id="mdbook-help-container">
-        <div id="mdbook-help-popup">
-            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
-            <div>
-                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
-                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
-                <p>Press <kbd>?</kbd> to show this help</p>
-                <p>Press <kbd>Esc</kbd> to hide this help</p>
-            </div>
-        </div>
-    </div>
     <div id="body-container">
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
         <script>
             try {
-                let theme = localStorage.getItem('mdbook-theme');
-                let sidebar = localStorage.getItem('mdbook-sidebar');
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
 
                 if (theme.startsWith('"') && theme.endsWith('"')) {
                     localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
@@ -76,8 +63,7 @@
 
         <!-- Set the theme before any content is loaded, prevents flash -->
         <script>
-            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
-            let theme;
+            var theme;
             try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
             if (theme === null || theme === undefined) { theme = default_theme; }
             const html = document.documentElement;
@@ -90,20 +76,17 @@
 
         <!-- Hide / unhide sidebar before it is displayed -->
         <script>
-            let sidebar = null;
-            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
             if (document.body.clientWidth >= 1080) {
                 try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
                 sidebar = sidebar || 'visible';
             } else {
                 sidebar = 'hidden';
-                sidebar_toggle.checked = false;
             }
-            if (sidebar === 'visible') {
-                sidebar_toggle.checked = true;
-            } else {
-                html.classList.remove('sidebar-visible');
-            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
@@ -130,14 +113,13 @@
                             <i class="fa fa-paint-brush"></i>
                         </button>
                         <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
-                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
                         </ul>
-                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
                             <i class="fa fa-search"></i>
                         </button>
                     </div>
@@ -157,12 +139,7 @@
 
                 <div id="search-wrapper" class="hidden">
                     <form id="searchbar-outer" class="searchbar-outer">
-                        <div class="search-wrapper">
-                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
-                            <div class="spinner-wrapper">
-                                <i class="fa fa-spinner fa-spin"></i>
-                            </div>
-                        </div>
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
                     </form>
                     <div id="searchresults-outer" class="searchresults-outer hidden">
                         <div id="searchresults-header" class="searchresults-header"></div>
@@ -221,7 +198,7 @@ println!("{data}");</code></pre>
 <figcaption>চিত্র ১৭-৩: একটি আংশিকভাবে প্যারালাল ওয়ার্কফ্লো, যেখানে টাস্ক A এবং টাস্ক B স্বাধীনভাবে কাজ করে যতক্ষণ না টাস্ক A3, টাস্ক B3 এর ফলাফলের জন্য ব্লক হয়ে যায়।</figcaption>
 </figure>
 <p>একইভাবে, আপনি হয়তো বুঝতে পারেন যে আপনার নিজের একটি কাজ আপনার অন্য একটি কাজের উপর নির্ভরশীল। এখন আপনার কনকারেন্ট কাজও সিরিয়াল হয়ে গেছে।</p>
-<p>প্যারালালিসম এবং কনকারেন্সি একে অপরের সাথে ছেদ করতে পারে। যদি আপনি জানতে পারেন যে একজন সহকর্মী আপনার একটি কাজ শেষ না করা পর্যন্ত আটকে আছেন, তাহলে আপনি সম্ভবত আপনার সহকর্মীকে "আনব্লক" করার জন্য সেই কাজের উপর আপনার সমস্ত প্রচেষ্টা কেন্দ্রীভূত করবেন। আপনি এবং আপনার সহকর্মী আর প্যারালালি কাজ করতে পারছেন না, এবং আপনি আর আপনার নিজের কাজগুলিতে কনকারেন্টলি কাজ করতে পারছেন না।</p>
+<p>প্যারালালিসম এবং কনকারেন্সি একে অপরের সাথে ছেদ করতে পারে। যদি আপনি জানতে পারেন যে একজন সহকর্মী আপনার একটি কাজ শেষ না করা পর্যন্ত আটকে আছেন, তাহলে আপনি সম্ভবত আপনার সহকর্মীকে “আনব্লক” করার জন্য সেই কাজের উপর আপনার সমস্ত প্রচেষ্টা কেন্দ্রীভূত করবেন। আপনি এবং আপনার সহকর্মী আর প্যারালালি কাজ করতে পারছেন না, এবং আপনি আর আপনার নিজের কাজগুলিতে কনকারেন্টলি কাজ করতে পারছেন না।</p>
 <p>একই মৌলিক গতিবিদ্যা সফটওয়্যার এবং হার্ডওয়্যারের ক্ষেত্রেও প্রযোজ্য। একটি একক CPU কোর সহ একটি মেশিনে, CPU একবারে কেবল একটি অপারেশন করতে পারে, কিন্তু এটি এখনও কনকারেন্টলি কাজ করতে পারে। থ্রেড, প্রসেস এবং async-এর মতো টুল ব্যবহার করে, কম্পিউটার একটি কার্যকলাপকে থামিয়ে অন্যগুলিতে সুইচ করতে পারে এবং অবশেষে সেই প্রথম কার্যকলাপে আবার ফিরে আসতে পারে। একাধিক CPU কোর সহ একটি মেশিনে, এটি প্যারালালিও কাজ করতে পারে। একটি কোর একটি কাজ করতে পারে যখন অন্য একটি কোর একটি সম্পূর্ণ সম্পর্কহীন কাজ করে, এবং সেই অপারেশনগুলি আসলে একই সময়ে ঘটে।</p>
 <p>রাস্টে async নিয়ে কাজ করার সময়, আমরা সবসময় কনকারেন্সি নিয়ে কাজ করি। হার্ডওয়্যার, অপারেটিং সিস্টেম এবং আমরা যে async রানটাইম ব্যবহার করছি তার উপর নির্ভর করে (async রানটাইম সম্পর্কে শীঘ্রই আরও আলোচনা করা হবে), সেই কনকারেন্সি পর্দার আড়ালে প্যারালালিসমও ব্যবহার করতে পারে।</p>
 <p>এখন, চলুন রাস্টের অ্যাসিঙ্ক্রোনাস প্রোগ্রামিং আসলে কীভাবে কাজ করে তা নিয়ে আলোচনা করা যাক।</p>
@@ -273,7 +250,6 @@ println!("{data}");</code></pre>
 
         <!-- Custom JS scripts -->
         <script src="ferris.js"></script>
-
 
 
     </div>

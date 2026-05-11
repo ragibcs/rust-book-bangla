@@ -24,9 +24,9 @@
         <link rel="stylesheet" href="fonts/fonts.css">
 
         <!-- Highlight.js Stylesheets -->
-        <link rel="stylesheet" id="highlight-css" href="highlight.css">
-        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
-        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
         <link rel="stylesheet" href="ferris.css">
@@ -35,34 +35,21 @@
         <link rel="stylesheet" href="theme/listing.css">
 
 
-        <!-- Provide site root and default themes to javascript -->
+        <!-- Provide site root to javascript -->
         <script>
-            const path_to_root = "";
-            const default_light_theme = "light";
-            const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex.js";
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc.js"></script>
     </head>
     <body>
-    <div id="mdbook-help-container">
-        <div id="mdbook-help-popup">
-            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
-            <div>
-                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
-                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
-                <p>Press <kbd>?</kbd> to show this help</p>
-                <p>Press <kbd>Esc</kbd> to hide this help</p>
-            </div>
-        </div>
-    </div>
     <div id="body-container">
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
         <script>
             try {
-                let theme = localStorage.getItem('mdbook-theme');
-                let sidebar = localStorage.getItem('mdbook-sidebar');
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
 
                 if (theme.startsWith('"') && theme.endsWith('"')) {
                     localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
@@ -76,8 +63,7 @@
 
         <!-- Set the theme before any content is loaded, prevents flash -->
         <script>
-            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
-            let theme;
+            var theme;
             try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
             if (theme === null || theme === undefined) { theme = default_theme; }
             const html = document.documentElement;
@@ -90,20 +76,17 @@
 
         <!-- Hide / unhide sidebar before it is displayed -->
         <script>
-            let sidebar = null;
-            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
             if (document.body.clientWidth >= 1080) {
                 try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
                 sidebar = sidebar || 'visible';
             } else {
                 sidebar = 'hidden';
-                sidebar_toggle.checked = false;
             }
-            if (sidebar === 'visible') {
-                sidebar_toggle.checked = true;
-            } else {
-                html.classList.remove('sidebar-visible');
-            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
@@ -130,14 +113,13 @@
                             <i class="fa fa-paint-brush"></i>
                         </button>
                         <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
-                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
                         </ul>
-                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
                             <i class="fa fa-search"></i>
                         </button>
                     </div>
@@ -157,12 +139,7 @@
 
                 <div id="search-wrapper" class="hidden">
                     <form id="searchbar-outer" class="searchbar-outer">
-                        <div class="search-wrapper">
-                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
-                            <div class="spinner-wrapper">
-                                <i class="fa fa-spinner fa-spin"></i>
-                            </div>
-                        </div>
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
                     </form>
                     <div id="searchresults-outer" class="searchresults-outer hidden">
                         <div id="searchresults-header" class="searchresults-header"></div>
@@ -183,8 +160,8 @@
                 <div id="content" class="content">
                     <main>
                         <h2 id="ফাইল-পড়া-reading-a-file"><a class="header" href="#ফাইল-পড়া-reading-a-file">ফাইল পড়া (Reading a File)</a></h2>
-<p>এখন আমরা <code>file_path</code> আর্গুমেন্টে নির্দিষ্ট করা ফাইলটি পড়ার জন্য ফাংশনালিটি যোগ করব। প্রথমে, এটি পরীক্ষা করার জন্য আমাদের একটি স্যাম্পল ফাইল দরকার: আমরা একাধিক লাইনে কিছু টেক্সট এবং কিছু পুনরাবৃত্তিমূলক শব্দসহ একটি ফাইল ব্যবহার করব। লিস্টিং ১২-৩-এ এমিলি ডিকিনসনের একটি কবিতা রয়েছে যা এই কাজের জন্য বেশ উপযুক্ত হবে! আপনার প্রজেক্টের রুট লেভেলে <em>poem.txt</em> নামে একটি ফাইল তৈরি করুন এবং "I’m Nobody! Who are you?" কবিতাটি লিখুন।</p>
-<Listing number="12-3" file-name="poem.txt" caption="এমিলি ডিকিনসনের একটি কবিতা একটি ভালো টেস্ট কেস হতে পারে।">
+<p>এখন আমরা <code>file_path</code> আর্গুমেন্টে নির্দিষ্ট করা ফাইলটি পড়ার জন্য ফাংশনালিটি যোগ করব। প্রথমে, এটি পরীক্ষা করার জন্য আমাদের একটি স্যাম্পল ফাইল দরকার: আমরা একাধিক লাইনে কিছু টেক্সট এবং কিছু পুনরাবৃত্তিমূলক শব্দসহ একটি ফাইল ব্যবহার করব। লিস্টিং ১২-৩-এ এমিলি ডিকিনসনের একটি কবিতা রয়েছে যা এই কাজের জন্য বেশ উপযুক্ত হবে! আপনার প্রজেক্টের রুট লেভেলে <em>poem.txt</em> নামে একটি ফাইল তৈরি করুন এবং “I’m Nobody! Who are you?” কবিতাটি লিখুন।</p>
+<p>poem.txt</p>
 <pre><code class="language-text">I'm nobody! Who are you?
 Are you nobody, too?
 Then there's a pair of us - don't tell!
@@ -195,9 +172,9 @@ How public, like a frog
 To tell your name the livelong day
 To an admiring bog!
 </code></pre>
-</Listing>
+<p>Listing 12-3: এমিলি ডিকিনসনের একটি কবিতা একটি ভালো টেস্ট কেস হতে পারে।</p>
 <p>টেক্সট প্রস্তুত হয়ে গেলে, <em>src/main.rs</em> ফাইলটি এডিট করুন এবং ফাইলটি পড়ার জন্য কোড যোগ করুন, যেমনটি লিস্টিং ১২-৪-এ দেখানো হয়েছে।</p>
-<Listing number="12-4" file-name="src/main.rs" caption="দ্বিতীয় আর্গুমেন্টে নির্দিষ্ট করা ফাইলের কন্টেন্ট পড়া">
+<p>src/main.rs</p>
 <pre><code class="language-rust should_panic noplayground">use std::env;
 use std::fs;
 
@@ -216,7 +193,7 @@ fn main() {
 
     println!("With text:\n{contents}");
 }</code></pre>
-</Listing>
+<p>Listing 12-4: দ্বিতীয় আর্গুমেন্টে নির্দিষ্ট করা ফাইলের কন্টেন্ট পড়া</p>
 <p>প্রথমে আমরা <code>use</code> স্টেটমেন্টের মাধ্যমে standard library-র একটি প্রাসঙ্গিক অংশ নিয়ে আসি: ফাইল হ্যান্ডেল করার জন্য আমাদের <code>std::fs</code> প্রয়োজন।</p>
 <p><code>main</code> ফাংশনের নতুন স্টেটমেন্ট <code>fs::read_to_string</code> <code>file_path</code> আর্গুমেন্টটি গ্রহণ করে, সেই ফাইলটি খোলে এবং ফাইলের কন্টেন্ট সহ একটি <code>std::io::Result&lt;String&gt;</code> টাইপের ভ্যালু রিটার্ন করে।</p>
 <p>এর পরে, আমরা আবার একটি অস্থায়ী <code>println!</code> স্টেটমেন্ট যোগ করেছি যা ফাইল পড়ার পরে <code>contents</code>-এর ভ্যালু প্রিন্ট করে, যাতে আমরা পরীক্ষা করতে পারি যে প্রোগ্রামটি এখন পর্যন্ত ঠিকভাবে কাজ করছে কিনা।</p>
@@ -288,7 +265,6 @@ To an admiring bog!
 
         <!-- Custom JS scripts -->
         <script src="ferris.js"></script>
-
 
 
     </div>

@@ -24,9 +24,9 @@
         <link rel="stylesheet" href="fonts/fonts.css">
 
         <!-- Highlight.js Stylesheets -->
-        <link rel="stylesheet" id="highlight-css" href="highlight.css">
-        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
-        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
         <link rel="stylesheet" href="ferris.css">
@@ -35,34 +35,21 @@
         <link rel="stylesheet" href="theme/listing.css">
 
 
-        <!-- Provide site root and default themes to javascript -->
+        <!-- Provide site root to javascript -->
         <script>
-            const path_to_root = "";
-            const default_light_theme = "light";
-            const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex.js";
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc.js"></script>
     </head>
     <body>
-    <div id="mdbook-help-container">
-        <div id="mdbook-help-popup">
-            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
-            <div>
-                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
-                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
-                <p>Press <kbd>?</kbd> to show this help</p>
-                <p>Press <kbd>Esc</kbd> to hide this help</p>
-            </div>
-        </div>
-    </div>
     <div id="body-container">
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
         <script>
             try {
-                let theme = localStorage.getItem('mdbook-theme');
-                let sidebar = localStorage.getItem('mdbook-sidebar');
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
 
                 if (theme.startsWith('"') && theme.endsWith('"')) {
                     localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
@@ -76,8 +63,7 @@
 
         <!-- Set the theme before any content is loaded, prevents flash -->
         <script>
-            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
-            let theme;
+            var theme;
             try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
             if (theme === null || theme === undefined) { theme = default_theme; }
             const html = document.documentElement;
@@ -90,20 +76,17 @@
 
         <!-- Hide / unhide sidebar before it is displayed -->
         <script>
-            let sidebar = null;
-            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
             if (document.body.clientWidth >= 1080) {
                 try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
                 sidebar = sidebar || 'visible';
             } else {
                 sidebar = 'hidden';
-                sidebar_toggle.checked = false;
             }
-            if (sidebar === 'visible') {
-                sidebar_toggle.checked = true;
-            } else {
-                html.classList.remove('sidebar-visible');
-            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
@@ -130,14 +113,13 @@
                             <i class="fa fa-paint-brush"></i>
                         </button>
                         <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
-                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
                         </ul>
-                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
                             <i class="fa fa-search"></i>
                         </button>
                     </div>
@@ -157,12 +139,7 @@
 
                 <div id="search-wrapper" class="hidden">
                     <form id="searchbar-outer" class="searchbar-outer">
-                        <div class="search-wrapper">
-                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
-                            <div class="spinner-wrapper">
-                                <i class="fa fa-spinner fa-spin"></i>
-                            </div>
-                        </div>
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
                     </form>
                     <div id="searchresults-outer" class="searchresults-outer hidden">
                         <div id="searchresults-header" class="searchresults-header"></div>
@@ -195,19 +172,19 @@ $ cd minigrep
 <h3 id="আরগুমেনটের-ভযালুগুলো-পড়া-reading-the-argument-values"><a class="header" href="#আরগুমেনটের-ভযালুগুলো-পড়া-reading-the-argument-values">আর্গুমেন্টের ভ্যালুগুলো পড়া (Reading the Argument Values)</a></h3>
 <p><code>minigrep</code> যাতে আমরা পাস করা কমান্ড লাইন আর্গুমেন্টের ভ্যালুগুলো পড়তে পারে, তার জন্য আমাদের Rust-এর standard library-তে থাকা <code>std::env::args</code> ফাংশনটি ব্যবহার করতে হবে। এই ফাংশনটি <code>minigrep</code>-এ পাস করা কমান্ড লাইন আর্গুমেন্টগুলোর একটি iterator রিটার্ন করে। আমরা <a href="ch13-00-functional-features.html">অধ্যায় ১৩</a><!-- ignore -->-তে iterator নিয়ে বিস্তারিত আলোচনা করব। আপাতত, iterator সম্পর্কে আপনার কেবল দুটি বিষয় জানলেই চলবে: iterator একটির পর একটি ভ্যালু তৈরি করে, এবং আমরা একটি iterator-এর উপর <code>collect</code> মেথড কল করে এটিকে একটি কালেকশন, যেমন vector-এ পরিণত করতে পারি, যেখানে iterator দ্বারা তৈরি সমস্ত এলিমেন্ট থাকবে।</p>
 <p>লিস্টিং ১২-১ এর কোডটি আপনার <code>minigrep</code> প্রোগ্রামকে পাস করা যেকোনো কমান্ড লাইন আর্গুমেন্ট পড়তে এবং তারপর সেই ভ্যালুগুলোকে একটি vector-এ সংগ্রহ করতে সাহায্য করবে।</p>
-<Listing number="12-1" file-name="src/main.rs" caption="কমান্ড লাইন আর্গুমেন্টগুলোকে একটি ভেক্টরে সংগ্রহ করা এবং সেগুলো প্রিন্ট করা">
+<p>src/main.rs</p>
 <pre><pre class="playground"><code class="language-rust edition2024">use std::env;
 
 fn main() {
     let args: Vec&lt;String&gt; = env::args().collect();
     dbg!(args);
 }</code></pre></pre>
-</Listing>
+<p>Listing 12-1: কমান্ড লাইন আর্গুমেন্টগুলোকে একটি ভেক্টরে সংগ্রহ করা এবং সেগুলো প্রিন্ট করা</p>
 <p>প্রথমে আমরা <code>use</code> স্টেটমেন্ট ব্যবহার করে <code>std::env</code> মডিউলটিকে স্কোপে নিয়ে আসি যাতে আমরা এর <code>args</code> ফাংশনটি ব্যবহার করতে পারি। লক্ষ্য করুন যে <code>std::env::args</code> ফাংশনটি দুটি মডিউল লেভেলে নেস্টেড আছে। যেমনটি আমরা <a href="ch07-04-bringing-paths-into-scope-with-the-use-keyword.html#creating-idiomatic-use-paths">অধ্যায় ৭</a><!-- ignore -->-এ আলোচনা করেছি, যেখানে কাঙ্ক্ষিত ফাংশনটি একাধিক মডিউলের মধ্যে নেস্টেড থাকে, সেখানে আমরা ফাংশনের পরিবর্তে প্যারেন্ট মডিউলটিকে স্কোপে নিয়ে এসেছি। এর মাধ্যমে, আমরা সহজেই <code>std::env</code> থেকে অন্যান্য ফাংশন ব্যবহার করতে পারি। এটি <code>use std::env::args</code> যোগ করে শুধুমাত্র <code>args</code> দিয়ে ফাংশন কল করার চেয়ে কম দ্ব্যর্থক, কারণ <code>args</code>-কে সহজেই বর্তমান মডিউলে ডিফাইন করা কোনো ফাংশন বলে ভুল হতে পারে।</p>
-<blockquote>
+<section class="note" aria-role="note">
 <h3 id="args-ফাংশন-এবং-অবৈধ-ইউনিকোড"><a class="header" href="#args-ফাংশন-এবং-অবৈধ-ইউনিকোড"><code>args</code> ফাংশন এবং অবৈধ ইউনিকোড</a></h3>
 <p>মনে রাখবেন যে <code>std::env::args</code> প্যানিক করবে যদি কোনো আর্গুমেন্টে অবৈধ ইউনিকোড (Unicode) থাকে। আপনার প্রোগ্রামে যদি অবৈধ ইউনিকোডযুক্ত আর্গুমেন্ট গ্রহণ করার প্রয়োজন হয়, তাহলে এর পরিবর্তে <code>std::env::args_os</code> ব্যবহার করুন। সেই ফাংশনটি একটি iterator রিটার্ন করে যা <code>String</code> ভ্যালুর পরিবর্তে <code>OsString</code> ভ্যালু তৈরি করে। আমরা এখানে সরলতার জন্য <code>std::env::args</code> ব্যবহার করেছি কারণ <code>OsString</code> ভ্যালুগুলো প্ল্যাটফর্ম ভেদে ভিন্ন হয় এবং <code>String</code> ভ্যালুর চেয়ে কাজ করা বেশি জটিল।</p>
-</blockquote>
+</section>
 <p><code>main</code>-এর প্রথম লাইনে, আমরা <code>env::args</code> কল করি এবং তাৎক্ষণিকভাবে <code>collect</code> ব্যবহার করে iterator-টিকে একটি vector-এ পরিণত করি, যেখানে iterator দ্বারা তৈরি সমস্ত ভ্যালু থাকবে। আমরা <code>collect</code> ফাংশনটি বিভিন্ন ধরণের কালেকশন তৈরি করতে ব্যবহার করতে পারি, তাই আমরা <code>args</code>-এর টাইপ স্পষ্টভাবে <code>Vec&lt;String&gt;</code> উল্লেখ করে দিই যে আমরা স্ট্রিং-এর একটি vector চাই। যদিও Rust-এ খুব কমই টাইপ উল্লেখ করার প্রয়োজন হয়, <code>collect</code> এমন একটি ফাংশন যার জন্য প্রায়শই টাইপ উল্লেখ করতে হয়, কারণ Rust অনুমান করতে পারে না যে আপনি কোন ধরণের কালেকশন চান।</p>
 <p>সবশেষে, আমরা ডিবাগ ম্যাক্রো ব্যবহার করে vector-টি প্রিন্ট করি। চলুন কোডটি প্রথমে কোনো আর্গুমেন্ট ছাড়া এবং তারপর দুটি আর্গুমেন্ট দিয়ে চালিয়ে দেখি:</p>
 <pre><code class="language-console">$ cargo run
@@ -216,10 +193,9 @@ fn main() {
      Running `target/debug/minigrep`
 [src/main.rs:5:5] args = [
     "target/debug/minigrep",
-]```
-
-```console
-$ cargo run -- needle haystack
+]
+</code></pre>
+<pre><code class="language-console">$ cargo run -- needle haystack
    Compiling minigrep v0.1.0 (file:///projects/minigrep)
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.57s
      Running `target/debug/minigrep needle haystack`
@@ -232,7 +208,7 @@ $ cargo run -- needle haystack
 <p>লক্ষ্য করুন যে ভেক্টরের প্রথম ভ্যালুটি হলো <code>"target/debug/minigrep"</code>, যা আমাদের বাইনারির নাম। এটি C-তে আর্গুমেন্ট লিস্টের আচরণের সাথে মিলে যায়, যা প্রোগ্রামগুলোকে তাদের এক্সিকিউশনের সময় ব্যবহৃত নামটি ব্যবহার করতে দেয়। প্রোগ্রামের নামটি জানা প্রায়শই সুবিধাজনক, যদি আপনি মেসেজে এটি প্রিন্ট করতে চান বা প্রোগ্রামটি চালু করার জন্য কোন কমান্ড লাইন অ্যালিয়াস ব্যবহার করা হয়েছে তার উপর ভিত্তি করে প্রোগ্রামের আচরণ পরিবর্তন করতে চান। কিন্তু এই অধ্যায়ের জন্য, আমরা এটিকে উপেক্ষা করব এবং শুধুমাত্র আমাদের প্রয়োজনীয় দুটি আর্গুমেন্ট সেভ করব।</p>
 <h3 id="আরগুমেনটের-ভযালুগুলো-ভেরিয়েবলে-সেভ-করা-saving-the-argument-values-in-variables"><a class="header" href="#আরগুমেনটের-ভযালুগুলো-ভেরিয়েবলে-সেভ-করা-saving-the-argument-values-in-variables">আর্গুমেন্টের ভ্যালুগুলো ভেরিয়েবলে সেভ করা (Saving the Argument Values in Variables)</a></h3>
 <p>প্রোগ্রামটি বর্তমানে কমান্ড লাইন আর্গুমেন্ট হিসেবে নির্দিষ্ট করা ভ্যালুগুলো অ্যাক্সেস করতে সক্ষম। এখন আমাদের দুটি আর্গুমেন্টের ভ্যালু ভেরিয়েবলে সেভ করতে হবে যাতে আমরা প্রোগ্রামের বাকি অংশে এই ভ্যালুগুলো ব্যবহার করতে পারি। এটি আমরা লিস্টিং ১২-২-এ করছি।</p>
-<Listing number="12-2" file-name="src/main.rs" caption="কোয়েরি আর্গুমেন্ট এবং ফাইল পাথের আর্গুমেন্ট রাখার জন্য ভেরিয়েবল তৈরি করা">
+<p>src/main.rs</p>
 <pre><code class="language-rust should_panic noplayground">use std::env;
 
 fn main() {
@@ -244,7 +220,7 @@ fn main() {
     println!("Searching for {query}");
     println!("In file {file_path}");
 }</code></pre>
-</Listing>
+<p>Listing 12-2: কোয়েরি আর্গুমেন্ট এবং ফাইল পাথের আর্গুমেন্ট রাখার জন্য ভেরিয়েবল তৈরি করা</p>
 <p>যেমনটি আমরা vector প্রিন্ট করার সময় দেখেছি, প্রোগ্রামের নামটি <code>args[0]</code>-তে ভেক্টরের প্রথম স্থানটি নেয়, তাই আমরা ইনডেক্স ১ থেকে আর্গুমেন্ট শুরু করছি। <code>minigrep</code> যে প্রথম আর্গুমেন্টটি নেয় তা হল আমরা যে স্ট্রিংটি খুঁজছি, তাই আমরা প্রথম আর্গুমেন্টের একটি রেফারেন্স <code>query</code> ভেরিয়েবলে রাখি। দ্বিতীয় আর্গুমেন্টটি হবে ফাইল পাথ, তাই আমরা দ্বিতীয় আর্গুমেন্টের একটি রেফারেন্স <code>file_path</code> ভেরিয়েবলে রাখি।</p>
 <p>কোডটি আমাদের উদ্দেশ্য অনুযায়ী কাজ করছে কিনা তা প্রমাণ করার জন্য আমরা সাময়িকভাবে এই ভেরিয়েবলগুলোর ভ্যালু প্রিন্ট করি। চলুন এই প্রোগ্রামটি আবার <code>test</code> এবং <code>sample.txt</code> আর্গুমেন্ট দিয়ে চালাই:</p>
 <pre><code class="language-console">$ cargo run -- test sample.txt
@@ -303,7 +279,6 @@ In file sample.txt
 
         <!-- Custom JS scripts -->
         <script src="ferris.js"></script>
-
 
 
     </div>

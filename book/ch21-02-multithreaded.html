@@ -24,9 +24,9 @@
         <link rel="stylesheet" href="fonts/fonts.css">
 
         <!-- Highlight.js Stylesheets -->
-        <link rel="stylesheet" id="highlight-css" href="highlight.css">
-        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
-        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
         <link rel="stylesheet" href="ferris.css">
@@ -35,34 +35,21 @@
         <link rel="stylesheet" href="theme/listing.css">
 
 
-        <!-- Provide site root and default themes to javascript -->
+        <!-- Provide site root to javascript -->
         <script>
-            const path_to_root = "";
-            const default_light_theme = "light";
-            const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex.js";
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc.js"></script>
     </head>
     <body>
-    <div id="mdbook-help-container">
-        <div id="mdbook-help-popup">
-            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
-            <div>
-                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
-                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
-                <p>Press <kbd>?</kbd> to show this help</p>
-                <p>Press <kbd>Esc</kbd> to hide this help</p>
-            </div>
-        </div>
-    </div>
     <div id="body-container">
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
         <script>
             try {
-                let theme = localStorage.getItem('mdbook-theme');
-                let sidebar = localStorage.getItem('mdbook-sidebar');
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
 
                 if (theme.startsWith('"') && theme.endsWith('"')) {
                     localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
@@ -76,8 +63,7 @@
 
         <!-- Set the theme before any content is loaded, prevents flash -->
         <script>
-            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
-            let theme;
+            var theme;
             try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
             if (theme === null || theme === undefined) { theme = default_theme; }
             const html = document.documentElement;
@@ -90,20 +76,17 @@
 
         <!-- Hide / unhide sidebar before it is displayed -->
         <script>
-            let sidebar = null;
-            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
             if (document.body.clientWidth >= 1080) {
                 try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
                 sidebar = sidebar || 'visible';
             } else {
                 sidebar = 'hidden';
-                sidebar_toggle.checked = false;
             }
-            if (sidebar === 'visible') {
-                sidebar_toggle.checked = true;
-            } else {
-                html.classList.remove('sidebar-visible');
-            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
@@ -130,14 +113,13 @@
                             <i class="fa fa-paint-brush"></i>
                         </button>
                         <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
-                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
                         </ul>
-                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
                             <i class="fa fa-search"></i>
                         </button>
                     </div>
@@ -157,12 +139,7 @@
 
                 <div id="search-wrapper" class="hidden">
                     <form id="searchbar-outer" class="searchbar-outer">
-                        <div class="search-wrapper">
-                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
-                            <div class="spinner-wrapper">
-                                <i class="fa fa-spinner fa-spin"></i>
-                            </div>
-                        </div>
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
                     </form>
                     <div id="searchresults-outer" class="searchresults-outer hidden">
                         <div id="searchresults-header" class="searchresults-header"></div>
@@ -188,7 +165,7 @@
 <p><a id="simulating-a-slow-request-in-the-current-server-implementation"></a></p>
 <h3 id="একটি-ধীরগতির-রিকোযেসট-সিমুলেট-করা"><a class="header" href="#একটি-ধীরগতির-রিকোযেসট-সিমুলেট-করা">একটি ধীরগতির রিকোয়েস্ট সিমুলেট করা</a></h3>
 <p>আমরা দেখব কীভাবে একটি ধীরগতির রিকোয়েস্ট আমাদের বর্তমান সার্ভার ইমপ্লিমেন্টেশনে আসা অন্যান্য রিকোয়েস্টকে প্রভাবিত করতে পারে। লিস্টিং ২১-১০ এ <em>/sleep</em> পাথের জন্য একটি রিকোয়েস্ট হ্যান্ডেল করার কোড দেখানো হয়েছে, যেখানে একটি কৃত্রিম ধীরগতির রেসপন্স তৈরি করা হবে যা সার্ভারকে রেসপন্স পাঠানোর আগে পাঁচ সেকেন্ডের জন্য sleep করিয়ে দেবে।</p>
-<Listing number="21-10" file-name="src/main.rs" caption="পাঁচ সেকেন্ডের জন্য sleep করে একটি ধীরগতির রিকোয়েস্ট সিমুলেট করা">
+<p>src/main.rs</p>
 <pre><pre class="playground"><code class="language-rust no_run edition2024">use std::{
     fs,
     io::{BufReader, prelude::*},
@@ -233,7 +210,7 @@ fn handle_connection(mut stream: TcpStream) {
 </span><span class="boring">
 </span><span class="boring">    stream.write_all(response.as_bytes()).unwrap();
 </span>}</code></pre></pre>
-</Listing>
+<p>Listing 21-10: পাঁচ সেকেন্ডের জন্য sleep করে একটি ধীরগতির রিকোয়েস্ট সিমুলেট করা</p>
 <p>যেহেতু এখন আমাদের তিনটি কেস আছে, তাই আমরা <code>if</code> থেকে <code>match</code>-এ পরিবর্তিত হয়েছি। স্ট্রিং লিটারেলের সাথে প্যাটার্ন ম্যাচ করার জন্য আমাদের <code>request_line</code>-এর একটি স্লাইসের উপর স্পষ্টভাবে <code>match</code> করতে হবে; <code>match</code> ইক্যুয়ালিটি মেথডের মতো স্বয়ংক্রিয়ভাবে referencing এবং dereferencing করে না।</p>
 <p>প্রথম arm-টি লিস্টিং ২১-৯ এর <code>if</code> ব্লকের মতোই। দ্বিতীয় arm-টি <em>/sleep</em> পাথের একটি রিকোয়েস্টের সাথে ম্যাচ করে। যখন সেই রিকোয়েস্টটি আসে, সার্ভার সফল HTML পেজটি রেন্ডার করার আগে পাঁচ সেকেন্ডের জন্য sleep করবে। তৃতীয় arm-টি লিস্টিং ২১-৯ এর <code>else</code> ব্লকের মতোই।</p>
 <p>আপনি দেখতে পাচ্ছেন আমাদের সার্ভার কতটা প্রাথমিক পর্যায়ের: আসল লাইব্রেরিগুলো এর চেয়ে অনেক কম ভার্বোস উপায়ে একাধিক রিকোয়েস্ট শনাক্ত করতে পারত!</p>
@@ -251,7 +228,7 @@ fn handle_connection(mut stream: TcpStream) {
 <h4 id="পরতিটি-রিকোযেসটের-জনয-একটি-থরেড-সপন-করা"><a class="header" href="#পরতিটি-রিকোযেসটের-জনয-একটি-থরেড-সপন-করা">প্রতিটি রিকোয়েস্টের জন্য একটি থ্রেড স্পন করা</a></h4>
 <p>প্রথমে, চলুন দেখি আমাদের কোড কেমন হতে পারত যদি এটি প্রতিটি কানেকশনের জন্য একটি নতুন থ্রেড তৈরি করত। যেমন আগে উল্লেখ করা হয়েছে, এটি আমাদের চূড়ান্ত পরিকল্পনা নয় কারণ এতে সম্ভাব্য সীমাহীন সংখ্যক থ্রেড স্পন করার সমস্যা রয়েছে, তবে এটি একটি কার্যকর মাল্টিথ্রেডেড সার্ভার তৈরির জন্য একটি সূচনা বিন্দু। তারপর আমরা একটি উন্নতি হিসাবে থ্রেড পুল যোগ করব, এবং দুটি সমাধানের তুলনা করা সহজ হবে।</p>
 <p>লিস্টিং ২১-১১ <code>main</code> ফাংশনে করা পরিবর্তনগুলো দেখায়, যেখানে <code>for</code> লুপের মধ্যে প্রতিটি স্ট্রিম হ্যান্ডেল করার জন্য একটি নতুন থ্রেড স্পন করা হয়েছে।</p>
-<Listing number="21-11" file-name="src/main.rs" caption="প্রতিটি স্ট্রিমের জন্য একটি নতুন থ্রেড স্পন করা">
+<p>src/main.rs</p>
 <pre><pre class="playground"><code class="language-rust no_run edition2024"><span class="boring">use std::{
 </span><span class="boring">    fs,
 </span><span class="boring">    io::{BufReader, prelude::*},
@@ -293,14 +270,14 @@ fn handle_connection(mut stream: TcpStream) {
 </span><span class="boring">
 </span><span class="boring">    stream.write_all(response.as_bytes()).unwrap();
 </span><span class="boring">}</span></code></pre></pre>
-</Listing>
+<p>Listing 21-11: প্রতিটি স্ট্রিমের জন্য একটি নতুন থ্রেড স্পন করা</p>
 <p>যেমন আপনি অধ্যায় ১৬-এ শিখেছেন, <code>thread::spawn</code> একটি নতুন থ্রেড তৈরি করবে এবং তারপর নতুন থ্রেডে ক্লোজারের কোডটি চালাবে। যদি আপনি এই কোডটি চালান এবং আপনার ব্রাউজারে <em>/sleep</em> লোড করেন, তারপর আরও দুটি ব্রাউজার ট্যাবে <em>/</em> লোড করেন, আপনি সত্যিই দেখবেন যে <em>/</em> এর রিকোয়েস্টগুলোকে <em>/sleep</em> শেষ হওয়ার জন্য অপেক্ষা করতে হবে না। তবে, যেমন আমরা উল্লেখ করেছি, এটি অবশেষে সিস্টেমকে অভিভূত করবে কারণ আপনি কোনো সীমা ছাড়াই নতুন থ্রেড তৈরি করছেন।</p>
 <p>আপনার হয়তো অধ্যায় ১৭ থেকে মনে থাকতে পারে যে ঠিক এই ধরনের পরিস্থিতিতেই <code>async</code> এবং <code>await</code> সত্যিই অসাধারণ কাজ করে! আমরা যখন থ্রেড পুল তৈরি করব তখন এটি মনে রাখবেন এবং ভাববেন যে <code>async</code> এর সাথে জিনিসগুলো কীভাবে ভিন্ন বা একই রকম দেখতে হতো।</p>
 <!-- Old headings. Do not remove or links may break. -->
 <p><a id="creating-a-similar-interface-for-a-finite-number-of-threads"></a></p>
 <h4 id="একটি-সীমিত-সংখযক-থরেড-তৈরি-করা"><a class="header" href="#একটি-সীমিত-সংখযক-থরেড-তৈরি-করা">একটি সীমিত সংখ্যক থ্রেড তৈরি করা</a></h4>
 <p>আমরা চাই আমাদের থ্রেড পুল একটি একইরকম এবং পরিচিত উপায়ে কাজ করুক, যাতে থ্রেড থেকে থ্রেড পুলে স্যুইচ করার জন্য আমাদের API ব্যবহার করা কোডে বড় পরিবর্তন আনার প্রয়োজন না হয়। লিস্টিং ২১-১২ একটি <code>ThreadPool</code> struct-এর কাল্পনিক ইন্টারফেস দেখায় যা আমরা <code>thread::spawn</code>-এর পরিবর্তে ব্যবহার করতে চাই।</p>
-<Listing number="21-12" file-name="src/main.rs" caption="আমাদের আদর্শ `ThreadPool` ইন্টারফেস">
+<p>src/main.rs</p>
 <pre><code class="language-rust ignore does_not_compile"><span class="boring">use std::{
 </span><span class="boring">    fs,
 </span><span class="boring">    io::{BufReader, prelude::*},
@@ -343,7 +320,7 @@ fn handle_connection(mut stream: TcpStream) {
 </span><span class="boring">
 </span><span class="boring">    stream.write_all(response.as_bytes()).unwrap();
 </span><span class="boring">}</span></code></pre>
-</Listing>
+<p>Listing 21-12: আমাদের আদর্শ <code>ThreadPool</code> ইন্টারফেস</p>
 <p>আমরা <code>ThreadPool::new</code> ব্যবহার করে একটি কনফিগারযোগ্য সংখ্যক থ্রেডসহ একটি নতুন থ্রেড পুল তৈরি করি, এক্ষেত্রে চারটি। তারপর, <code>for</code> লুপে, <code>pool.execute</code>-এর <code>thread::spawn</code>-এর মতোই একটি ইন্টারফেস রয়েছে, কারণ এটি একটি ক্লোজার নেয় যা পুল প্রতিটি স্ট্রিমের জন্য চালাবে। আমাদের <code>pool.execute</code> ইমপ্লিমেন্ট করতে হবে যাতে এটি ক্লোজারটি নেয় এবং এটি চালানোর জন্য পুলের একটি থ্রেডকে দেয়। এই কোডটি এখনও কম্পাইল হবে না, তবে আমরা চেষ্টা করব যাতে কম্পাইলার আমাদের এটি ঠিক করার পথে গাইড করতে পারে।</p>
 <!-- Old headings. Do not remove or links may break. -->
 <p><a id="building-the-threadpool-struct-using-compiler-driven-development"></a></p>
@@ -362,11 +339,10 @@ error: could not compile `hello` (bin "hello") due to 1 previous error
 </code></pre>
 <p>চমৎকার! এই এররটি আমাদের বলছে যে আমাদের একটি <code>ThreadPool</code> টাইপ বা মডিউল প্রয়োজন, তাই আমরা এখন একটি তৈরি করব। আমাদের <code>ThreadPool</code> ইমপ্লিমেন্টেশন আমাদের ওয়েব সার্ভারের কাজের ধরনের থেকে স্বাধীন হবে। তাই চলুন, <code>ThreadPool</code> ইমপ্লিমেন্টেশন রাখার জন্য <code>hello</code> ক্রেটটিকে একটি বাইনারি ক্রেট থেকে একটি লাইব্রেরি ক্রেটে পরিবর্তন করি। লাইব্রেরি ক্রেটে পরিবর্তন করার পরে, আমরা আলাদা থ্রেড পুল লাইব্রেরিটি যেকোনো কাজের জন্য ব্যবহার করতে পারি, শুধু ওয়েব রিকোয়েস্ট সার্ভ করার জন্য নয়।</p>
 <p>একটি <em>src/lib.rs</em> ফাইল তৈরি করুন যাতে নিম্নলিখিত কোডটি থাকে, যা এই মুহূর্তে আমাদের <code>ThreadPool</code> struct-এর সবচেয়ে সহজ সংজ্ঞা:</p>
-<Listing file-name="src/lib.rs">
+<p>src/lib.rs</p>
 <pre><code class="language-rust noplayground">pub struct ThreadPool;</code></pre>
-</Listing>
 <p>তারপর <em>src/main.rs</em> ফাইলের শীর্ষে নিম্নলিখিত কোডটি যোগ করে <code>ThreadPool</code>-কে লাইব্রেরি ক্রেট থেকে স্কোপে আনুন:</p>
-<Listing file-name="src/main.rs">
+<p>src/main.rs</p>
 <pre><code class="language-rust ignore">use hello::ThreadPool;
 <span class="boring">use std::{
 </span><span class="boring">    fs,
@@ -410,7 +386,6 @@ error: could not compile `hello` (bin "hello") due to 1 previous error
 </span><span class="boring">
 </span><span class="boring">    stream.write_all(response.as_bytes()).unwrap();
 </span><span class="boring">}</span></code></pre>
-</Listing>
 <p>এই কোডটি এখনও কাজ করবে না, কিন্তু চলুন পরবর্তী এররটি পেতে এটি আবার চেক করি যা আমাদের সমাধান করতে হবে:</p>
 <pre><code class="language-console">$ cargo check
     Checking hello v0.1.0 (file:///projects/hello)
@@ -424,7 +399,7 @@ For more information about this error, try `rustc --explain E0599`.
 error: could not compile `hello` (bin "hello") due to 1 previous error
 </code></pre>
 <p>এই এররটি নির্দেশ করে যে আমাদের <code>ThreadPool</code>-এর জন্য <code>new</code> নামে একটি অ্যাসোসিয়েটেড ফাংশন তৈরি করতে হবে। আমরা আরও জানি যে <code>new</code>-এর একটি প্যারামিটার থাকতে হবে যা <code>4</code> আর্গুমেন্ট হিসাবে গ্রহণ করতে পারে এবং একটি <code>ThreadPool</code> ইনস্ট্যান্স রিটার্ন করা উচিত। চলুন, এই বৈশিষ্ট্যগুলোসহ সবচেয়ে সহজ <code>new</code> ফাংশনটি ইমপ্লিমেন্ট করি:</p>
-<Listing file-name="src/lib.rs">
+<p>src/lib.rs</p>
 <pre><code class="language-rust noplayground">pub struct ThreadPool;
 
 impl ThreadPool {
@@ -432,8 +407,7 @@ impl ThreadPool {
         ThreadPool
     }
 }</code></pre>
-</Listing>
-<p>আমরা <code>size</code> প্যারামিটারের টাইপ হিসাবে <code>usize</code> বেছে নিয়েছি কারণ আমরা জানি যে একটি ঋণাত্মক সংখ্যক থ্রেড অর্থহীন। আমরা আরও জানি যে আমরা এই <code>4</code>-কে থ্রেডের একটি কালেকশনের উপাদানের সংখ্যা হিসাবে ব্যবহার করব, যার জন্য <code>usize</code> টাইপটি ব্যবহৃত হয়, যেমনটি অধ্যায় ৩-এর <a href="ch03-02-data-types.html#integer-types">"Integer Types"</a> এ আলোচনা করা হয়েছে।</p>
+<p>আমরা <code>size</code> প্যারামিটারের টাইপ হিসাবে <code>usize</code> বেছে নিয়েছি কারণ আমরা জানি যে একটি ঋণাত্মক সংখ্যক থ্রেড অর্থহীন। আমরা আরও জানি যে আমরা এই <code>4</code>-কে থ্রেডের একটি কালেকশনের উপাদানের সংখ্যা হিসাবে ব্যবহার করব, যার জন্য <code>usize</code> টাইপটি ব্যবহৃত হয়, যেমনটি অধ্যায় ৩-এর <a href="ch03-02-data-types.html#integer-types">“Integer Types”</a> এ আলোচনা করা হয়েছে।</p>
 <p>চলুন কোডটি আবার চেক করি:</p>
 <pre><code class="language-console">$ cargo check
     Checking hello v0.1.0 (file:///projects/hello)
@@ -444,22 +418,18 @@ error[E0599]: no method named `execute` found for struct `ThreadPool` in the cur
    |         -----^^^^^^^ method not found in `ThreadPool`
 
 For more information about this error, try `rustc --explain E0599`.
-error: could not compile `hello` (bin "hello") due to 1 previous error```
-
-এখন এররটি ঘটছে কারণ `ThreadPool`-এ আমাদের কোনো `execute` মেথড নেই। ["Creating a Finite Number of Threads"](#creating-a-finite-number-of-threads) থেকে মনে করুন যে আমরা সিদ্ধান্ত নিয়েছিলাম আমাদের থ্রেড পুলের `thread::spawn`-এর মতো একটি ইন্টারফেস থাকা উচিত। এছাড়াও, আমরা `execute` ফাংশনটি এমনভাবে ইমপ্লিমেন্ট করব যাতে এটি প্রদত্ত ক্লোজারটি নিয়ে পুলের একটি নিষ্ক্রিয় থ্রেডকে চালানোর জন্য দেয়।
-
-আমরা `ThreadPool`-এ `execute` মেথডটিকে একটি প্যারামিটার হিসাবে একটি ক্লোজার নেওয়ার জন্য সংজ্ঞায়িত করব। অধ্যায় ১৩-এর ["Moving Captured Values Out of the Closure and the `Fn` Traits"][fn-traits] থেকে মনে করুন যে আমরা তিনটি ভিন্ন ট্রেইট দিয়ে ক্লোজারকে প্যারামিটার হিসাবে নিতে পারি: `Fn`, `FnMut`, এবং `FnOnce`। আমাদের এখানে কোন ধরনের ক্লোজার ব্যবহার করতে হবে তা সিদ্ধান্ত নিতে হবে। আমরা জানি যে আমরা শেষ পর্যন্ত স্ট্যান্ডার্ড লাইব্রেরি `thread::spawn` ইমপ্লিমেন্টেশনের মতো কিছু করব, তাই আমরা `thread::spawn`-এর স্বাক্ষরের প্যারামিটারে কী বাউন্ড রয়েছে তা দেখতে পারি। ডকুমেন্টেশন আমাদের নিম্নলিখিতটি দেখায়:
-
-```rust,ignore
-pub fn spawn&lt;F, T&gt;(f: F) -&gt; JoinHandle&lt;T&gt;
+error: could not compile `hello` (bin "hello") due to 1 previous error
+</code></pre>
+<p>এখন এররটি ঘটছে কারণ <code>ThreadPool</code>-এ আমাদের কোনো <code>execute</code> মেথড নেই। <a href="#creating-a-finite-number-of-threads">“Creating a Finite Number of Threads”</a> থেকে মনে করুন যে আমরা সিদ্ধান্ত নিয়েছিলাম আমাদের থ্রেড পুলের <code>thread::spawn</code>-এর মতো একটি ইন্টারফেস থাকা উচিত। এছাড়াও, আমরা <code>execute</code> ফাংশনটি এমনভাবে ইমপ্লিমেন্ট করব যাতে এটি প্রদত্ত ক্লোজারটি নিয়ে পুলের একটি নিষ্ক্রিয় থ্রেডকে চালানোর জন্য দেয়।</p>
+<p>আমরা <code>ThreadPool</code>-এ <code>execute</code> মেথডটিকে একটি প্যারামিটার হিসাবে একটি ক্লোজার নেওয়ার জন্য সংজ্ঞায়িত করব। অধ্যায় ১৩-এর <a href="ch13-01-closures.html#moving-captured-values-out-of-the-closure-and-the-fn-traits">“Moving Captured Values Out of the Closure and the <code>Fn</code> Traits”</a> থেকে মনে করুন যে আমরা তিনটি ভিন্ন ট্রেইট দিয়ে ক্লোজারকে প্যারামিটার হিসাবে নিতে পারি: <code>Fn</code>, <code>FnMut</code>, এবং <code>FnOnce</code>। আমাদের এখানে কোন ধরনের ক্লোজার ব্যবহার করতে হবে তা সিদ্ধান্ত নিতে হবে। আমরা জানি যে আমরা শেষ পর্যন্ত স্ট্যান্ডার্ড লাইব্রেরি <code>thread::spawn</code> ইমপ্লিমেন্টেশনের মতো কিছু করব, তাই আমরা <code>thread::spawn</code>-এর স্বাক্ষরের প্যারামিটারে কী বাউন্ড রয়েছে তা দেখতে পারি। ডকুমেন্টেশন আমাদের নিম্নলিখিতটি দেখায়:</p>
+<pre><code class="language-rust ignore">pub fn spawn&lt;F, T&gt;(f: F) -&gt; JoinHandle&lt;T&gt;
     where
         F: FnOnce() -&gt; T,
         F: Send + 'static,
-        T: Send + 'static,
-</code></pre>
+        T: Send + 'static,</code></pre>
 <p><code>F</code> টাইপ প্যারামিটারটি এখানে আমাদের উদ্বেগের বিষয়; <code>T</code> টাইপ প্যারামিটারটি রিটার্ন ভ্যালুর সাথে সম্পর্কিত, এবং আমরা এটি নিয়ে চিন্তিত নই। আমরা দেখতে পাচ্ছি যে <code>spawn</code> <code>F</code>-এর উপর ট্রেইট বাউন্ড হিসাবে <code>FnOnce</code> ব্যবহার করে। এটি সম্ভবত আমরাও চাই, কারণ আমরা অবশেষে <code>execute</code>-এ প্রাপ্ত আর্গুমেন্টটি <code>spawn</code>-এ পাস করব। আমরা আরও নিশ্চিত হতে পারি যে <code>FnOnce</code>-ই আমাদের কাঙ্ক্ষিত ট্রেইট, কারণ একটি রিকোয়েস্ট চালানোর জন্য থ্রেডটি সেই রিকোয়েস্টের ক্লোজারটি শুধুমাত্র একবারই এক্সিকিউট করবে, যা <code>FnOnce</code>-এর <code>Once</code>-এর সাথে মিলে যায়।</p>
 <p><code>F</code> টাইপ প্যারামিটারের <code>Send</code> ট্রেইট বাউন্ড এবং <code>'static</code> লাইফটাইম বাউন্ডও রয়েছে, যা আমাদের পরিস্থিতিতে কার্যকর: আমাদের এক থ্রেড থেকে অন্য থ্রেডে ক্লোজার স্থানান্তর করতে <code>Send</code> প্রয়োজন এবং <code>'static</code> প্রয়োজন কারণ আমরা জানি না থ্রেডটি এক্সিকিউট হতে কত সময় নেবে। চলুন <code>ThreadPool</code>-এ একটি <code>execute</code> মেথড তৈরি করি যা এই বাউন্ডগুলোসহ <code>F</code> টাইপের একটি জেনেরিক প্যারামিটার নেবে:</p>
-<Listing file-name="src/lib.rs">
+<p>src/lib.rs</p>
 <pre><code class="language-rust noplayground"><span class="boring">pub struct ThreadPool;
 </span><span class="boring">
 </span>impl ThreadPool {
@@ -474,7 +444,6 @@ pub fn spawn&lt;F, T&gt;(f: F) -&gt; JoinHandle&lt;T&gt;
     {
     }
 }</code></pre>
-</Listing>
 <p>আমরা এখনও <code>FnOnce</code> এর পরে <code>()</code> ব্যবহার করছি কারণ এই <code>FnOnce</code> একটি ক্লোজারকে প্রতিনিধিত্ব করে যা কোনো প্যারামিটার নেয় না এবং ইউনিট টাইপ <code>()</code> রিটার্ন করে। ফাংশন সংজ্ঞার মতোই, রিটার্ন টাইপটি স্বাক্ষর থেকে বাদ দেওয়া যেতে পারে, কিন্তু আমাদের কোনো প্যারামিটার না থাকলেও, আমাদের এখনও বন্ধনী প্রয়োজন।</p>
 <p>আবারও, এটি <code>execute</code> মেথডের সবচেয়ে সহজ ইমপ্লিমেন্টেশন: এটি কিছুই করে না, কিন্তু আমরা শুধু আমাদের কোড কম্পাইল করার চেষ্টা করছি। চলুন এটি আবার চেক করি:</p>
 <pre><code class="language-console">$ cargo check
@@ -483,12 +452,12 @@ pub fn spawn&lt;F, T&gt;(f: F) -&gt; JoinHandle&lt;T&gt;
 </code></pre>
 <p>এটি কম্পাইল হয়! কিন্তু লক্ষ্য করুন যে আপনি যদি <code>cargo run</code> চেষ্টা করেন এবং ব্রাউজারে একটি রিকোয়েস্ট করেন, তবে আপনি ব্রাউজারে অধ্যায়ের শুরুতে দেখা এররগুলো দেখতে পাবেন। আমাদের লাইব্রেরি আসলে <code>execute</code>-এ পাস করা ক্লোজারটি এখনও কল করছে না!</p>
 <blockquote>
-<p>দ্রষ্টব্য: Haskell এবং Rust-এর মতো কঠোর কম্পাইলারসহ ল্যাঙ্গুয়েজ সম্পর্কে আপনি একটি কথা শুনতে পারেন: "যদি কোড কম্পাইল হয়, তবে এটি কাজ করে।" কিন্তু এই কথাটি সর্বজনীনভাবে সত্য নয়। আমাদের প্রজেক্ট কম্পাইল হচ্ছে, কিন্তু এটি बिल्कुल কিছুই করছে না! যদি আমরা একটি বাস্তব, সম্পূর্ণ প্রজেক্ট তৈরি করতাম, তবে এটি ইউনিট টেস্ট লেখা শুরু করার একটি ভাল সময় হতো যাতে কোড কম্পাইল হয় <em>এবং</em> আমাদের কাঙ্ক্ষিত আচরণ করে।</p>
+<p>দ্রষ্টব্য: Haskell এবং Rust-এর মতো কঠোর কম্পাইলারসহ ল্যাঙ্গুয়েজ সম্পর্কে আপনি একটি কথা শুনতে পারেন: “যদি কোড কম্পাইল হয়, তবে এটি কাজ করে।” কিন্তু এই কথাটি সর্বজনীনভাবে সত্য নয়। আমাদের প্রজেক্ট কম্পাইল হচ্ছে, কিন্তু এটি बिल्कुल কিছুই করছে না! যদি আমরা একটি বাস্তব, সম্পূর্ণ প্রজেক্ট তৈরি করতাম, তবে এটি ইউনিট টেস্ট লেখা শুরু করার একটি ভাল সময় হতো যাতে কোড কম্পাইল হয় <em>এবং</em> আমাদের কাঙ্ক্ষিত আচরণ করে।</p>
 </blockquote>
 <p>বিবেচনা করুন: যদি আমরা একটি ক্লোজারের পরিবর্তে একটি ফিউচার (future) এক্সিকিউট করতে যেতাম তাহলে এখানে কী ভিন্ন হতো?</p>
 <h4 id="new-তে-থরেডের-সংখযা-যাচাই-করা"><a class="header" href="#new-তে-থরেডের-সংখযা-যাচাই-করা"><code>new</code>-তে থ্রেডের সংখ্যা যাচাই করা</a></h4>
 <p>আমরা <code>new</code> এবং <code>execute</code>-এর প্যারামিটার দিয়ে কিছুই করছি না। চলুন, আমাদের কাঙ্ক্ষিত আচরণসহ এই ফাংশনগুলোর বডি ইমপ্লিমেন্ট করি। শুরু করার জন্য, চলুন <code>new</code> সম্পর্কে ভাবি। আগে আমরা <code>size</code> প্যারামিটারের জন্য একটি আনসাইন্ড টাইপ বেছে নিয়েছিলাম কারণ ঋণাত্মক সংখ্যক থ্রেডসহ একটি পুল অর্থহীন। তবে, শূন্য থ্রেডসহ একটি পুলও অর্থহীন, তবুও শূন্য একটি পুরোপুরি বৈধ <code>usize</code>। আমরা কোড যোগ করব যা <code>ThreadPool</code> ইনস্ট্যান্স রিটার্ন করার আগে <code>size</code> শূন্যের চেয়ে বড় কিনা তা পরীক্ষা করবে এবং যদি শূন্য পায় তবে <code>assert!</code> ম্যাক্রো ব্যবহার করে প্রোগ্রামটি প্যানিক করাবে, যেমনটি লিস্টিং ২১-১৩ এ দেখানো হয়েছে।</p>
-<Listing number="21-13" file-name="src/lib.rs" caption="`size` শূন্য হলে প্যানিক করার জন্য `ThreadPool::new` ইমপ্লিমেন্ট করা">
+<p>src/lib.rs</p>
 <pre><code class="language-rust noplayground"><span class="boring">pub struct ThreadPool;
 </span><span class="boring">
 </span>impl ThreadPool {
@@ -512,12 +481,12 @@ pub fn spawn&lt;F, T&gt;(f: F) -&gt; JoinHandle&lt;T&gt;
 </span><span class="boring">    {
 </span><span class="boring">    }
 </span>}</code></pre>
-</Listing>
+<p>Listing 21-13: <code>size</code> শূন্য হলে প্যানিক করার জন্য <code>ThreadPool::new</code> ইমপ্লিমেন্ট করা</p>
 <p>আমরা ডক কমেন্ট দিয়ে আমাদের <code>ThreadPool</code>-এর জন্য কিছু ডকুমেন্টেশনও যোগ করেছি। লক্ষ্য করুন যে আমরা অধ্যায় ১৪-তে আলোচনা করা অনুযায়ী ভাল ডকুমেন্টেশন পদ্ধতি অনুসরণ করেছি এবং এমন একটি বিভাগ যোগ করেছি যা সেই পরিস্থিতিগুলো উল্লেখ করে যেখানে আমাদের ফাংশন প্যানিক করতে পারে। <code>cargo doc --open</code> চালান এবং <code>ThreadPool</code> struct-এ ক্লিক করে দেখুন <code>new</code>-এর জন্য জেনারেট করা ডক্স কেমন দেখায়!</p>
 <p>এখানে <code>assert!</code> ম্যাক্রো যোগ করার পরিবর্তে, আমরা <code>new</code>-কে <code>build</code>-এ পরিবর্তন করতে পারতাম এবং I/O প্রজেক্টে লিস্টিং ১২-৯-এর <code>Config::build</code>-এর মতো একটি <code>Result</code> রিটার্ন করতে পারতাম। কিন্তু আমরা এই ক্ষেত্রে সিদ্ধান্ত নিয়েছি যে কোনো থ্রেড ছাড়াই একটি থ্রেড পুল তৈরি করার চেষ্টা একটি ناقابل পুনরুদ্ধারযোগ্য এরর হওয়া উচিত। আপনি যদি উচ্চাকাঙ্ক্ষী হন, তবে <code>new</code> ফাংশনের সাথে তুলনা করার জন্য নিম্নলিখিত স্বাক্ষরসহ <code>build</code> নামে একটি ফাংশন লেখার চেষ্টা করুন:</p>
 <pre><code class="language-rust ignore">pub fn build(size: usize) -&gt; Result&lt;ThreadPool, PoolCreationError&gt; {</code></pre>
 <h4 id="থরেড-সংরকষণ-করার-জনয-সথান-তৈরি-করা"><a class="header" href="#থরেড-সংরকষণ-করার-জনয-সথান-তৈরি-করা">থ্রেড সংরক্ষণ করার জন্য স্থান তৈরি করা</a></h4>
-<p>এখন যেহেতু আমরা জানি যে পুলে সংরক্ষণ করার জন্য আমাদের কাছে একটি বৈধ সংখ্যক থ্রেড আছে, আমরা সেই থ্রেডগুলো তৈরি করতে পারি এবং <code>ThreadPool</code> struct-এ সংরক্ষণ করতে পারি structটি রিটার্ন করার আগে। কিন্তু আমরা কীভাবে একটি থ্রেড "সংরক্ষণ" করব? চলুন <code>thread::spawn</code> এর স্বাক্ষরটি আরেকবার দেখি:</p>
+<p>এখন যেহেতু আমরা জানি যে পুলে সংরক্ষণ করার জন্য আমাদের কাছে একটি বৈধ সংখ্যক থ্রেড আছে, আমরা সেই থ্রেডগুলো তৈরি করতে পারি এবং <code>ThreadPool</code> struct-এ সংরক্ষণ করতে পারি structটি রিটার্ন করার আগে। কিন্তু আমরা কীভাবে একটি থ্রেড “সংরক্ষণ” করব? চলুন <code>thread::spawn</code> এর স্বাক্ষরটি আরেকবার দেখি:</p>
 <pre><code class="language-rust ignore">pub fn spawn&lt;F, T&gt;(f: F) -&gt; JoinHandle&lt;T&gt;
     where
         F: FnOnce() -&gt; T,
@@ -525,7 +494,7 @@ pub fn spawn&lt;F, T&gt;(f: F) -&gt; JoinHandle&lt;T&gt;
         T: Send + 'static,</code></pre>
 <p><code>spawn</code> ফাংশনটি একটি <code>JoinHandle&lt;T&gt;</code> রিটার্ন করে, যেখানে <code>T</code> হলো সেই টাইপ যা ক্লোজারটি রিটার্ন করে। চলুন <code>JoinHandle</code> ব্যবহার করে দেখি কী হয়। আমাদের ক্ষেত্রে, আমরা যে ক্লোজারগুলো থ্রেড পুলে পাস করছি সেগুলি কানেকশন হ্যান্ডেল করবে এবং কিছু রিটার্ন করবে না, তাই <code>T</code> হবে ইউনিট টাইপ <code>()</code>।</p>
 <p>লিস্টিং ২১-১৪ এর কোডটি কম্পাইল হবে কিন্তু এখনও কোনো থ্রেড তৈরি করবে না। আমরা <code>ThreadPool</code>-এর সংজ্ঞা পরিবর্তন করে <code>thread::JoinHandle&lt;()&gt;</code> ইনস্ট্যান্সের একটি ভেক্টর ধারণ করার ব্যবস্থা করেছি, <code>size</code> ক্যাপাসিটিসহ ভেক্টরটি ইনিশিয়ালাইজ করেছি, একটি <code>for</code> লুপ সেট আপ করেছি যা থ্রেড তৈরির জন্য কিছু কোড চালাবে, এবং তাদের ধারণকারী একটি <code>ThreadPool</code> ইনস্ট্যান্স রিটার্ন করেছি।</p>
-<Listing number="21-14" file-name="src/lib.rs" caption="`ThreadPool`-কে থ্রেড ধারণ করার জন্য একটি ভেক্টর তৈরি করা">
+<p>src/lib.rs</p>
 <pre><code class="language-rust ignore not_desired_behavior">use std::thread;
 
 pub struct ThreadPool {
@@ -560,7 +529,7 @@ impl ThreadPool {
 </span><span class="boring">    {
 </span><span class="boring">    }
 </span>}</code></pre>
-</Listing>
+<p>Listing 21-14: <code>ThreadPool</code>-কে থ্রেড ধারণ করার জন্য একটি ভেক্টর তৈরি করা</p>
 <p>আমরা লাইব্রেরি ক্রেটে <code>std::thread</code>-কে স্কোপে নিয়ে এসেছি কারণ আমরা <code>ThreadPool</code>-এর ভেক্টরের আইটেমগুলোর টাইপ হিসাবে <code>thread::JoinHandle</code> ব্যবহার করছি।</p>
 <p>একবার একটি বৈধ সাইজ পেলে, আমাদের <code>ThreadPool</code> একটি নতুন ভেক্টর তৈরি করে যা <code>size</code> সংখ্যক আইটেম ধারণ করতে পারে। <code>with_capacity</code> ফাংশনটি <code>Vec::new</code>-এর মতোই কাজ করে কিন্তু একটি গুরুত্বপূর্ণ পার্থক্যসহ: এটি ভেক্টরে স্থান পূর্ব-বরাদ্দ করে। যেহেতু আমরা জানি যে আমাদের ভেক্টরে <code>size</code> সংখ্যক এলিমেন্ট সংরক্ষণ করতে হবে, তাই এই বরাদ্দটি আগে থেকে করা <code>Vec::new</code> ব্যবহার করার চেয়ে কিছুটা বেশি কার্যকর, যা এলিমেন্ট প্রবেশ করানোর সাথে সাথে নিজেকে রিসাইজ করে।</p>
 <p>যখন আপনি <code>cargo check</code> আবার চালাবেন, এটি সফল হওয়া উচিত।</p>
@@ -580,7 +549,7 @@ impl ThreadPool {
 </ol>
 <p>আপনি যদি একটি চ্যালেঞ্জের জন্য প্রস্তুত হন, তবে লিস্টিং ২১-১৫ এর কোডটি দেখার আগে নিজে এই পরিবর্তনগুলি ইমপ্লিমেন্ট করার চেষ্টা করুন।</p>
 <p>প্রস্তুত? এখানে লিস্টিং ২১-১৫ রয়েছে যা পূর্ববর্তী পরিবর্তনগুলি করার একটি উপায় দেখায়।</p>
-<Listing number="21-15" file-name="src/lib.rs" caption="`ThreadPool`-কে সরাসরি থ্রেড ধারণ করার পরিবর্তে `Worker` ইনস্ট্যান্স ধারণ করার জন্য পরিবর্তন করা">
+<p>src/lib.rs</p>
 <pre><code class="language-rust noplayground">use std::thread;
 
 pub struct ThreadPool {
@@ -628,7 +597,7 @@ impl Worker {
         Worker { id, thread }
     }
 }</code></pre>
-</Listing>
+<p>Listing 21-15: <code>ThreadPool</code>-কে সরাসরি থ্রেড ধারণ করার পরিবর্তে <code>Worker</code> ইনস্ট্যান্স ধারণ করার জন্য পরিবর্তন করা</p>
 <p>আমরা <code>ThreadPool</code>-এর ফিল্ডের নাম <code>threads</code> থেকে <code>workers</code>-এ পরিবর্তন করেছি কারণ এটি এখন <code>JoinHandle&lt;()&gt;</code> ইনস্ট্যান্সের পরিবর্তে <code>Worker</code> ইনস্ট্যান্স ধারণ করছে। আমরা <code>for</code> লুপের কাউন্টারটিকে <code>Worker::new</code>-এর আর্গুমেন্ট হিসাবে ব্যবহার করি, এবং আমরা প্রতিটি নতুন <code>Worker</code>-কে <code>workers</code> নামের ভেক্টরে সংরক্ষণ করি।</p>
 <p>বাহ্যিক কোড (যেমন <em>src/main.rs</em>-এ আমাদের সার্ভার) <code>ThreadPool</code>-এর মধ্যে একটি <code>Worker</code> struct ব্যবহারের বাস্তবায়ন বিবরণ জানার প্রয়োজন নেই, তাই আমরা <code>Worker</code> struct এবং তার <code>new</code> ফাংশনটিকে প্রাইভেট করে দিই। <code>Worker::new</code> ফাংশনটি আমাদের দেওয়া <code>id</code> ব্যবহার করে এবং একটি <code>JoinHandle&lt;()&gt;</code> ইনস্ট্যান্স সংরক্ষণ করে যা একটি খালি ক্লোজার ব্যবহার করে একটি নতুন থ্রেড স্পন করে তৈরি করা হয়।</p>
 <blockquote>
@@ -647,7 +616,7 @@ impl Worker {
 <li>তার থ্রেডে, <code>Worker</code> তার রিসিভারের উপর লুপ করবে এবং প্রাপ্ত যেকোনো জবের ক্লোজার এক্সিকিউট করবে।</li>
 </ol>
 <p>চলুন <code>ThreadPool::new</code>-এ একটি চ্যানেল তৈরি করে এবং <code>ThreadPool</code> ইনস্ট্যান্সে সেন্ডারটি ধরে রাখার মাধ্যমে শুরু করি, যেমনটি লিস্টিং ২১-১৬ এ দেখানো হয়েছে। <code>Job</code> struct টি আপাতত কিছু ধারণ করে না তবে এটি সেই আইটেমের টাইপ হবে যা আমরা চ্যানেলের মাধ্যমে পাঠাচ্ছি।</p>
-<Listing number="21-16" file-name="src/lib.rs" caption="`Job` ইনস্ট্যান্স প্রেরণকারী একটি চ্যানেলের সেন্ডার সংরক্ষণ করার জন্য `ThreadPool`-কে পরিবর্তন করা">
+<p>src/lib.rs</p>
 <pre><code class="language-rust noplayground">use std::{sync::mpsc, thread};
 
 pub struct ThreadPool {
@@ -700,10 +669,10 @@ impl ThreadPool {
 </span><span class="boring">        Worker { id, thread }
 </span><span class="boring">    }
 </span><span class="boring">}</span></code></pre>
-</Listing>
+<p>Listing 21-16: <code>Job</code> ইনস্ট্যান্স প্রেরণকারী একটি চ্যানেলের সেন্ডার সংরক্ষণ করার জন্য <code>ThreadPool</code>-কে পরিবর্তন করা</p>
 <p><code>ThreadPool::new</code>-এ, আমরা আমাদের নতুন চ্যানেল তৈরি করি এবং পুলটিকে সেন্ডার ধরে রাখতে দিই। এটি সফলভাবে কম্পাইল হবে।</p>
 <p>চলুন থ্রেড পুল চ্যানেল তৈরি করার সময় প্রতিটি <code>Worker</code>-এর মধ্যে চ্যানেলের একটি রিসিভার পাস করার চেষ্টা করি। আমরা জানি যে আমরা <code>Worker</code> ইনস্ট্যান্স দ্বারা স্পন করা থ্রেডে রিসিভারটি ব্যবহার করতে চাই, তাই আমরা ক্লোজারে <code>receiver</code> প্যারামিটারটি রেফারেন্স করব। লিস্টিং ২১-১৭ এর কোডটি এখনও ঠিক কম্পাইল হবে না।</p>
-<Listing number="21-17" file-name="src/lib.rs" caption="প্রতিটি `Worker`-কে রিসিভার পাস করা">
+<p>src/lib.rs</p>
 <pre><code class="language-rust ignore does_not_compile"><span class="boring">use std::{sync::mpsc, thread};
 </span><span class="boring">
 </span><span class="boring">pub struct ThreadPool {
@@ -761,7 +730,7 @@ impl ThreadPool {
         Worker { id, thread }
     }
 }</code></pre>
-</Listing>
+<p>Listing 21-17: প্রতিটি <code>Worker</code>-কে রিসিভার পাস করা</p>
 <p>আমরা কিছু ছোট এবং সহজ পরিবর্তন করেছি: আমরা <code>Worker::new</code>-এ রিসিভার পাস করেছি, এবং তারপর আমরা এটি ক্লোজারের ভিতরে ব্যবহার করেছি।</p>
 <p>যখন আমরা এই কোডটি চেক করার চেষ্টা করি, আমরা এই এররটি পাই:</p>
 <pre><code class="language-console">$ cargo check
@@ -790,40 +759,35 @@ help: consider moving the expression out of the loop so it is only moved once
    |
 
 For more information about this error, try `rustc --explain E0382`.
-error: could not compile `hello` (lib) due to 1 previous error```
-
-কোডটি `receiver`-কে একাধিক `Worker` ইনস্ট্যান্সে পাস করার চেষ্টা করছে। এটি কাজ করবে না, যেমন আপনি অধ্যায় ১৬ থেকে মনে করতে পারেন: Rust দ্বারা প্রদত্ত চ্যানেল ইমপ্লিমেন্টেশনটি হলো মাল্টিপল _প্রডিউসার_, সিঙ্গেল _কনজিউমার_। এর মানে আমরা এই কোডটি ঠিক করার জন্য চ্যানেলের কনজিউমিং এন্ডটি ক্লোন করতে পারি না। আমরা একটি বার্তা একাধিক কনজিউমারের কাছে একাধিকবার পাঠাতেও চাই না; আমরা একাধিক `Worker` ইনস্ট্যান্সসহ বার্তাগুলির একটি তালিকা চাই যাতে প্রতিটি বার্তা একবার প্রসেস হয়।
-
-এছাড়াও, চ্যানেল কিউ থেকে একটি জব নেওয়ার জন্য `receiver`-কে মিউটেট করতে হয়, তাই থ্রেডগুলির `receiver`-কে শেয়ার এবং পরিবর্তন করার জন্য একটি নিরাপদ উপায় প্রয়োজন; অন্যথায়, আমরা রেস কন্ডিশন পেতে পারি (যেমনটি অধ্যায় ১৬-তে আলোচনা করা হয়েছে)।
-
-অধ্যায় ১৬-তে আলোচনা করা থ্রেড-সেফ স্মার্ট পয়েন্টারগুলির কথা মনে করুন: একাধিক থ্রেডে মালিকানা শেয়ার করতে এবং থ্রেডগুলিকে মান পরিবর্তন করার অনুমতি দিতে, আমাদের `Arc&lt;Mutex&lt;T&gt;&gt;` ব্যবহার করতে হবে। `Arc` টাইপ একাধিক `Worker`-কে রিসিভারের মালিকানা দেবে এবং `Mutex` নিশ্চিত করবে যে একবারে শুধুমাত্র একটি `Worker`-ই রিসিভার থেকে জব পাবে। লিস্টিং ২১-১৮ আমাদের প্রয়োজনীয় পরিবর্তনগুলি দেখায়।
-
-&lt;Listing number="21-18" file-name="src/lib.rs" caption="`Arc` এবং `Mutex` ব্যবহার করে `Worker` ইনস্ট্যান্সগুলির মধ্যে রিসিভার শেয়ার করা"&gt;
-
-```rust,noplayground
-use std::{
+error: could not compile `hello` (lib) due to 1 previous error
+</code></pre>
+<p>কোডটি <code>receiver</code>-কে একাধিক <code>Worker</code> ইনস্ট্যান্সে পাস করার চেষ্টা করছে। এটি কাজ করবে না, যেমন আপনি অধ্যায় ১৬ থেকে মনে করতে পারেন: Rust দ্বারা প্রদত্ত চ্যানেল ইমপ্লিমেন্টেশনটি হলো মাল্টিপল <em>প্রডিউসার</em>, সিঙ্গেল <em>কনজিউমার</em>। এর মানে আমরা এই কোডটি ঠিক করার জন্য চ্যানেলের কনজিউমিং এন্ডটি ক্লোন করতে পারি না। আমরা একটি বার্তা একাধিক কনজিউমারের কাছে একাধিকবার পাঠাতেও চাই না; আমরা একাধিক <code>Worker</code> ইনস্ট্যান্সসহ বার্তাগুলির একটি তালিকা চাই যাতে প্রতিটি বার্তা একবার প্রসেস হয়।</p>
+<p>এছাড়াও, চ্যানেল কিউ থেকে একটি জব নেওয়ার জন্য <code>receiver</code>-কে মিউটেট করতে হয়, তাই থ্রেডগুলির <code>receiver</code>-কে শেয়ার এবং পরিবর্তন করার জন্য একটি নিরাপদ উপায় প্রয়োজন; অন্যথায়, আমরা রেস কন্ডিশন পেতে পারি (যেমনটি অধ্যায় ১৬-তে আলোচনা করা হয়েছে)।</p>
+<p>অধ্যায় ১৬-তে আলোচনা করা থ্রেড-সেফ স্মার্ট পয়েন্টারগুলির কথা মনে করুন: একাধিক থ্রেডে মালিকানা শেয়ার করতে এবং থ্রেডগুলিকে মান পরিবর্তন করার অনুমতি দিতে, আমাদের <code>Arc&lt;Mutex&lt;T&gt;&gt;</code> ব্যবহার করতে হবে। <code>Arc</code> টাইপ একাধিক <code>Worker</code>-কে রিসিভারের মালিকানা দেবে এবং <code>Mutex</code> নিশ্চিত করবে যে একবারে শুধুমাত্র একটি <code>Worker</code>-ই রিসিভার থেকে জব পাবে। লিস্টিং ২১-১৮ আমাদের প্রয়োজনীয় পরিবর্তনগুলি দেখায়।</p>
+<p>src/lib.rs</p>
+<pre><code class="language-rust noplayground">use std::{
     sync::{Arc, Mutex, mpsc},
     thread,
 };
 // --snip--
 
-# pub struct ThreadPool {
-#     workers: Vec&lt;Worker&gt;,
-#     sender: mpsc::Sender&lt;Job&gt;,
-# }
-# 
-# struct Job;
-# 
-impl ThreadPool {
+<span class="boring">pub struct ThreadPool {
+</span><span class="boring">    workers: Vec&lt;Worker&gt;,
+</span><span class="boring">    sender: mpsc::Sender&lt;Job&gt;,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">struct Job;
+</span><span class="boring">
+</span>impl ThreadPool {
     // --snip--
-#     /// Create a new ThreadPool.
-#     ///
-#     /// The size is the number of threads in the pool.
-#     ///
-#     /// # Panics
-#     ///
-#     /// The `new` function will panic if the size is zero.
-    pub fn new(size: usize) -&gt; ThreadPool {
+<span class="boring">    /// Create a new ThreadPool.
+</span><span class="boring">    ///
+</span><span class="boring">    /// The size is the number of threads in the pool.
+</span><span class="boring">    ///
+</span><span class="boring">    /// # Panics
+</span><span class="boring">    ///
+</span><span class="boring">    /// The `new` function will panic if the size is zero.
+</span>    pub fn new(size: usize) -&gt; ThreadPool {
         assert!(size &gt; 0);
 
         let (sender, receiver) = mpsc::channel();
@@ -840,38 +804,37 @@ impl ThreadPool {
     }
 
     // --snip--
-# 
-#     pub fn execute&lt;F&gt;(&amp;self, f: F)
-#     where
-#         F: FnOnce() + Send + 'static,
-#     {
-#     }
-}
+<span class="boring">
+</span><span class="boring">    pub fn execute&lt;F&gt;(&amp;self, f: F)
+</span><span class="boring">    where
+</span><span class="boring">        F: FnOnce() + Send + 'static,
+</span><span class="boring">    {
+</span><span class="boring">    }
+</span>}
 
 // --snip--
 
-# struct Worker {
-#     id: usize,
-#     thread: thread::JoinHandle&lt;()&gt;,
-# }
-# 
-impl Worker {
+<span class="boring">struct Worker {
+</span><span class="boring">    id: usize,
+</span><span class="boring">    thread: thread::JoinHandle&lt;()&gt;,
+</span><span class="boring">}
+</span><span class="boring">
+</span>impl Worker {
     fn new(id: usize, receiver: Arc&lt;Mutex&lt;mpsc::Receiver&lt;Job&gt;&gt;&gt;) -&gt; Worker {
         // --snip--
-#         let thread = thread::spawn(|| {
-#             receiver;
-#         });
-# 
-#         Worker { id, thread }
-    }
-}
-</code></pre>
-</Listing>
+<span class="boring">        let thread = thread::spawn(|| {
+</span><span class="boring">            receiver;
+</span><span class="boring">        });
+</span><span class="boring">
+</span><span class="boring">        Worker { id, thread }
+</span>    }
+}</code></pre>
+<p>Listing 21-18: <code>Arc</code> এবং <code>Mutex</code> ব্যবহার করে <code>Worker</code> ইনস্ট্যান্সগুলির মধ্যে রিসিভার শেয়ার করা</p>
 <p><code>ThreadPool::new</code>-এ, আমরা রিসিভারটিকে একটি <code>Arc</code> এবং একটি <code>Mutex</code>-এ রাখি। প্রতিটি নতুন <code>Worker</code>-এর জন্য, আমরা <code>Arc</code> ক্লোন করি যাতে রেফারেন্স কাউন্ট বাড়ে এবং <code>Worker</code> ইনস্ট্যান্সগুলি রিসিভারের মালিকানা শেয়ার করতে পারে।</p>
 <p>এই পরিবর্তনগুলির সাথে, কোডটি কম্পাইল হয়! আমরা লক্ষ্যের কাছাকাছি চলে এসেছি!</p>
 <h4 id="execute-মেথডটি-ইমপলিমেনট-করা"><a class="header" href="#execute-মেথডটি-ইমপলিমেনট-করা"><code>execute</code> মেথডটি ইমপ্লিমেন্ট করা</a></h4>
-<p>চলুন অবশেষে <code>ThreadPool</code>-এর <code>execute</code> মেথডটি ইমপ্লিমেন্ট করি। আমরা <code>Job</code>-কে একটি struct থেকে একটি trait object-এর জন্য একটি টাইপ এলিয়াসে পরিবর্তন করব যা <code>execute</code>-এর প্রাপ্ত ক্লোজারের টাইপ ধারণ করে। অধ্যায় ২০-এর <a href="ch20-03-advanced-types.html#creating-type-synonyms-with-type-aliases">"Creating Type Synonyms with Type Aliases"</a>-এ আলোচনা করা হয়েছে, টাইপ এলিয়াস আমাদের দীর্ঘ টাইপগুলোকে ব্যবহারের সুবিধার জন্য ছোট করতে দেয়। লিস্টিং ২১-১৯ দেখুন।</p>
-<Listing number="21-19" file-name="src/lib.rs" caption="প্রতিটি ক্লোজার ধারণকারী একটি `Box`-এর জন্য একটি `Job` টাইপ এলিয়াস তৈরি করা এবং তারপর চ্যানেলের মাধ্যমে জব পাঠানো">
+<p>চলুন অবশেষে <code>ThreadPool</code>-এর <code>execute</code> মেথডটি ইমপ্লিমেন্ট করি। আমরা <code>Job</code>-কে একটি struct থেকে একটি trait object-এর জন্য একটি টাইপ এলিয়াসে পরিবর্তন করব যা <code>execute</code>-এর প্রাপ্ত ক্লোজারের টাইপ ধারণ করে। অধ্যায় ২০-এর <a href="ch20-03-advanced-types.html#creating-type-synonyms-with-type-aliases">“Creating Type Synonyms with Type Aliases”</a>-এ আলোচনা করা হয়েছে, টাইপ এলিয়াস আমাদের দীর্ঘ টাইপগুলোকে ব্যবহারের সুবিধার জন্য ছোট করতে দেয়। লিস্টিং ২১-১৯ দেখুন।</p>
+<p>src/lib.rs</p>
 <pre><code class="language-rust noplayground"><span class="boring">use std::{
 </span><span class="boring">    sync::{Arc, Mutex, mpsc},
 </span><span class="boring">    thread,
@@ -937,10 +900,10 @@ impl ThreadPool {
 </span><span class="boring">        Worker { id, thread }
 </span><span class="boring">    }
 </span><span class="boring">}</span></code></pre>
-</Listing>
+<p>Listing 21-19: প্রতিটি ক্লোজার ধারণকারী একটি <code>Box</code>-এর জন্য একটি <code>Job</code> টাইপ এলিয়াস তৈরি করা এবং তারপর চ্যানেলের মাধ্যমে জব পাঠানো</p>
 <p><code>execute</code>-এ প্রাপ্ত ক্লোজার ব্যবহার করে একটি নতুন <code>Job</code> ইনস্ট্যান্স তৈরি করার পরে, আমরা সেই জবটি চ্যানেলের সেন্ডিং এন্ড দিয়ে পাঠাই। আমরা <code>send</code>-এর উপর <code>unwrap</code> কল করছি যদি সেন্ডিং ব্যর্থ হয় সেই কেসের জন্য। এটি ঘটতে পারে যদি, উদাহরণস্বরূপ, আমরা আমাদের সমস্ত থ্রেডকে এক্সিকিউট করা থেকে বিরত রাখি, যার মানে রিসিভিং এন্ড নতুন বার্তা গ্রহণ করা বন্ধ করে দিয়েছে। এই মুহূর্তে, আমরা আমাদের থ্রেডগুলিকে এক্সিকিউট করা থেকে বিরত রাখতে পারি না: আমাদের থ্রেডগুলি পুল বিদ্যমান থাকা পর্যন্ত এক্সিকিউট হতে থাকে। আমরা <code>unwrap</code> ব্যবহার করার কারণ হলো আমরা জানি যে ব্যর্থতার কেসটি ঘটবে না, কিন্তু কম্পাইলার তা জানে না।</p>
 <p>কিন্তু আমরা এখনও পুরোপুরি শেষ করিনি! <code>Worker</code>-এ, <code>thread::spawn</code>-কে পাস করা আমাদের ক্লোজারটি এখনও শুধুমাত্র চ্যানেলের রিসিভিং এন্ডকে <em>রেফারেন্স</em> করে। এর পরিবর্তে, আমাদের ক্লোজারটিকে চিরতরে লুপ করতে হবে, চ্যানেলের রিসিভিং এন্ড থেকে একটি জবের জন্য জিজ্ঞাসা করতে হবে এবং যখন এটি একটি জব পায় তখন সেটি চালাতে হবে। চলুন লিস্টিং ২১-২০-তে দেখানো পরিবর্তনটি <code>Worker::new</code>-তে করি।</p>
-<Listing number="21-20" file-name="src/lib.rs" caption="`Worker` ইনস্ট্যান্সের থ্রেডে জবগুলি গ্রহণ এবং এক্সিকিউট করা">
+<p>src/lib.rs</p>
 <pre><code class="language-rust noplayground"><span class="boring">use std::{
 </span><span class="boring">    sync::{Arc, Mutex, mpsc},
 </span><span class="boring">    thread,
@@ -1009,7 +972,7 @@ impl Worker {
         Worker { id, thread }
     }
 }</code></pre>
-</Listing>
+<p>Listing 21-20: <code>Worker</code> ইনস্ট্যান্সের থ্রেডে জবগুলি গ্রহণ এবং এক্সিকিউট করা</p>
 <p>এখানে, আমরা প্রথমে মিউটেক্স অর্জন করতে <code>receiver</code>-এর উপর <code>lock</code> কল করি, এবং তারপর আমরা যেকোনো এররের উপর প্যানিক করার জন্য <code>unwrap</code> কল করি। একটি লক অর্জন ব্যর্থ হতে পারে যদি মিউটেক্সটি একটি <em>poisoned</em> অবস্থায় থাকে, যা ঘটতে পারে যদি অন্য কোনো থ্রেড লকটি ধরে রাখার সময় প্যানিক করে এবং লকটি রিলিজ না করে। এই পরিস্থিতিতে, এই থ্রেডটিকে প্যানিক করানোর জন্য <code>unwrap</code> কল করা সঠিক পদক্ষেপ। আপনি এই <code>unwrap</code>-কে আপনার জন্য অর্থপূর্ণ একটি এরর বার্তা সহ একটি <code>expect</code>-এ পরিবর্তন করতে পারেন।</p>
 <p>যদি আমরা মিউটেক্সের উপর লক পাই, আমরা চ্যানেল থেকে একটি <code>Job</code> গ্রহণ করতে <code>recv</code> কল করি। একটি চূড়ান্ত <code>unwrap</code> এখানেও যেকোনো এরর পার করে দেয়, যা ঘটতে পারে যদি সেন্ডার ধারণকারী থ্রেডটি বন্ধ হয়ে যায়, যেমন <code>send</code> মেথডটি রিসিভার বন্ধ হয়ে গেলে <code>Err</code> রিটার্ন করে।</p>
 <p><code>recv</code>-এর কলটি ব্লক করে, তাই যদি এখনও কোনো জব না থাকে, বর্তমান থ্রেডটি একটি জব উপলব্ধ না হওয়া পর্যন্ত অপেক্ষা করবে। <code>Mutex&lt;T&gt;</code> নিশ্চিত করে যে একবারে শুধুমাত্র একটি <code>Worker</code> থ্রেডই একটি জব রিকোয়েস্ট করার চেষ্টা করছে।</p>
@@ -1062,7 +1025,7 @@ Worker 2 got a job; executing.
 </blockquote>
 <p>এটি একটি ভাল সময় থামার এবং চিন্তা করার যে লিস্টিং ২১-১৮, ২১-১৯, এবং ২১-২০-এর কোড কীভাবে ভিন্ন হতো যদি আমরা কাজ করার জন্য একটি ক্লোজারের পরিবর্তে ফিউচার (futures) ব্যবহার করতাম। কোন টাইপগুলি পরিবর্তন হতো? মেথড সিগনেচারগুলো কীভাবে ভিন্ন হতো, যদি überhaupt হয়? কোডের কোন অংশগুলো একই থাকতো?</p>
 <p>অধ্যায় ১৭ এবং অধ্যায় ১৯-এ <code>while let</code> লুপ সম্পর্কে শেখার পর, আপনি হয়তো ভাবছেন কেন আমরা <code>Worker</code> থ্রেডের কোডটি লিস্টিং ২১-২১-এ দেখানো উপায়ে লিখিনি।</p>
-<Listing number="21-21" file-name="src/lib.rs" caption="`while let` ব্যবহার করে `Worker::new`-এর একটি বিকল্প ইমপ্লিমেন্টেশন">
+<p>src/lib.rs</p>
 <pre><code class="language-rust ignore not_desired_behavior"><span class="boring">use std::{
 </span><span class="boring">    sync::{Arc, Mutex, mpsc},
 </span><span class="boring">    thread,
@@ -1128,7 +1091,7 @@ impl Worker {
         Worker { id, thread }
     }
 }</code></pre>
-</Listing>
+<p>Listing 21-21: <code>while let</code> ব্যবহার করে <code>Worker::new</code>-এর একটি বিকল্প ইমপ্লিমেন্টেশন</p>
 <p>এই কোডটি কম্পাইল এবং রান হয় কিন্তু কাঙ্ক্ষিত থ্রেডিং আচরণ দেয় না: একটি ধীরগতির রিকোয়েস্ট এখনও অন্যান্য রিকোয়েস্টকে প্রসেস করার জন্য অপেক্ষা করাবে। কারণটি কিছুটা সূক্ষ্ম: <code>Mutex</code> struct-এর কোনো পাবলিক <code>unlock</code> মেথড নেই কারণ লকের মালিকানা <code>lock</code> মেথডের রিটার্ন করা <code>LockResult&lt;MutexGuard&lt;T&gt;&gt;</code>-এর মধ্যে থাকা <code>MutexGuard&lt;T&gt;</code>-এর লাইফটাইমের উপর ভিত্তি করে। কম্পাইল টাইমে, বোরো চেকার তখন এই নিয়মটি প্রয়োগ করতে পারে যে একটি <code>Mutex</code> দ্বারা সুরক্ষিত রিসোর্স অ্যাক্সেস করা যাবে না যদি না আমরা লকটি ধরে রাখি। তবে, এই ইমপ্লিমেন্টেশনটি <code>MutexGuard&lt;T&gt;</code>-এর লাইফটাইম সম্পর্কে সতর্ক না থাকলে উদ্দেশ্যর চেয়ে বেশি সময় ধরে লক ধরে রাখতে পারে।</p>
 <p>লিস্টিং ২১-২০-এর কোড যা <code>let job = receiver.lock().unwrap().recv().unwrap();</code> ব্যবহার করে, তা কাজ করে কারণ <code>let</code>-এর সাথে, সমান চিহ্নের ডানদিকে এক্সপ্রেশনে ব্যবহৃত যেকোনো টেম্পোরারি ভ্যালু <code>let</code> স্টেটমেন্ট শেষ হওয়ার সাথে সাথে ড্রপ হয়ে যায়। তবে, <code>while let</code> (এবং <code>if let</code> ও <code>match</code>) সংশ্লিষ্ট ব্লকের শেষ না হওয়া পর্যন্ত টেম্পোরারি ভ্যালু ড্রপ করে না। লিস্টিং ২১-২১-এ, <code>job()</code> কলের পুরো সময় ধরে লকটি ধরা থাকে, যার মানে অন্য <code>Worker</code> ইনস্ট্যান্সগুলো জব রিসিভ করতে পারে না।</p>
 
@@ -1179,7 +1142,6 @@ impl Worker {
 
         <!-- Custom JS scripts -->
         <script src="ferris.js"></script>
-
 
 
     </div>

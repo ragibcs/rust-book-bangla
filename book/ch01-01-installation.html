@@ -24,9 +24,9 @@
         <link rel="stylesheet" href="fonts/fonts.css">
 
         <!-- Highlight.js Stylesheets -->
-        <link rel="stylesheet" id="highlight-css" href="highlight.css">
-        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
-        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
         <link rel="stylesheet" href="ferris.css">
@@ -35,34 +35,21 @@
         <link rel="stylesheet" href="theme/listing.css">
 
 
-        <!-- Provide site root and default themes to javascript -->
+        <!-- Provide site root to javascript -->
         <script>
-            const path_to_root = "";
-            const default_light_theme = "light";
-            const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex.js";
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc.js"></script>
     </head>
     <body>
-    <div id="mdbook-help-container">
-        <div id="mdbook-help-popup">
-            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
-            <div>
-                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
-                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
-                <p>Press <kbd>?</kbd> to show this help</p>
-                <p>Press <kbd>Esc</kbd> to hide this help</p>
-            </div>
-        </div>
-    </div>
     <div id="body-container">
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
         <script>
             try {
-                let theme = localStorage.getItem('mdbook-theme');
-                let sidebar = localStorage.getItem('mdbook-sidebar');
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
 
                 if (theme.startsWith('"') && theme.endsWith('"')) {
                     localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
@@ -76,8 +63,7 @@
 
         <!-- Set the theme before any content is loaded, prevents flash -->
         <script>
-            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
-            let theme;
+            var theme;
             try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
             if (theme === null || theme === undefined) { theme = default_theme; }
             const html = document.documentElement;
@@ -90,20 +76,17 @@
 
         <!-- Hide / unhide sidebar before it is displayed -->
         <script>
-            let sidebar = null;
-            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
             if (document.body.clientWidth >= 1080) {
                 try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
                 sidebar = sidebar || 'visible';
             } else {
                 sidebar = 'hidden';
-                sidebar_toggle.checked = false;
             }
-            if (sidebar === 'visible') {
-                sidebar_toggle.checked = true;
-            } else {
-                html.classList.remove('sidebar-visible');
-            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
@@ -130,14 +113,13 @@
                             <i class="fa fa-paint-brush"></i>
                         </button>
                         <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
-                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
                         </ul>
-                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
                             <i class="fa fa-search"></i>
                         </button>
                     </div>
@@ -157,12 +139,7 @@
 
                 <div id="search-wrapper" class="hidden">
                     <form id="searchbar-outer" class="searchbar-outer">
-                        <div class="search-wrapper">
-                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
-                            <div class="spinner-wrapper">
-                                <i class="fa fa-spinner fa-spin"></i>
-                            </div>
-                        </div>
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
                     </form>
                     <div id="searchresults-outer" class="searchresults-outer hidden">
                         <div id="searchresults-header" class="searchresults-header"></div>
@@ -188,10 +165,10 @@
 <p>দ্রষ্টব্য: আপনি যদি কোনো কারণে <code>rustup</code> ব্যবহার করতে না চান, তাহলে আরও বিকল্পের জন্য <a href="https://forge.rust-lang.org/infra/other-installation-methods.html">Other Rust Installation Methods পেজটি</a> দেখুন।</p>
 </blockquote>
 <p>নিচের পদক্ষেপগুলো রাস্ট কম্পাইলারের সর্বশেষ স্টেবল ভার্সন ইনস্টল করবে। রাস্টের স্ট্যাবিলিটি গ্যারান্টি নিশ্চিত করে যে এই বইয়ের সমস্ত উদাহরণ যা কম্পাইল হয়, তা রাস্টের নতুন ভার্সনগুলোর সাথেও কম্পাইল হতে থাকবে। ভার্সনভেদে আউটপুট সামান্য ভিন্ন হতে পারে কারণ রাস্ট প্রায়শই এরর মেসেজ এবং ওয়ার্নিং উন্নত করে। অর্থাৎ, এই পদক্ষেপগুলো ব্যবহার করে আপনি রাস্টের যেকোনো নতুন, স্টেবল ভার্সন ইনস্টল করলে তা এই বইয়ের বিষয়বস্তুর সাথে সঠিকভাবে কাজ করবে।</p>
-<blockquote>
+<section class="note" aria-role="note">
 <h3 id="কমানড-লাইন-নোটেশন"><a class="header" href="#কমানড-লাইন-নোটেশন">কমান্ড লাইন নোটেশন</a></h3>
 <p>এই অধ্যায়ে এবং পুরো বই জুড়ে, আমরা টার্মিনালে ব্যবহৃত কিছু কমান্ড দেখাব। যে লাইনগুলো আপনার টার্মিনালে প্রবেশ করানো উচিত, সেগুলোর সবই <code>$</code> দিয়ে শুরু হয়। আপনার <code>$</code> চিহ্নটি টাইপ করার দরকার নেই; এটি কমান্ড লাইন প্রম্পট যা প্রতিটি কমান্ডের শুরু নির্দেশ করার জন্য দেখানো হয়। যে লাইনগুলো <code>$</code> দিয়ে শুরু হয় না, সেগুলো সাধারণত আগের কমান্ডের আউটপুট দেখায়। অতিরিক্তভাবে, PowerShell-এর জন্য নির্দিষ্ট উদাহরণগুলোতে <code>$</code> এর পরিবর্তে <code>&gt;</code> ব্যবহার করা হবে।</p>
-</blockquote>
+</section>
 <h3 id="linux-বা-macos-এ-rustup-ইনসটল-করা"><a class="header" href="#linux-বা-macos-এ-rustup-ইনসটল-করা">Linux বা macOS-এ <code>rustup</code> ইনস্টল করা</a></h3>
 <p>আপনি যদি Linux বা macOS ব্যবহার করেন, তাহলে একটি টার্মিনাল খুলুন এবং নিম্নলিখিত কমান্ডটি প্রবেশ করান:</p>
 <pre><code class="language-console">$ curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf | sh
@@ -292,7 +269,6 @@ $ cargo add rand@0.8.5 trpl@0.2.0
 
         <!-- Custom JS scripts -->
         <script src="ferris.js"></script>
-
 
 
     </div>

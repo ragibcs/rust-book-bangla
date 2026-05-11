@@ -24,9 +24,9 @@
         <link rel="stylesheet" href="fonts/fonts.css">
 
         <!-- Highlight.js Stylesheets -->
-        <link rel="stylesheet" id="highlight-css" href="highlight.css">
-        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
-        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
         <link rel="stylesheet" href="ferris.css">
@@ -35,34 +35,21 @@
         <link rel="stylesheet" href="theme/listing.css">
 
 
-        <!-- Provide site root and default themes to javascript -->
+        <!-- Provide site root to javascript -->
         <script>
-            const path_to_root = "";
-            const default_light_theme = "light";
-            const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex.js";
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc.js"></script>
     </head>
     <body>
-    <div id="mdbook-help-container">
-        <div id="mdbook-help-popup">
-            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
-            <div>
-                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
-                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
-                <p>Press <kbd>?</kbd> to show this help</p>
-                <p>Press <kbd>Esc</kbd> to hide this help</p>
-            </div>
-        </div>
-    </div>
     <div id="body-container">
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
         <script>
             try {
-                let theme = localStorage.getItem('mdbook-theme');
-                let sidebar = localStorage.getItem('mdbook-sidebar');
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
 
                 if (theme.startsWith('"') && theme.endsWith('"')) {
                     localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
@@ -76,8 +63,7 @@
 
         <!-- Set the theme before any content is loaded, prevents flash -->
         <script>
-            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
-            let theme;
+            var theme;
             try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
             if (theme === null || theme === undefined) { theme = default_theme; }
             const html = document.documentElement;
@@ -90,20 +76,17 @@
 
         <!-- Hide / unhide sidebar before it is displayed -->
         <script>
-            let sidebar = null;
-            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
             if (document.body.clientWidth >= 1080) {
                 try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
                 sidebar = sidebar || 'visible';
             } else {
                 sidebar = 'hidden';
-                sidebar_toggle.checked = false;
             }
-            if (sidebar === 'visible') {
-                sidebar_toggle.checked = true;
-            } else {
-                html.classList.remove('sidebar-visible');
-            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
@@ -130,14 +113,13 @@
                             <i class="fa fa-paint-brush"></i>
                         </button>
                         <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
-                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
                         </ul>
-                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
                             <i class="fa fa-search"></i>
                         </button>
                     </div>
@@ -157,12 +139,7 @@
 
                 <div id="search-wrapper" class="hidden">
                     <form id="searchbar-outer" class="searchbar-outer">
-                        <div class="search-wrapper">
-                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
-                            <div class="spinner-wrapper">
-                                <i class="fa fa-spinner fa-spin"></i>
-                            </div>
-                        </div>
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
                     </form>
                     <div id="searchresults-outer" class="searchresults-outer hidden">
                         <div id="searchresults-header" class="searchresults-header"></div>
@@ -208,12 +185,12 @@ edition = "2024"
 
 [dependencies]
 </code></pre>
-<p>যেমনটি আপনি অধ্যায় ১-এ দেখেছেন, <code>cargo new</code> আপনার জন্য একটি "Hello, world!" প্রোগ্রাম তৈরি করে। <em>src/main.rs</em> ফাইলটি দেখুন:</p>
+<p>যেমনটি আপনি অধ্যায় ১-এ দেখেছেন, <code>cargo new</code> আপনার জন্য একটি “Hello, world!” প্রোগ্রাম তৈরি করে। <em>src/main.rs</em> ফাইলটি দেখুন:</p>
 <p><span class="filename">ফাইলের নাম: src/main.rs</span></p>
 <pre><pre class="playground"><code class="language-rust edition2024">fn main() {
     println!("Hello, world!");
 }</code></pre></pre>
-<p>এখন চলুন এই "Hello, world!" প্রোগ্রামটি কম্পাইল করি এবং <code>cargo run</code> কমান্ড ব্যবহার করে একই সাথে রান করি:</p>
+<p>এখন চলুন এই “Hello, world!” প্রোগ্রামটি কম্পাইল করি এবং <code>cargo run</code> কমান্ড ব্যবহার করে একই সাথে রান করি:</p>
 <pre><code class="language-console">$ cargo run
    Compiling guessing_game v0.1.0 (file:///projects/guessing_game)
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.08s
@@ -224,7 +201,7 @@ Hello, world!
 <p><em>src/main.rs</em> ফাইলটি আবার খুলুন। আপনি সমস্ত কোড এই ফাইলেই লিখবেন।</p>
 <h2 id="একটি-অনুমান-পরসেস-করা"><a class="header" href="#একটি-অনুমান-পরসেস-করা">একটি অনুমান প্রসেস করা</a></h2>
 <p>অনুমান করার গেম প্রোগ্রামের প্রথম অংশে ব্যবহারকারীর কাছ থেকে ইনপুট চাওয়া হবে, সেই ইনপুট প্রসেস করা হবে এবং ইনপুটটি প্রত্যাশিত বিন্যাসে আছে কিনা তা পরীক্ষা করা হবে। শুরু করার জন্য, আমরা প্লেয়ারকে একটি অনুমান ইনপুট করার সুযোগ দেব। লিস্টিং ২-১ এর কোডটি <em>src/main.rs</em> ফাইলে লিখুন।</p>
-<Listing number="2-1" file-name="src/main.rs" caption="ব্যবহারকারীর কাছ থেকে একটি অনুমান নিয়ে তা প্রিন্ট করার কোড">
+<p>src/main.rs</p>
 <pre><code class="language-rust ignore">use std::io;
 
 fn main() {
@@ -240,7 +217,7 @@ fn main() {
 
     println!("You guessed: {guess}");
 }</code></pre>
-</Listing>
+<p>Listing 2-1: ব্যবহারকারীর কাছ থেকে একটি অনুমান নিয়ে তা প্রিন্ট করার কোড</p>
 <p>এই কোডে অনেক তথ্য রয়েছে, তাই চলুন লাইন বাই লাইন আলোচনা করা যাক। ব্যবহারকারীর ইনপুট পেতে এবং তারপর ফলাফল আউটপুট হিসেবে প্রিন্ট করতে, আমাদের <code>io</code> ইনপুট/আউটপুট লাইব্রেরিটি স্কোপের মধ্যে আনতে হবে। <code>io</code> লাইব্রেরিটি স্ট্যান্ডার্ড লাইব্রেরি থেকে আসে, যা <code>std</code> নামে পরিচিত:</p>
 <pre><code class="language-rust ignore">use std::io;
 <span class="boring">
@@ -312,7 +289,7 @@ fn main() {
 </span><span class="boring">}</span></code></pre>
 <p>এখন প্রোগ্রামটি আকর্ষণীয় হয়ে উঠছে! এই ছোট লাইনে অনেক কিছু ঘটছে। আমরা ভ্যারিয়েবল তৈরি করতে <code>let</code> স্টেটমেন্ট ব্যবহার করি। এখানে আরেকটি উদাহরণ:</p>
 <pre><code class="language-rust ignore">let apples = 5;</code></pre>
-<p>এই লাইনটি <code>apples</code> নামে একটি নতুন ভ্যারিয়েবল তৈরি করে এবং এটিকে 5 মানের সাথে বাইন্ড করে। রাস্ট-এ, ভ্যারিয়েবলগুলো ডিফল্টরূপে অপরিবর্তনীয় (immutable), যার মানে একবার আমরা ভ্যারিয়েবলে একটি মান দিলে, সেই মান আর পরিবর্তন হবে না। আমরা এই ধারণাটি অধ্যায় ৩-এর <a href="ch03-01-variables-and-mutability.html#variables-and-mutability">"Variables and Mutability"</a> বিভাগে বিস্তারিতভাবে আলোচনা করব। একটি ভ্যারিয়েবলকে পরিবর্তনযোগ্য (mutable) করতে, আমরা ভ্যারিয়েবলের নামের আগে <code>mut</code> যোগ করি:</p>
+<p>এই লাইনটি <code>apples</code> নামে একটি নতুন ভ্যারিয়েবল তৈরি করে এবং এটিকে 5 মানের সাথে বাইন্ড করে। রাস্ট-এ, ভ্যারিয়েবলগুলো ডিফল্টরূপে অপরিবর্তনীয় (immutable), যার মানে একবার আমরা ভ্যারিয়েবলে একটি মান দিলে, সেই মান আর পরিবর্তন হবে না। আমরা এই ধারণাটি অধ্যায় ৩-এর <a href="ch03-01-variables-and-mutability.html#variables-and-mutability">“Variables and Mutability”</a> বিভাগে বিস্তারিতভাবে আলোচনা করব। একটি ভ্যারিয়েবলকে পরিবর্তনযোগ্য (mutable) করতে, আমরা ভ্যারিয়েবলের নামের আগে <code>mut</code> যোগ করি:</p>
 <pre><code class="language-rust ignore">let apples = 5; // immutable
 let mut bananas = 5; // mutable</code></pre>
 <blockquote>
@@ -453,7 +430,6 @@ cd listings/ch02-guessing-game-tutorial/listing-02-02/
 rm Cargo.lock
 cargo clean
 cargo build -->
-<Listing number="2-2" caption="rand crate-কে ডিপেন্ডেন্সি হিসেবে যোগ করার পর `cargo build` চালানোর আউটপুট">
 <pre><code class="language-console">$ cargo build
   Updating crates.io index
    Locking 15 packages to latest Rust 1.85.0 compatible versions
@@ -475,7 +451,7 @@ cargo build -->
  Compiling guessing_game v0.1.0 (file:///projects/guessing_game)
   Finished `dev` profile [unoptimized + debuginfo] target(s) in 2.48s```
 
-&lt;/Listing&gt;
+Listing 2-2: rand crate-কে ডিপেন্ডেন্সি হিসেবে যোগ করার পর `cargo build` চালানোর আউটপুট
 
 আপনি ভিন্ন ভার্সন নম্বর দেখতে পারেন (কিন্তু SemVer-এর কারণে সেগুলি সব কোডের সাথে সামঞ্জস্যপূর্ণ হবে) এবং ভিন্ন লাইন দেখতে পারেন (অপারেটিং সিস্টেমের উপর নির্ভর করে), এবং লাইনগুলি ভিন্ন ক্রমে থাকতে পারে।
 
@@ -521,7 +497,7 @@ rand = "0.9.0"
 <p><a href="https://doc.rust-lang.org/cargo/">কার্গো</a> এবং <a href="https://doc.rust-lang.org/cargo/reference/publishing.html">এর ইকোসিস্টেম</a> সম্পর্কে আরও অনেক কিছু বলার আছে, যা আমরা অধ্যায় ১৪-তে আলোচনা করব, কিন্তু আপাতত, আপনার এটুকুই জানা দরকার। কার্গো লাইব্রেরি পুনঃব্যবহার করা খুব সহজ করে তোলে, তাই রাস্টেশিয়ানরা ছোট ছোট প্রজেক্ট লিখতে পারে যা বিভিন্ন প্যাকেজ থেকে একত্রিত হয়।</p>
 <h3 id="একটি-রযানডম-সংখযা-তৈরি-করা"><a class="header" href="#একটি-রযানডম-সংখযা-তৈরি-করা">একটি র‍্যান্ডম সংখ্যা তৈরি করা</a></h3>
 <p>চলুন অনুমান করার জন্য একটি সংখ্যা তৈরি করতে <code>rand</code> ব্যবহার করা শুরু করি। পরবর্তী ধাপ হল <em>src/main.rs</em> আপডেট করা, যেমনটি লিস্টিং ২-৩-এ দেখানো হয়েছে।</p>
-<Listing number="2-3" file-name="src/main.rs" caption="একটি র‍্যান্ডম সংখ্যা তৈরি করার জন্য কোড যোগ করা">
+<p>src/main.rs</p>
 <pre><code class="language-rust ignore">use std::io;
 
 use rand::Rng;
@@ -543,7 +519,7 @@ fn main() {
 
     println!("You guessed: {guess}");
 }</code></pre>
-</Listing>
+<p>Listing 2-3: একটি র‍্যান্ডম সংখ্যা তৈরি করার জন্য কোড যোগ করা</p>
 <p>প্রথমে আমরা <code>use rand::Rng;</code> লাইনটি যোগ করি। <code>Rng</code> ট্রেইটটি র‍্যান্ডম নম্বর জেনারেটর দ্বারা প্রয়োগ করা মেথডগুলিকে সংজ্ঞায়িত করে, এবং এই ট্রেইটটি আমাদের সেই মেথডগুলি ব্যবহার করার জন্য স্কোপে থাকতে হবে। অধ্যায় ১০-এ ট্রেইটগুলি বিস্তারিতভাবে আলোচনা করা হবে।</p>
 <p>এরপরে, আমরা মাঝখানে দুটি লাইন যোগ করছি। প্রথম লাইনে, আমরা <code>rand::thread_rng</code> ফাংশনটি কল করি যা আমাদের নির্দিষ্ট র‍্যান্ডম নম্বর জেনারেটর দেয় যা আমরা ব্যবহার করতে যাচ্ছি: এটি বর্তমান এক্সিকিউশন থ্রেডের জন্য স্থানীয় এবং অপারেটিং সিস্টেম দ্বারা সিড করা হয়। তারপরে আমরা র‍্যান্ডম নম্বর জেনারেটরে <code>gen_range</code> মেথডটি কল করি। এই মেথডটি <code>Rng</code> ট্রেইট দ্বারা সংজ্ঞায়িত যা আমরা <code>use rand::Rng;</code> স্টেটমেন্ট দিয়ে স্কোপে এনেছিলাম। <code>gen_range</code> মেথডটি একটি রেঞ্জ এক্সপ্রেশনকে আর্গুমেন্ট হিসেবে নেয় এবং সেই রেঞ্জের মধ্যে একটি র‍্যান্ডম নম্বর তৈরি করে। আমরা এখানে যে ধরনের রেঞ্জ এক্সপ্রেশন ব্যবহার করছি তা <code>start..=end</code> আকারে থাকে এবং এটি নিম্ন এবং উচ্চ উভয় সীমার জন্যই অন্তর্ভুক্ত, তাই ১ থেকে ১০০ এর মধ্যে একটি সংখ্যা অনুরোধ করার জন্য আমাদের <code>1..=100</code> নির্দিষ্ট করতে হবে।</p>
 <blockquote>
@@ -580,7 +556,7 @@ You guessed: 5
 <p>আপনার বিভিন্ন র‍্যান্ডম সংখ্যা পাওয়া উচিত, এবং সেগুলি সবই ১ থেকে ১০০ এর মধ্যে সংখ্যা হওয়া উচিত। দারুণ কাজ!</p>
 <h2 id="অনুমানের-সাথে-গোপন-সংখযার-তুলনা"><a class="header" href="#অনুমানের-সাথে-গোপন-সংখযার-তুলনা">অনুমানের সাথে গোপন সংখ্যার তুলনা</a></h2>
 <p>এখন আমাদের কাছে ব্যবহারকারীর ইনপুট এবং একটি র‍্যান্ডম সংখ্যা আছে, আমরা তাদের তুলনা করতে পারি। সেই ধাপটি লিস্টিং ২-৪-এ দেখানো হয়েছে। মনে রাখবেন যে এই কোডটি এখনই কম্পাইল হবে না, যেমনটি আমরা ব্যাখ্যা করব।</p>
-<Listing number="2-4" file-name="src/main.rs" caption="দুটি সংখ্যার তুলনা করার সম্ভাব্য রিটার্ন মানগুলি পরিচালনা করা">
+<p>src/main.rs</p>
 <pre><code class="language-rust ignore does_not_compile">use std::cmp::Ordering;
 use std::io;
 
@@ -610,7 +586,7 @@ fn main() {
         Ordering::Equal =&gt; println!("You win!"),
     }
 }</code></pre>
-</Listing>
+<p>Listing 2-4: দুটি সংখ্যার তুলনা করার সম্ভাব্য রিটার্ন মানগুলি পরিচালনা করা</p>
 <p>প্রথমে আমরা আরেকটি <code>use</code> স্টেটমেন্ট যোগ করি, যা স্ট্যান্ডার্ড লাইব্রেরি থেকে <code>std::cmp::Ordering</code> নামে একটি টাইপ স্কোপে নিয়ে আসে। <code>Ordering</code> টাইপটি আরেকটি enum এবং এর ভ্যারিয়েন্টগুলি হল <code>Less</code>, <code>Greater</code>, এবং <code>Equal</code>। এগুলি হল তিনটি সম্ভাব্য ফলাফল যা আপনি দুটি মান তুলনা করার সময় পেতে পারেন।</p>
 <p>তারপর আমরা নীচে পাঁচটি নতুন লাইন যোগ করি যা <code>Ordering</code> টাইপ ব্যবহার করে। <code>cmp</code> মেথড দুটি মান তুলনা করে এবং যা কিছু তুলনা করা যায় তার উপর কল করা যেতে পারে। এটি আপনি যার সাথে তুলনা করতে চান তার একটি রেফারেন্স নেয়: এখানে এটি <code>guess</code>-কে <code>secret_number</code>-এর সাথে তুলনা করছে। তারপর এটি <code>Ordering</code> enum-এর একটি ভ্যারিয়েন্ট প্রদান করে যা আমরা <code>use</code> স্টেটমেন্ট দিয়ে স্কোপে এনেছিলাম। আমরা একটি <a href="ch06-02-match.html"><code>match</code></a> এক্সপ্রেশন ব্যবহার করি <code>guess</code> এবং <code>secret_number</code>-এর মানগুলির সাথে <code>cmp</code>-কে কল করার ফলে <code>Ordering</code>-এর কোন ভ্যারিয়েন্টটি ফেরত এসেছে তার উপর ভিত্তি করে পরবর্তী কী করতে হবে তা সিদ্ধান্ত নিতে।</p>
 <p>একটি <code>match</code> এক্সপ্রেশন <em>arms</em> (শাখা) দিয়ে গঠিত। একটি arm-এ একটি <em>pattern</em> (প্যাটার্ন) থাকে যার সাথে মেলানো হয়, এবং যে কোডটি চালানো উচিত যদি <code>match</code>-কে দেওয়া মানটি সেই arm-এর প্যাটার্নের সাথে মিলে যায়। রাস্ট <code>match</code>-কে দেওয়া মানটি নেয় এবং প্রতিটি arm-এর প্যাটার্ন একের পর এক পরীক্ষা করে। প্যাটার্ন এবং <code>match</code> কনস্ট্রাক্ট হল শক্তিশালী রাস্ট বৈশিষ্ট্য: এগুলি আপনাকে আপনার কোড সম্মুখীন হতে পারে এমন বিভিন্ন পরিস্থিতি প্রকাশ করতে দেয় এবং তারা নিশ্চিত করে যে আপনি সেগুলি সবই পরিচালনা করেছেন। এই বৈশিষ্ট্যগুলি যথাক্রমে অধ্যায় ৬ এবং অধ্যায় ১৯-এ বিস্তারিতভাবে আলোচনা করা হবে।</p>
@@ -684,7 +660,7 @@ error: could not compile `guessing_game` (bin "guessing_game") due to 1 previous
 <p>লাইনটি হল:</p>
 <pre><code class="language-rust ignore">let guess: u32 = guess.trim().parse().expect("Please type a number!");</code></pre>
 <p>আমরা <code>guess</code> নামে একটি ভ্যারিয়েবল তৈরি করি। কিন্তু অপেক্ষা করুন, প্রোগ্রামে কি ইতিমধ্যে <code>guess</code> নামে একটি ভ্যারিয়েবল নেই? আছে, কিন্তু সহায়কভাবে রাস্ট আমাদের <code>guess</code>-এর পূর্ববর্তী মানটিকে একটি নতুন মান দিয়ে শ্যাডো (shadow) করার অনুমতি দেয়। <em>Shadowing</em> আমাদের <code>guess</code> ভ্যারিয়েবলের নামটি পুনরায় ব্যবহার করতে দেয়, যেমন <code>guess_str</code> এবং <code>guess</code> নামে দুটি অনন্য ভ্যারিয়েবল তৈরি করতে বাধ্য করার পরিবর্তে। আমরা এটি অধ্যায় ৩-এ আরও বিস্তারিতভাবে আলোচনা করব, কিন্তু আপাতত, জেনে রাখুন যে এই বৈশিষ্ট্যটি প্রায়শই ব্যবহৃত হয় যখন আপনি একটি মানকে এক টাইপ থেকে অন্য টাইপে রূপান্তর করতে চান।</p>
-<p>আমরা এই নতুন ভ্যারিয়েবলটিকে <code>guess.trim().parse()</code> এক্সপ্রেশনের সাথে বাইন্ড করি। এক্সপ্রেশনের <code>guess</code> মূল <code>guess</code> ভ্যারিয়েবলটিকে বোঝায় যা ইনপুটটিকে একটি স্ট্রিং হিসাবে ধারণ করেছিল। একটি <code>String</code> ইনস্ট্যান্সের <code>trim</code> মেথড শুরু এবং শেষের যেকোনো হোয়াইটস্পেস দূর করে দেবে, যা আমাদের স্ট্রিংটিকে একটি <code>u32</code>-তে রূপান্তর করার আগে করতে হবে, যা কেবল সংখ্যাসূচক ডেটা ধারণ করতে পারে। ব্যবহারকারীকে <code>read_line</code> সন্তুষ্ট করতে এবং তাদের অনুমান ইনপুট করতে <kbd>enter</kbd> চাপতে হবে, যা স্ট্রিংটিতে একটি নিউলাইন ক্যারেক্টার যোগ করে। উদাহরণস্বরূপ, যদি ব্যবহারকারী <kbd>5</kbd> টাইপ করে এবং <kbd>enter</kbd> চাপে, <code>guess</code> দেখতে এমন হয়: <code>5\n</code>। <code>\n</code> "নিউলাইন" প্রতিনিধিত্ব করে। (উইন্ডোজে, <kbd>enter</kbd> চাপলে একটি ক্যারেজ রিটার্ন এবং একটি নিউলাইন হয়, <code>\r\n</code>।) <code>trim</code> মেথড <code>\n</code> বা <code>\r\n</code> দূর করে, যার ফলে কেবল <code>5</code> থাকে।</p>
+<p>আমরা এই নতুন ভ্যারিয়েবলটিকে <code>guess.trim().parse()</code> এক্সপ্রেশনের সাথে বাইন্ড করি। এক্সপ্রেশনের <code>guess</code> মূল <code>guess</code> ভ্যারিয়েবলটিকে বোঝায় যা ইনপুটটিকে একটি স্ট্রিং হিসাবে ধারণ করেছিল। একটি <code>String</code> ইনস্ট্যান্সের <code>trim</code> মেথড শুরু এবং শেষের যেকোনো হোয়াইটস্পেস দূর করে দেবে, যা আমাদের স্ট্রিংটিকে একটি <code>u32</code>-তে রূপান্তর করার আগে করতে হবে, যা কেবল সংখ্যাসূচক ডেটা ধারণ করতে পারে। ব্যবহারকারীকে <code>read_line</code> সন্তুষ্ট করতে এবং তাদের অনুমান ইনপুট করতে <kbd>enter</kbd> চাপতে হবে, যা স্ট্রিংটিতে একটি নিউলাইন ক্যারেক্টার যোগ করে। উদাহরণস্বরূপ, যদি ব্যবহারকারী <kbd>5</kbd> টাইপ করে এবং <kbd>enter</kbd> চাপে, <code>guess</code> দেখতে এমন হয়: <code>5\n</code>। <code>\n</code> “নিউলাইন” প্রতিনিধিত্ব করে। (উইন্ডোজে, <kbd>enter</kbd> চাপলে একটি ক্যারেজ রিটার্ন এবং একটি নিউলাইন হয়, <code>\r\n</code>।) <code>trim</code> মেথড <code>\n</code> বা <code>\r\n</code> দূর করে, যার ফলে কেবল <code>5</code> থাকে।</p>
 <p>স্ট্রিং-এর উপর <a href="../std/primitive.str.html#method.parse"><code>parse</code> মেথড</a> একটি স্ট্রিংকে অন্য টাইপে রূপান্তর করে। এখানে, আমরা এটিকে একটি স্ট্রিং থেকে একটি সংখ্যায় রূপান্তর করতে ব্যবহার করি। আমাদের রাস্টকে <code>let guess: u32</code> ব্যবহার করে ঠিক কোন সংখ্যা টাইপ আমরা চাই তা বলতে হবে। <code>guess</code>-এর পরে কোলন (<code>:</code>) রাস্টকে বলে যে আমরা ভ্যারিয়েবলের টাইপ অ্যানোটেট করব। রাস্টের কয়েকটি অন্তর্নির্মিত সংখ্যা টাইপ আছে; এখানে দেখা <code>u32</code> একটি আনসাইন্ড, ৩২-বিট ইন্টিজার। এটি একটি ছোট ধনাত্মক সংখ্যার জন্য একটি ভাল ডিফল্ট পছন্দ। আপনি অধ্যায় ৩-এ অন্যান্য সংখ্যা টাইপ সম্পর্কে শিখবেন।</p>
 <p>উপরন্তু, এই উদাহরণ প্রোগ্রামে <code>u32</code> অ্যানোটেশন এবং <code>secret_number</code>-এর সাথে তুলনা করার মানে হল রাস্ট অনুমান করবে যে <code>secret_number</code>-ও একটি <code>u32</code> হওয়া উচিত। তাই এখন তুলনাটি একই টাইপের দুটি মানের মধ্যে হবে!</p>
 <p><code>parse</code> মেথডটি কেবল সেই অক্ষরগুলির উপর কাজ করবে যেগুলিকে যৌক্তিকভাবে সংখ্যায় রূপান্তর করা যায় এবং তাই সহজেই ত্রুটি ঘটাতে পারে। উদাহরণস্বরূপ, যদি স্ট্রিংটিতে <code>A👍%</code> থাকে, তবে সেটিকে সংখ্যায় রূপান্তর করার কোনো উপায় থাকবে না। কারণ এটি ব্যর্থ হতে পারে, <code>parse</code> মেথডটি একটি <code>Result</code> টাইপ প্রদান করে, যেমনটি <code>read_line</code> মেথড করে (আগে “Handling Potential Failure with <code>Result</code>” বিভাগে আলোচনা করা হয়েছে)। আমরা এই <code>Result</code>-কে আবার <code>expect</code> মেথড ব্যবহার করে একইভাবে ব্যবহার করব। যদি <code>parse</code> একটি <code>Err</code> <code>Result</code> ভ্যারিয়েন্ট প্রদান করে কারণ এটি স্ট্রিং থেকে একটি সংখ্যা তৈরি করতে পারেনি, <code>expect</code> কলটি গেমটি ক্র্যাশ করাবে এবং আমরা যে বার্তাটি দিই তা প্রিন্ট করবে। যদি <code>parse</code> সফলভাবে স্ট্রিংটিকে একটি সংখ্যায় রূপান্তর করতে পারে, তবে এটি <code>Result</code>-এর <code>Ok</code> ভ্যারিয়েন্ট প্রদান করবে, এবং <code>expect</code> <code>Ok</code> মান থেকে আমরা যে সংখ্যাটি চাই তা প্রদান করবে।</p>
@@ -749,7 +725,7 @@ Too big!
     }
 }</code></pre>
 <p>যেমন আপনি দেখতে পাচ্ছেন, আমরা অনুমান ইনপুট প্রম্পট থেকে শুরু করে সবকিছু একটি লুপের মধ্যে নিয়ে গেছি। লুপের ভিতরের লাইনগুলিকে আরও চারটি স্পেস করে ইনডেন্ট করতে ভুলবেন না এবং প্রোগ্রামটি আবার চালান। প্রোগ্রামটি এখন চিরকালের জন্য আরেকটি অনুমান চাইবে, যা আসলে একটি নতুন সমস্যা তৈরি করে। মনে হচ্ছে ব্যবহারকারী বের হতে পারছে না!</p>
-<p>ব্যবহারকারী সর্বদা কীবোর্ড শর্টকাট <kbd>ctrl</kbd>-<kbd>c</kbd> ব্যবহার করে প্রোগ্রামটি বাধা দিতে পারে। কিন্তু এই অতৃপ্ত দৈত্য থেকে বাঁচার আরেকটি উপায় আছে, যেমনটি "Comparing the Guess to the Secret Number" বিভাগে <code>parse</code> আলোচনায় উল্লেখ করা হয়েছে: যদি ব্যবহারকারী একটি অ-সংখ্যা উত্তর প্রবেশ করায়, প্রোগ্রামটি ক্র্যাশ করবে। আমরা ব্যবহারকারীকে বের হওয়ার অনুমতি দিতে এর সুবিধা নিতে পারি, যেমনটি এখানে দেখানো হয়েছে:</p>
+<p>ব্যবহারকারী সর্বদা কীবোর্ড শর্টকাট <kbd>ctrl</kbd>-<kbd>c</kbd> ব্যবহার করে প্রোগ্রামটি বাধা দিতে পারে। কিন্তু এই অতৃপ্ত দৈত্য থেকে বাঁচার আরেকটি উপায় আছে, যেমনটি “Comparing the Guess to the Secret Number” বিভাগে <code>parse</code> আলোচনায় উল্লেখ করা হয়েছে: যদি ব্যবহারকারী একটি অ-সংখ্যা উত্তর প্রবেশ করায়, প্রোগ্রামটি ক্র্যাশ করবে। আমরা ব্যবহারকারীকে বের হওয়ার অনুমতি দিতে এর সুবিধা নিতে পারি, যেমনটি এখানে দেখানো হয়েছে:</p>
 <!-- manual-regeneration
 cd listings/ch02-guessing-game-tutorial/no-listing-04-looping/
 touch src/main.rs
@@ -828,7 +804,7 @@ note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 <p><code>You win!</code> এর পরে <code>break</code> লাইনটি যোগ করলে ব্যবহারকারী যখন গোপন সংখ্যাটি সঠিকভাবে অনুমান করে তখন প্রোগ্রামটি লুপ থেকে বেরিয়ে যায়। লুপ থেকে বেরিয়ে যাওয়ার মানে হল প্রোগ্রাম থেকে বেরিয়ে যাওয়া, কারণ লুপটি <code>main</code>-এর শেষ অংশ।</p>
 <h3 id="অবৈধ-ইনপুট-পরিচালনা-করা"><a class="header" href="#অবৈধ-ইনপুট-পরিচালনা-করা">অবৈধ ইনপুট পরিচালনা করা</a></h3>
 <p>গেমের আচরণ আরও পরিমার্জিত করার জন্য, ব্যবহারকারী যখন একটি অ-সংখ্যা ইনপুট করে তখন প্রোগ্রামটি ক্র্যাশ করার পরিবর্তে, চলুন গেমটিকে একটি অ-সংখ্যা উপেক্ষা করতে বাধ্য করি যাতে ব্যবহারকারী অনুমান চালিয়ে যেতে পারে। আমরা এটি সেই লাইনটি পরিবর্তন করে করতে পারি যেখানে <code>guess</code> একটি <code>String</code> থেকে একটি <code>u32</code>-তে রূপান্তরিত হয়, যেমনটি লিস্টিং ২-৫-এ দেখানো হয়েছে।</p>
-<Listing number="2-5" file-name="src/main.rs" caption="একটি অ-সংখ্যা অনুমান উপেক্ষা করা এবং প্রোগ্রাম ক্র্যাশ না করে আরেকটি অনুমানের জন্য জিজ্ঞাসা করা">
+<p>src/main.rs</p>
 <pre><code class="language-rust ignore"><span class="boring">use std::cmp::Ordering;
 </span><span class="boring">use std::io;
 </span><span class="boring">
@@ -871,7 +847,7 @@ note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 </span><span class="boring">        }
 </span><span class="boring">    }
 </span><span class="boring">}</span></code></pre>
-</Listing>
+<p>Listing 2-5: একটি অ-সংখ্যা অনুমান উপেক্ষা করা এবং প্রোগ্রাম ক্র্যাশ না করে আরেকটি অনুমানের জন্য জিজ্ঞাসা করা</p>
 <p>আমরা একটি <code>expect</code> কল থেকে একটি <code>match</code> এক্সপ্রেশনে স্যুইচ করি যাতে একটি ত্রুটিতে ক্র্যাশ করার পরিবর্তে ত্রুটিটি পরিচালনা করা যায়। মনে রাখবেন যে <code>parse</code> একটি <code>Result</code> টাইপ প্রদান করে এবং <code>Result</code> একটি enum যার <code>Ok</code> এবং <code>Err</code> ভ্যারিয়েন্ট রয়েছে। আমরা এখানে একটি <code>match</code> এক্সপ্রেশন ব্যবহার করছি, যেমনটি আমরা <code>cmp</code> মেথডের <code>Ordering</code> ফলাফলের সাথে করেছিলাম।</p>
 <p>যদি <code>parse</code> সফলভাবে স্ট্রিংটিকে একটি সংখ্যায় পরিণত করতে পারে, তবে এটি একটি <code>Ok</code> মান প্রদান করবে যা ফলস্বরূপ সংখ্যাটি ধারণ করে। সেই <code>Ok</code> মানটি প্রথম arm-এর প্যাটার্নের সাথে মিলবে, এবং <code>match</code> এক্সপ্রেশনটি কেবল <code>parse</code> দ্বারা উৎপাদিত এবং <code>Ok</code> মানের ভিতরে রাখা <code>num</code> মানটি প্রদান করবে। সেই সংখ্যাটি আমরা যে নতুন <code>guess</code> ভ্যারিয়েবলটি তৈরি করছি সেখানে ঠিক যেখানে আমরা চাই সেখানেই শেষ হবে।</p>
 <p>যদি <code>parse</code> স্ট্রিংটিকে একটি সংখ্যায় পরিণত করতে <em>না</em> পারে, তবে এটি একটি <code>Err</code> মান প্রদান করবে যা ত্রুটি সম্পর্কে আরও তথ্য ধারণ করে। <code>Err</code> মানটি প্রথম <code>match</code> arm-এর <code>Ok(num)</code> প্যাটার্নের সাথে মেলে না, তবে এটি দ্বিতীয় arm-এর <code>Err(_)</code> প্যাটার্নের সাথে মেলে। আন্ডারস্কোর, <code>_</code>, একটি ক্যাচ-অল মান; এই উদাহরণে, আমরা বলছি যে আমরা সমস্ত <code>Err</code> মান মেলাতে চাই, তাদের ভিতরে যাই তথ্য থাকুক না কেন। তাই প্রোগ্রামটি দ্বিতীয় arm-এর কোড, <code>continue</code>, কার্যকর করবে, যা প্রোগ্রামকে <code>loop</code>-এর পরবর্তী পুনরাবৃত্তিতে যেতে এবং আরেকটি অনুমানের জন্য জিজ্ঞাসা করতে বলে। তাই, কার্যকরভাবে, প্রোগ্রামটি <code>parse</code>-এর সম্মুখীন হতে পারে এমন সমস্ত ত্রুটি উপেক্ষা করে!</p>
@@ -906,7 +882,7 @@ You guessed: 61
 You win!
 </code></pre>
 <p>অসাধারণ! একটি ছোট চূড়ান্ত পরিবর্তনের মাধ্যমে, আমরা guessing game শেষ করব। মনে রাখবেন যে প্রোগ্রামটি এখনও গোপন সংখ্যাটি প্রিন্ট করছে। এটি পরীক্ষার জন্য ভাল কাজ করেছে, কিন্তু এটি গেমটি নষ্ট করে দেয়। চলুন গোপন সংখ্যাটি আউটপুট করে এমন <code>println!</code> টি মুছে ফেলি। লিস্টিং ২-৬ চূড়ান্ত কোডটি দেখায়।</p>
-<Listing number="2-6" file-name="src/main.rs" caption="সম্পূর্ণ guessing game কোড">
+<p>src/main.rs</p>
 <pre><code class="language-rust ignore">use std::cmp::Ordering;
 use std::io;
 
@@ -943,7 +919,7 @@ fn main() {
         }
     }
 }</code></pre>
-</Listing>
+<p>Listing 2-6: সম্পূর্ণ guessing game কোড</p>
 <p>এই মুহূর্তে, আপনি সফলভাবে guessing game তৈরি করেছেন। অভিনন্দন!</p>
 <h2 id="সারাংশ"><a class="header" href="#সারাংশ">সারাংশ</a></h2>
 <p>এই প্রজেক্টটি আপনাকে অনেক নতুন রাস্ট কনসেপ্টের সাথে পরিচিত করার একটি বাস্তবসম্মত উপায় ছিল: <code>let</code>, <code>match</code>, ফাংশন, এক্সটার্নাল crate-এর ব্যবহার, এবং আরও অনেক কিছু। পরবর্তী কয়েকটি অধ্যায়ে, আপনি এই ধারণাগুলি সম্পর্কে আরও বিস্তারিতভাবে শিখবেন। অধ্যায় ৩ এমন ধারণাগুলি কভার করে যা বেশিরভাগ প্রোগ্রামিং ভাষাতেই আছে, যেমন ভ্যারিয়েবল, ডেটা টাইপ, এবং ফাংশন, এবং দেখায় কিভাবে রাস্ট-এ সেগুলি ব্যবহার করতে হয়। অধ্যায় ৪ ওনারশিপ অন্বেষণ করে, একটি বৈশিষ্ট্য যা রাস্টকে অন্যান্য ভাষা থেকে আলাদা করে। অধ্যায় ৫ struct এবং মেথড সিনট্যাক্স নিয়ে আলোচনা করে, এবং অধ্যায় ৬ ব্যাখ্যা করে কিভাবে enum কাজ করে।</p>
@@ -995,7 +971,6 @@ fn main() {
 
         <!-- Custom JS scripts -->
         <script src="ferris.js"></script>
-
 
 
     </div>

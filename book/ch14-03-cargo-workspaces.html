@@ -24,9 +24,9 @@
         <link rel="stylesheet" href="fonts/fonts.css">
 
         <!-- Highlight.js Stylesheets -->
-        <link rel="stylesheet" id="highlight-css" href="highlight.css">
-        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
-        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
         <link rel="stylesheet" href="ferris.css">
@@ -35,34 +35,21 @@
         <link rel="stylesheet" href="theme/listing.css">
 
 
-        <!-- Provide site root and default themes to javascript -->
+        <!-- Provide site root to javascript -->
         <script>
-            const path_to_root = "";
-            const default_light_theme = "light";
-            const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex.js";
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc.js"></script>
     </head>
     <body>
-    <div id="mdbook-help-container">
-        <div id="mdbook-help-popup">
-            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
-            <div>
-                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
-                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
-                <p>Press <kbd>?</kbd> to show this help</p>
-                <p>Press <kbd>Esc</kbd> to hide this help</p>
-            </div>
-        </div>
-    </div>
     <div id="body-container">
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
         <script>
             try {
-                let theme = localStorage.getItem('mdbook-theme');
-                let sidebar = localStorage.getItem('mdbook-sidebar');
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
 
                 if (theme.startsWith('"') && theme.endsWith('"')) {
                     localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
@@ -76,8 +63,7 @@
 
         <!-- Set the theme before any content is loaded, prevents flash -->
         <script>
-            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
-            let theme;
+            var theme;
             try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
             if (theme === null || theme === undefined) { theme = default_theme; }
             const html = document.documentElement;
@@ -90,20 +76,17 @@
 
         <!-- Hide / unhide sidebar before it is displayed -->
         <script>
-            let sidebar = null;
-            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
             if (document.body.clientWidth >= 1080) {
                 try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
                 sidebar = sidebar || 'visible';
             } else {
                 sidebar = 'hidden';
-                sidebar_toggle.checked = false;
             }
-            if (sidebar === 'visible') {
-                sidebar_toggle.checked = true;
-            } else {
-                html.classList.remove('sidebar-visible');
-            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
@@ -130,14 +113,13 @@
                             <i class="fa fa-paint-brush"></i>
                         </button>
                         <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
-                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
                         </ul>
-                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
                             <i class="fa fa-search"></i>
                         </button>
                     </div>
@@ -157,12 +139,7 @@
 
                 <div id="search-wrapper" class="hidden">
                     <form id="searchbar-outer" class="searchbar-outer">
-                        <div class="search-wrapper">
-                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
-                            <div class="spinner-wrapper">
-                                <i class="fa fa-spinner fa-spin"></i>
-                            </div>
-                        </div>
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
                     </form>
                     <div id="searchresults-outer" class="searchresults-outer hidden">
                         <div id="searchresults-header" class="searchresults-header"></div>
@@ -265,12 +242,12 @@ add_one = { path = "../add_one" }
 </code></pre>
 <p>কার্গো ধরে নেয় না যে একটি ওয়ার্কস্পেসের ক্রেটগুলো একে অপরের উপর নির্ভর করবে, তাই আমাদের ডিপেন্ডেন্সি সম্পর্কগুলো স্পষ্টভাবে উল্লেখ করতে হবে।</p>
 <p>এরপর, আসুন <code>adder</code> ক্রেটে (<code>add_one</code> ক্রেট থেকে) <code>add_one</code> ফাংশনটি ব্যবহার করি। <em>adder/src/main.rs</em> ফাইলটি খুলুন এবং <code>main</code> ফাংশনটিকে <code>add_one</code> ফাংশন কল করার জন্য পরিবর্তন করুন, যেমনটি তালিকা ১৪-৭ এ দেখানো হয়েছে।</p>
-<Listing number="14-7" file-name="adder/src/main.rs" caption="`adder` ক্রেট থেকে `add_one` লাইব্রেরি ক্রেট ব্যবহার করা">
+<p>adder/src/main.rs</p>
 <pre><code class="language-rust ignore">fn main() {
     let num = 10;
     println!("Hello, world! {num} plus one is {}!", add_one::add_one(num));
 }</code></pre>
-</Listing>
+<p>Listing 14-7: <code>adder</code> ক্রেট থেকে <code>add_one</code> লাইব্রেরি ক্রেট ব্যবহার করা</p>
 <p>আসুন টপ-লেভেল <em>add</em> ডিরেক্টরিতে <code>cargo build</code> চালিয়ে ওয়ার্কস্পেসটি বিল্ড করি!</p>
 <!-- manual-regeneration
 cd listings/ch14-more-about-cargo/listing-14-07/add
@@ -361,22 +338,18 @@ mod tests {
     fn it_works() {
         assert_eq!(3, add_one(2));
     }
-}```
-
-এখন টপ-লেভেল _add_ ডিরেক্টরিতে `cargo test` চালান। এই ধরনের গঠনযুক্ত একটি ওয়ার্কস্পেসে `cargo test` চালালে ওয়ার্কস্পেসের সমস্ত ক্রেটের জন্য টেস্টগুলো চলবে:
-
-&lt;!-- manual-regeneration
+}</code></pre>
+<p>এখন টপ-লেভেল <em>add</em> ডিরেক্টরিতে <code>cargo test</code> চালান। এই ধরনের গঠনযুক্ত একটি ওয়ার্কস্পেসে <code>cargo test</code> চালালে ওয়ার্কস্পেসের সমস্ত ক্রেটের জন্য টেস্টগুলো চলবে:</p>
+<!-- manual-regeneration
 cd listings/ch14-more-about-cargo/no-listing-04-workspace-with-tests/add
 cargo test
 copy output below; the output updating script doesn't handle subdirectories in
 paths properly
---&gt;
-
-```console
-$ cargo test
+-->
+<pre><code class="language-console">$ cargo test
    Compiling add_one v0.1.0 (file:///projects/add/add_one)
    Compiling adder v0.1.0 (file:///projects/add/adder)
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.20s
+    Finished \`test\` profile [unoptimized + debuginfo] target(s) in 0.20s
      Running unittests src/lib.rs (target/debug/deps/add_one-93c49ee75dc46543)
 
 running 1 test
@@ -394,7 +367,8 @@ test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 
 running 0 tests
 
-test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s</code></pre>
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+</code></pre>
 <p>আউটপুটের প্রথম সেকশনটি দেখায় যে <code>add_one</code> ক্রেটের <code>it_works</code> টেস্টটি পাস করেছে। পরবর্তী সেকশনটি দেখায় যে <code>adder</code> ক্রেটে শূন্যটি টেস্ট পাওয়া গেছে, এবং তারপর শেষ সেকশনটি দেখায় যে <code>add_one</code> ক্রেটে শূন্যটি ডকুমেন্টেশন টেস্ট পাওয়া গেছে।</p>
 <p>আমরা টপ-লেভেল ডিরেক্টরি থেকে একটি ওয়ার্কস্পেসের একটি নির্দিষ্ট ক্রেটের জন্য টেস্টও চালাতে পারি <code>-p</code> ফ্ল্যাগ ব্যবহার করে এবং যে ক্রেটটি আমরা টেস্ট করতে চাই তার নাম উল্লেখ করে:</p>
 <!-- manual-regeneration
@@ -403,7 +377,7 @@ cargo test -p add_one
 copy output below; the output updating script doesn't handle subdirectories in paths properly
 -->
 <pre><code class="language-console">$ cargo test -p add_one
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.00s
+    Finished \`test\` profile [unoptimized + debuginfo] target(s) in 0.00s
      Running unittests src/lib.rs (target/debug/deps/add_one-93c49ee75dc46543)
 
 running 1 test
@@ -469,7 +443,6 @@ test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 
         <!-- Custom JS scripts -->
         <script src="ferris.js"></script>
-
 
 
     </div>

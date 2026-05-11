@@ -24,9 +24,9 @@
         <link rel="stylesheet" href="fonts/fonts.css">
 
         <!-- Highlight.js Stylesheets -->
-        <link rel="stylesheet" id="highlight-css" href="highlight.css">
-        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
-        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
         <link rel="stylesheet" href="ferris.css">
@@ -35,34 +35,21 @@
         <link rel="stylesheet" href="theme/listing.css">
 
 
-        <!-- Provide site root and default themes to javascript -->
+        <!-- Provide site root to javascript -->
         <script>
-            const path_to_root = "";
-            const default_light_theme = "light";
-            const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex.js";
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc.js"></script>
     </head>
     <body>
-    <div id="mdbook-help-container">
-        <div id="mdbook-help-popup">
-            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
-            <div>
-                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
-                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
-                <p>Press <kbd>?</kbd> to show this help</p>
-                <p>Press <kbd>Esc</kbd> to hide this help</p>
-            </div>
-        </div>
-    </div>
     <div id="body-container">
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
         <script>
             try {
-                let theme = localStorage.getItem('mdbook-theme');
-                let sidebar = localStorage.getItem('mdbook-sidebar');
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
 
                 if (theme.startsWith('"') && theme.endsWith('"')) {
                     localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
@@ -76,8 +63,7 @@
 
         <!-- Set the theme before any content is loaded, prevents flash -->
         <script>
-            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
-            let theme;
+            var theme;
             try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
             if (theme === null || theme === undefined) { theme = default_theme; }
             const html = document.documentElement;
@@ -90,20 +76,17 @@
 
         <!-- Hide / unhide sidebar before it is displayed -->
         <script>
-            let sidebar = null;
-            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
             if (document.body.clientWidth >= 1080) {
                 try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
                 sidebar = sidebar || 'visible';
             } else {
                 sidebar = 'hidden';
-                sidebar_toggle.checked = false;
             }
-            if (sidebar === 'visible') {
-                sidebar_toggle.checked = true;
-            } else {
-                html.classList.remove('sidebar-visible');
-            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
@@ -130,14 +113,13 @@
                             <i class="fa fa-paint-brush"></i>
                         </button>
                         <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
-                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
                         </ul>
-                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
                             <i class="fa fa-search"></i>
                         </button>
                     </div>
@@ -157,12 +139,7 @@
 
                 <div id="search-wrapper" class="hidden">
                     <form id="searchbar-outer" class="searchbar-outer">
-                        <div class="search-wrapper">
-                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
-                            <div class="spinner-wrapper">
-                                <i class="fa fa-spinner fa-spin"></i>
-                            </div>
-                        </div>
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
                     </form>
                     <div id="searchresults-outer" class="searchresults-outer hidden">
                         <div id="searchresults-header" class="searchresults-header"></div>
@@ -184,7 +161,7 @@
                     <main>
                         <h2 id="futures-এবং-async-সিনটযাকস"><a class="header" href="#futures-এবং-async-সিনটযাকস">Futures এবং Async সিনট্যাক্স</a></h2>
 <p>রাস্টে অ্যাসিঙ্ক্রোনাস প্রোগ্রামিংয়ের মূল উপাদানগুলো হলো <em>futures</em> এবং রাস্টের <code>async</code> ও <code>await</code> কিওয়ার্ড।</p>
-<p>একটি <em>future</em> হলো এমন একটি মান যা এখন প্রস্তুত নাও থাকতে পারে তবে ভবিষ্যতে কোনো এক সময়ে প্রস্তুত হবে। (এই একই ধারণাটি অনেক ভাষায় দেখা যায়, কখনও কখনও <em>task</em> বা <em>promise</em> এর মতো অন্য নামেও পরিচিত।) রাস্ট একটি <code>Future</code> trait প্রদান করে যা একটি বিল্ডিং ব্লক হিসেবে কাজ করে, যাতে বিভিন্ন ডেটা স্ট্রাকচার দিয়ে বিভিন্ন অ্যাসিঙ্ক্রোনাস অপারেশন প্রয়োগ করা যায় কিন্তু একটি সাধারণ ইন্টারফেসের মাধ্যমে। রাস্টে, futures হলো সেইসব টাইপ যা <code>Future</code> trait প্রয়োগ করে। প্রতিটি future তার নিজের অগ্রগতি এবং "প্রস্তুত" হওয়ার অর্থ কী সে সম্পর্কে তথ্য ধরে রাখে।</p>
+<p>একটি <em>future</em> হলো এমন একটি মান যা এখন প্রস্তুত নাও থাকতে পারে তবে ভবিষ্যতে কোনো এক সময়ে প্রস্তুত হবে। (এই একই ধারণাটি অনেক ভাষায় দেখা যায়, কখনও কখনও <em>task</em> বা <em>promise</em> এর মতো অন্য নামেও পরিচিত।) রাস্ট একটি <code>Future</code> trait প্রদান করে যা একটি বিল্ডিং ব্লক হিসেবে কাজ করে, যাতে বিভিন্ন ডেটা স্ট্রাকচার দিয়ে বিভিন্ন অ্যাসিঙ্ক্রোনাস অপারেশন প্রয়োগ করা যায় কিন্তু একটি সাধারণ ইন্টারফেসের মাধ্যমে। রাস্টে, futures হলো সেইসব টাইপ যা <code>Future</code> trait প্রয়োগ করে। প্রতিটি future তার নিজের অগ্রগতি এবং “প্রস্তুত” হওয়ার অর্থ কী সে সম্পর্কে তথ্য ধরে রাখে।</p>
 <p>ব্লক এবং ফাংশনগুলোতে <code>async</code> কিওয়ার্ড প্রয়োগ করে আপনি নির্দিষ্ট করতে পারেন যে সেগুলোকে বাধা দেওয়া এবং পুনরায় চালু করা যেতে পারে। একটি async ব্লক বা async ফাংশনের মধ্যে, আপনি একটি future-এর জন্য <em>অপেক্ষা</em> করতে (অর্থাৎ, এটি প্রস্তুত হওয়ার জন্য অপেক্ষা করতে) <code>await</code> কিওয়ার্ডটি ব্যবহার করতে পারেন। একটি async ব্লক বা ফাংশনের মধ্যে যেখানেই আপনি একটি future-এর জন্য await করেন, সেটি সেই async ব্লক বা ফাংশনের জন্য থামা এবং পুনরায় চালু হওয়ার একটি সম্ভাব্য স্থান। একটি future-এর মান উপলব্ধ হয়েছে কিনা তা পরীক্ষা করার প্রক্রিয়াকে <em>পোলিং</em> (polling) বলা হয়।</p>
 <p>কিছু অন্য ভাষা, যেমন C# এবং JavaScript, অ্যাসিঙ্ক্রোনাস প্রোগ্রামিংয়ের জন্য <code>async</code> এবং <code>await</code> কিওয়ার্ড ব্যবহার করে। আপনি যদি সেই ভাষাগুলির সাথে পরিচিত হন, তবে রাস্ট কীভাবে কাজ করে, সিনট্যাক্স কীভাবে পরিচালনা করে সহ কিছু গুরুত্বপূর্ণ পার্থক্য লক্ষ্য করতে পারেন। এর পেছনে সঙ্গত কারণ রয়েছে, যা আমরা দেখব!</p>
 <p>async রাস্ট লেখার সময়, আমরা বেশিরভাগ সময় <code>async</code> এবং <code>await</code> কিওয়ার্ড ব্যবহার করি। রাস্ট সেগুলোকে <code>Future</code> trait ব্যবহার করে সমতুল্য কোডে কম্পাইল করে, যেমনটি এটি <code>for</code> লুপকে <code>Iterator</code> trait ব্যবহার করে সমতুল্য কোডে কম্পাইল করে। তবে, যেহেতু রাস্ট <code>Future</code> trait প্রদান করে, তাই প্রয়োজনে আপনি আপনার নিজের ডেটা টাইপের জন্য এটি প্রয়োগ করতে পারেন। এই অধ্যায়ে আমরা যে ফাংশনগুলো দেখব তার মধ্যে অনেকগুলিই তাদের নিজস্ব <code>Future</code> এর ইমপ্লিমেন্টেশন সহ টাইপ রিটার্ন করে। আমরা অধ্যায়ের শেষে trait-টির সংজ্ঞায় ফিরে আসব এবং এটি কীভাবে কাজ করে সে সম্পর্কে আরও গভীরে যাব, কিন্তু আপাতত এগিয়ে যাওয়ার জন্য এইটুকুই যথেষ্ট।</p>
@@ -200,7 +177,7 @@ $ cargo add trpl
 <p>এখন আমরা আমাদের প্রথম async প্রোগ্রাম লেখার জন্য <code>trpl</code> দ্বারা প্রদত্ত বিভিন্ন অংশ ব্যবহার করতে পারি। আমরা একটি ছোট কমান্ড লাইন টুল তৈরি করব যা দুটি ওয়েব পেজ ফেচ করে, প্রতিটির <code>&lt;title&gt;</code> এলিমেন্ট বের করে এবং যে পেজটি এই পুরো প্রক্রিয়াটি প্রথমে শেষ করবে তার টাইটেল প্রিন্ট করবে।</p>
 <h3 id="page_title-ফাংশনটি-সংজঞাযিত-করা"><a class="header" href="#page_title-ফাংশনটি-সংজঞাযিত-করা">page_title ফাংশনটি সংজ্ঞায়িত করা</a></h3>
 <p>আসুন একটি ফাংশন লেখার মাধ্যমে শুরু করি যা একটি পেজের URL প্যারামিটার হিসেবে নেয়, সেটিতে একটি রিকোয়েস্ট করে, এবং টাইটেল এলিমেন্টের টেক্সট রিটার্ন করে (দেখুন লিস্টিং ১৭-১)।</p>
-<Listing number="17-1" file-name="src/main.rs" caption="একটি HTML পেজ থেকে title এলিমেন্ট পাওয়ার জন্য একটি async ফাংশন সংজ্ঞায়িত করা">
+<p>src/main.rs</p>
 <pre><pre class="playground"><code class="language-rust edition2024"><span class="boring">extern crate trpl; // required for mdbook test
 </span><span class="boring">
 </span><span class="boring">fn main() {
@@ -216,7 +193,7 @@ async fn page_title(url: &amp;str) -&gt; Option&lt;String&gt; {
         .select_first("title")
         .map(|title| title.inner_html())
 }</code></pre></pre>
-</Listing>
+<p>Listing 17-1: একটি HTML পেজ থেকে title এলিমেন্ট পাওয়ার জন্য একটি async ফাংশন সংজ্ঞায়িত করা</p>
 <p>প্রথমে, আমরা <code>page_title</code> নামে একটি ফাংশন সংজ্ঞায়িত করি এবং এটিকে <code>async</code> কিওয়ার্ড দিয়ে চিহ্নিত করি। তারপর আমরা পাস করা যেকোনো URL ফেচ করার জন্য <code>trpl::get</code> ফাংশনটি ব্যবহার করি এবং রেসপন্সের জন্য অপেক্ষা করতে <code>await</code> কিওয়ার্ড যোগ করি। রেসপন্সের টেক্সট পেতে, আমরা এর <code>text</code> মেথড কল করি, এবং আবারও <code>await</code> কিওয়ার্ড দিয়ে এটির জন্য অপেক্ষা করি। এই দুটি ধাপই অ্যাসিঙ্ক্রোনাস। <code>get</code> ফাংশনের জন্য, আমাদের server-এর রেসপন্সের প্রথম অংশ পাঠানোর জন্য অপেক্ষা করতে হবে, যার মধ্যে HTTP হেডার, কুকি ইত্যাদি থাকবে এবং যা রেসপন্স বডি থেকে আলাদাভাবে সরবরাহ করা যেতে পারে। বিশেষ করে যদি বডি খুব বড় হয়, তবে এর সবটা আসতে কিছুটা সময় লাগতে পারে। যেহেতু আমাদের রেসপন্সের <em>সম্পূর্ণটা</em> আসার জন্য অপেক্ষা করতে হবে, তাই <code>text</code> মেথডটিও async।</p>
 <p>আমাদের এই দুটি future-কেই স্পষ্টভাবে await করতে হবে, কারণ রাস্টে future-গুলি <em>lazy</em>: আপনি <code>await</code> কিওয়ার্ড দিয়ে তাদের কাজ করতে না বলা পর্যন্ত তারা কিছুই করে না। (আসলে, আপনি যদি একটি future ব্যবহার না করেন তবে রাস্ট একটি কম্পাইলার ওয়ার্নিং দেখাবে।) এটি আপনাকে অধ্যায় ১৩-এর <a href="ch13-02-iterators.html">Processing a Series of Items With Iterators</a><!-- ignore --> বিভাগে ইটারেটর (iterator) আলোচনার কথা মনে করিয়ে দিতে পারে। ইটারেটররা তাদের <code>next</code> মেথড কল না করা পর্যন্ত কিছুই করে না—সেটি সরাসরি হোক বা <code>for</code> লুপ বা <code>map</code>-এর মতো মেথড ব্যবহার করে যা পর্দার আড়ালে <code>next</code> ব্যবহার করে। একইভাবে, future-গুলিও আপনি স্পষ্টভাবে তাদের কাজ করতে না বলা পর্যন্ত কিছুই করে না। এই অলসতা রাস্টকে async কোড প্রয়োজন না হওয়া পর্যন্ত চালানো থেকে বিরত রাখতে সাহায্য করে।</p>
 <blockquote>
@@ -224,7 +201,7 @@ async fn page_title(url: &amp;str) -&gt; Option&lt;String&gt; {
 </blockquote>
 <p>একবার আমাদের কাছে <code>response_text</code> এসে গেলে, আমরা <code>Html::parse</code> ব্যবহার করে এটিকে <code>Html</code> টাইপের একটি ইন্সট্যান্সে পার্স করতে পারি। একটি কাঁচা স্ট্রিংয়ের পরিবর্তে, আমাদের কাছে এখন একটি ডেটা টাইপ রয়েছে যা আমরা HTML-এর সাথে আরও সমৃদ্ধ ডেটা স্ট্রাকচার হিসাবে কাজ করতে ব্যবহার করতে পারি। বিশেষ করে, আমরা একটি প্রদত্ত CSS সিলেক্টরের প্রথম ইন্সট্যান্স খুঁজে পেতে <code>select_first</code> মেথডটি ব্যবহার করতে পারি। <code>"title"</code> স্ট্রিংটি পাস করে, আমরা ডকুমেন্টের প্রথম <code>&lt;title&gt;</code> এলিমেন্টটি পাব, যদি একটি থাকে। যেহেতু কোনো ম্যাচিং এলিমেন্ট নাও থাকতে পারে, <code>select_first</code> একটি <code>Option&lt;ElementRef&gt;</code> রিটার্ন করে। অবশেষে, আমরা <code>Option::map</code> মেথড ব্যবহার করি, যা আমাদের <code>Option</code>-এর আইটেমটি উপস্থিত থাকলে তার সাথে কাজ করতে দেয়, এবং যদি না থাকে তবে কিছুই না করতে দেয়। (আমরা এখানে একটি <code>match</code> এক্সপ্রেশনও ব্যবহার করতে পারতাম, কিন্তু <code>map</code> বেশি ইডিয়ম্যাটিক বা প্রচলিত।) <code>map</code>-কে আমরা যে ফাংশনটি সরবরাহ করি তার বডিতে, আমরা <code>title</code>-এর উপর <code>inner_html</code> কল করে এর কনটেন্ট পাই, যা একটি <code>String</code>। সবশেষে, আমাদের কাছে একটি <code>Option&lt;String&gt;</code> থাকে।</p>
 <p>লক্ষ্য করুন যে রাস্টের <code>await</code> কিওয়ার্ডটি আপনি যে এক্সপ্রেশনের জন্য অপেক্ষা করছেন তার <em>পরে</em> বসে, আগে নয়। অর্থাৎ, এটি একটি <em>পোস্টফিক্স</em> (postfix) কিওয়ার্ড। আপনি যদি অন্য ভাষায় <code>async</code> ব্যবহার করে থাকেন তবে এটি আপনার অভ্যস্ততার থেকে ভিন্ন হতে পারে, তবে রাস্টে এটি মেথডের চেইনগুলির সাথে কাজ করা অনেক সুন্দর করে তোলে। ফলস্বরূপ, আমরা <code>page_title</code>-এর বডি পরিবর্তন করে <code>trpl::get</code> এবং <code>text</code> ফাংশন কলগুলিকে তাদের মধ্যে <code>await</code> দিয়ে একসাথে চেইন করতে পারি, যেমনটি লিস্টিং ১৭-২ এ দেখানো হয়েছে।</p>
-<Listing number="17-2" file-name="src/main.rs" caption="`await` কিওয়ার্ড দিয়ে চেইনিং করা">
+<p>src/main.rs</p>
 <pre><pre class="playground"><code class="language-rust edition2024"><span class="boring">extern crate trpl; // required for mdbook test
 </span><span class="boring">
 </span><span class="boring">use trpl::Html;
@@ -239,7 +216,7 @@ async fn page_title(url: &amp;str) -&gt; Option&lt;String&gt; {
 </span><span class="boring">        .select_first("title")
 </span><span class="boring">        .map(|title| title.inner_html())
 </span><span class="boring">}</span></code></pre></pre>
-</Listing>
+<p>Listing 17-2: <code>await</code> কিওয়ার্ড দিয়ে চেইনিং করা</p>
 <p>এর সাথে, আমরা সফলভাবে আমাদের প্রথম async ফাংশন লিখে ফেলেছি! এটিকে কল করার জন্য <code>main</code>-এ কিছু কোড যোগ করার আগে, চলুন আমরা যা লিখেছি এবং এর অর্থ কী তা নিয়ে আরও একটু কথা বলি।</p>
 <p>যখন রাস্ট <code>async</code> কিওয়ার্ড দিয়ে চিহ্নিত একটি ব্লক দেখে, তখন এটি এটিকে একটি অনন্য, নামহীন ডেটা টাইপে কম্পাইল করে যা <code>Future</code> trait প্রয়োগ করে। যখন রাস্ট <code>async</code> দিয়ে চিহ্নিত একটি ফাংশন দেখে, তখন এটি এটিকে একটি নন-async ফাংশনে কম্পাইল করে যার বডি একটি async ব্লক। একটি async ফাংশনের রিটার্ন টাইপ হলো কম্পাইলার সেই async ব্লকের জন্য যে নামহীন ডেটা টাইপ তৈরি করে তার টাইপ।</p>
 <p>সুতরাং, <code>async fn</code> লেখা একটি ফাংশন লেখার সমতুল্য যা রিটার্ন টাইপের একটি <em>future</em> রিটার্ন করে। কম্পাইলারের কাছে, লিস্টিং ১৭-১-এর <code>async fn page_title</code>-এর মতো একটি ফাংশন সংজ্ঞা একটি নন-async ফাংশনের সমতুল্য যা এইভাবে সংজ্ঞায়িত:</p>
@@ -260,7 +237,7 @@ fn page_title(url: &amp;str) -&gt; impl Future&lt;Output = Option&lt;String&gt;&
 <span class="boring">}</span></code></pre></pre>
 <p>আসুন রূপান্তরিত সংস্করণের প্রতিটি অংশ পর্যালোচনা করি:</p>
 <ul>
-<li>এটি <code>impl Trait</code> সিনট্যাক্স ব্যবহার করে যা আমরা অধ্যায় ১০-এর <a href="ch10-02-traits.html#traits-as-parameters">"Traits as Parameters"</a><!-- ignore --> বিভাগে আলোচনা করেছি।</li>
+<li>এটি <code>impl Trait</code> সিনট্যাক্স ব্যবহার করে যা আমরা অধ্যায় ১০-এর <a href="ch10-02-traits.html#traits-as-parameters">“Traits as Parameters”</a><!-- ignore --> বিভাগে আলোচনা করেছি।</li>
 <li>রিটার্ন করা trait টি হলো একটি <code>Future</code> যার একটি অ্যাসোসিয়েটেড টাইপ <code>Output</code> রয়েছে। লক্ষ্য করুন যে <code>Output</code> টাইপটি হলো <code>Option&lt;String&gt;</code>, যা <code>page_title</code>-এর <code>async fn</code> সংস্করণ থেকে মূল রিটার্ন টাইপের সমান।</li>
 <li>মূল ফাংশনের বডিতে কল করা সমস্ত কোড একটি <code>async move</code> ব্লকে মোড়ানো হয়েছে। মনে রাখবেন যে ব্লকগুলি এক্সপ্রেশন। এই পুরো ব্লকটিই ফাংশন থেকে রিটার্ন করা এক্সপ্রেশন।</li>
 <li>এই async ব্লকটি <code>Option&lt;String&gt;</code> টাইপের একটি মান তৈরি করে, যেমনটি এইমাত্র বর্ণনা করা হয়েছে। সেই মানটি রিটার্ন টাইপের <code>Output</code> টাইপের সাথে মেলে। এটি আপনার দেখা অন্যান্য ব্লকের মতোই।</li>
@@ -269,7 +246,7 @@ fn page_title(url: &amp;str) -&gt; impl Future&lt;Output = Option&lt;String&gt;&
 <p>এখন আমরা <code>main</code>-এ <code>page_title</code> কল করতে পারি।</p>
 <h2 id="একটিমাতর-পেজের-টাইটেল-নিরধারণ-করা"><a class="header" href="#একটিমাতর-পেজের-টাইটেল-নিরধারণ-করা">একটিমাত্র পেজের টাইটেল নির্ধারণ করা</a></h2>
 <p>শুরু করার জন্য, আমরা কেবল একটি পেজের টাইটেল আনব। লিস্টিং ১৭-৩ এ, আমরা <a href="ch12-01-accepting-command-line-arguments.html">Accepting Command Line Arguments</a><!-- ignore --> বিভাগে কমান্ড লাইন আর্গুমেন্ট পাওয়ার জন্য অধ্যায় ১২-তে ব্যবহৃত একই প্যাটার্ন অনুসরণ করি। তারপর আমরা প্রথম URL টি <code>page_title</code>-কে পাস করি এবং ফলাফলের জন্য await করি। যেহেতু future দ্বারা উৎপাদিত মানটি একটি <code>Option&lt;String&gt;</code>, তাই পেজটিতে <code>&lt;title&gt;</code> ছিল কিনা তা বিবেচনা করে বিভিন্ন বার্তা প্রিন্ট করার জন্য আমরা একটি <code>match</code> এক্সপ্রেশন ব্যবহার করি।</p>
-<Listing number="17-3" file-name="src/main.rs" caption="একজন ব্যবহারকারী-প্রদত্ত আর্গুমেন্ট সহ `main` থেকে `page_title` ফাংশন কল করা">
+<p>src/main.rs</p>
 <pre><code class="language-rust ignore does_not_compile"><span class="boring">extern crate trpl; // required for mdbook test
 </span><span class="boring">
 </span><span class="boring">use trpl::Html;
@@ -289,7 +266,7 @@ fn page_title(url: &amp;str) -&gt; impl Future&lt;Output = Option&lt;String&gt;&
 </span><span class="boring">        .select_first("title")
 </span><span class="boring">        .map(|title| title.inner_html())
 </span><span class="boring">}</span></code></pre>
-</Listing>
+<p>Listing 17-3: একজন ব্যবহারকারী-প্রদত্ত আর্গুমেন্ট সহ <code>main</code> থেকে <code>page_title</code> ফাংশন কল করা</p>
 <p>দুর্ভাগ্যবশত, এই কোডটি কম্পাইল হয় না। একমাত্র যে জায়গায় আমরা <code>await</code> কিওয়ার্ড ব্যবহার করতে পারি তা হলো async ফাংশন বা ব্লকে, এবং রাস্ট আমাদের বিশেষ <code>main</code> ফাংশনকে <code>async</code> হিসাবে চিহ্নিত করতে দেবে না।</p>
 <!-- manual-regeneration
 cd listings/ch17-async-await/listing-17-03
@@ -306,7 +283,7 @@ copy just the compiler error
 <p>বেশিরভাগ ভাষা যা async সমর্থন করে তারা একটি রানটাইম বান্ডিল করে, কিন্তু রাস্ট তা করে না। পরিবর্তে, অনেক বিভিন্ন async রানটাইম উপলব্ধ রয়েছে, যার প্রত্যেকটি তাদের লক্ষ্য করা ব্যবহারের ক্ষেত্রে উপযুক্ত বিভিন্ন ট্রেড-অফ করে। উদাহরণস্বরূপ, অনেক সিপিইউ কোর এবং প্রচুর পরিমাণে র‍্যাম সহ একটি উচ্চ-থ্রুপুট ওয়েব সার্ভারের চাহিদা একটি একক কোর, অল্প পরিমাণে র‍্যাম এবং কোনো হিপ অ্যালোকেশন ক্ষমতা ছাড়াই একটি মাইক্রোকন্ট্রোলারের থেকে খুব আলাদা। যে crate-গুলি সেই রানটাইমগুলি সরবরাহ করে সেগুলি প্রায়শই ফাইল বা নেটওয়ার্ক I/O-এর মতো সাধারণ কার্যকারিতার async সংস্করণ সরবরাহ করে।</p>
 <p>এখানে, এবং এই অধ্যায়ের বাকি অংশে, আমরা <code>trpl</code> crate থেকে <code>run</code> ফাংশনটি ব্যবহার করব, যা একটি আর্গুমেন্ট হিসাবে একটি future নেয় এবং এটিকে সম্পূর্ণ না হওয়া পর্যন্ত চালায়। পর্দার আড়ালে, <code>run</code> কল করা একটি রানটাইম সেট আপ করে যা পাস করা future টি চালানোর জন্য ব্যবহৃত হয়। একবার future টি সম্পূর্ণ হলে, <code>run</code> future টি যে মানটি তৈরি করেছে তা রিটার্ন করে।</p>
 <p>আমরা <code>page_title</code> দ্বারা রিটার্ন করা future টি সরাসরি <code>run</code>-কে পাস করতে পারতাম, এবং এটি সম্পূর্ণ হলে, আমরা ফলাফলের <code>Option&lt;String&gt;</code>-এর উপর ম্যাচ করতে পারতাম, যেমনটি আমরা লিস্টিং ১৭-৩-এ করার চেষ্টা করেছি। যাইহোক, অধ্যায়ের বেশিরভাগ উদাহরণের জন্য (এবং বাস্তব বিশ্বের বেশিরভাগ async কোডের জন্য), আমরা কেবল একটি async ফাংশন কলের চেয়ে বেশি কিছু করব, তাই পরিবর্তে আমরা একটি <code>async</code> ব্লক পাস করব এবং <code>page_title</code> কলের ফলাফলটি স্পষ্টভাবে await করব, যেমনটি লিস্টিং ১৭-৪-এ দেখানো হয়েছে।</p>
-<Listing number="17-4" caption="`trpl::run` দিয়ে একটি async ব্লক await করা" file-name="src/main.rs">
+<p>src/main.rs</p>
 <!-- should_panic,noplayground because mdbook test does not pass args -->
 <pre><code class="language-rust should_panic noplayground"><span class="boring">extern crate trpl; // required for mdbook test
 </span><span class="boring">
@@ -330,7 +307,7 @@ copy just the compiler error
 </span><span class="boring">        .select_first("title")
 </span><span class="boring">        .map(|title| title.inner_html())
 </span><span class="boring">}</span></code></pre>
-</Listing>
+<p>Listing 17-4: <code>trpl::run</code> দিয়ে একটি async ব্লক await করা</p>
 <p>যখন আমরা এই কোডটি চালাই, তখন আমরা প্রাথমিকভাবে যে আচরণটি আশা করেছিলাম তা পাই:</p>
 <!-- manual-regeneration
 cd listings/ch17-async-await/listing-17-04
@@ -365,7 +342,7 @@ The title for https://www.rust-lang.org was
 <p>এখন আসুন এই অংশগুলি একসাথে রাখি এবং দেখি আমরা কীভাবে কনকারেন্ট কোড লিখতে পারি।</p>
 <h3 id="আমাদের-দুটি-url-কে-একে-অপরের-বিরুদধে-রেস-করানো"><a class="header" href="#আমাদের-দুটি-url-কে-একে-অপরের-বিরুদধে-রেস-করানো">আমাদের দুটি URL-কে একে অপরের বিরুদ্ধে রেস করানো</a></h3>
 <p>লিস্টিং ১৭-৫-এ, আমরা কমান্ড লাইন থেকে পাস করা দুটি ভিন্ন URL দিয়ে <code>page_title</code> কল করি এবং তাদের রেস করাই।</p>
-<Listing number="17-5" caption="" file-name="src/main.rs">
+<p>src/main.rs</p>
 <!-- should_panic,noplayground because mdbook does not pass args -->
 <pre><code class="language-rust should_panic noplayground"><span class="boring">extern crate trpl; // required for mdbook test
 </span><span class="boring">
@@ -399,12 +376,12 @@ async fn page_title(url: &amp;str) -&gt; (&amp;str, Option&lt;String&gt;) {
         .map(|title| title.inner_html());
     (url, title)
 }</code></pre>
-</Listing>
+<p>Listing 17-5:</p>
 <p>আমরা ব্যবহারকারী-প্রদত্ত প্রতিটি URL-এর জন্য <code>page_title</code> কল করে শুরু করি। আমরা ফলাফলস্বরূপ future-গুলিকে <code>title_fut_1</code> এবং <code>title_fut_2</code> হিসাবে সংরক্ষণ করি। মনে রাখবেন, এগুলি এখনও কিছুই করে না, কারণ future-গুলি অলস এবং আমরা এখনও তাদের await করিনি। তারপর আমরা future-গুলিকে <code>trpl::race</code>-এ পাস করি, যা একটি মান রিটার্ন করে নির্দেশ করে যে পাস করা future-গুলির মধ্যে কোনটি প্রথমে শেষ হয়।</p>
 <blockquote>
 <p>দ্রষ্টব্য: পর্দার আড়ালে, <code>race</code> একটি আরও সাধারণ ফাংশন, <code>select</code>-এর উপর নির্মিত, যা আপনি বাস্তব-বিশ্বের রাস্ট কোডে আরও প্রায়ই দেখতে পাবেন। একটি <code>select</code> ফাংশন এমন অনেক কিছু করতে পারে যা <code>trpl::race</code> ফাংশনটি করতে পারে না, তবে এর কিছু অতিরিক্ত জটিলতাও রয়েছে যা আমরা আপাতত এড়িয়ে যেতে পারি।</p>
 </blockquote>
-<p>যেকোনো future আইনসম্মতভাবে "জিততে" পারে, তাই একটি <code>Result</code> রিটার্ন করার কোনো মানে হয় না। পরিবর্তে, <code>race</code> এমন একটি টাইপ রিটার্ন করে যা আমরা আগে দেখিনি, <code>trpl::Either</code>। <code>Either</code> টাইপটি একটি <code>Result</code>-এর সাথে কিছুটা সাদৃশ্যপূর্ণ কারণ এর দুটি কেস রয়েছে। <code>Result</code>-এর মতো নয়, <code>Either</code>-এ সাফল্য বা ব্যর্থতার কোনো ধারণা নেই। পরিবর্তে, এটি "একটি বা অন্যটি" নির্দেশ করতে <code>Left</code> এবং <code>Right</code> ব্যবহার করে:</p>
+<p>যেকোনো future আইনসম্মতভাবে “জিততে” পারে, তাই একটি <code>Result</code> রিটার্ন করার কোনো মানে হয় না। পরিবর্তে, <code>race</code> এমন একটি টাইপ রিটার্ন করে যা আমরা আগে দেখিনি, <code>trpl::Either</code>। <code>Either</code> টাইপটি একটি <code>Result</code>-এর সাথে কিছুটা সাদৃশ্যপূর্ণ কারণ এর দুটি কেস রয়েছে। <code>Result</code>-এর মতো নয়, <code>Either</code>-এ সাফল্য বা ব্যর্থতার কোনো ধারণা নেই। পরিবর্তে, এটি “একটি বা অন্যটি” নির্দেশ করতে <code>Left</code> এবং <code>Right</code> ব্যবহার করে:</p>
 <pre><pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>enum Either&lt;A, B&gt; {
@@ -464,7 +441,6 @@ async fn page_title(url: &amp;str) -&gt; (&amp;str, Option&lt;String&gt;) {
 
         <!-- Custom JS scripts -->
         <script src="ferris.js"></script>
-
 
 
     </div>

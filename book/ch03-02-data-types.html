@@ -24,9 +24,9 @@
         <link rel="stylesheet" href="fonts/fonts.css">
 
         <!-- Highlight.js Stylesheets -->
-        <link rel="stylesheet" id="highlight-css" href="highlight.css">
-        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
-        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
         <link rel="stylesheet" href="ferris.css">
@@ -35,34 +35,21 @@
         <link rel="stylesheet" href="theme/listing.css">
 
 
-        <!-- Provide site root and default themes to javascript -->
+        <!-- Provide site root to javascript -->
         <script>
-            const path_to_root = "";
-            const default_light_theme = "light";
-            const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex.js";
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc.js"></script>
     </head>
     <body>
-    <div id="mdbook-help-container">
-        <div id="mdbook-help-popup">
-            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
-            <div>
-                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
-                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
-                <p>Press <kbd>?</kbd> to show this help</p>
-                <p>Press <kbd>Esc</kbd> to hide this help</p>
-            </div>
-        </div>
-    </div>
     <div id="body-container">
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
         <script>
             try {
-                let theme = localStorage.getItem('mdbook-theme');
-                let sidebar = localStorage.getItem('mdbook-sidebar');
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
 
                 if (theme.startsWith('"') && theme.endsWith('"')) {
                     localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
@@ -76,8 +63,7 @@
 
         <!-- Set the theme before any content is loaded, prevents flash -->
         <script>
-            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
-            let theme;
+            var theme;
             try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
             if (theme === null || theme === undefined) { theme = default_theme; }
             const html = document.documentElement;
@@ -90,20 +76,17 @@
 
         <!-- Hide / unhide sidebar before it is displayed -->
         <script>
-            let sidebar = null;
-            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
             if (document.body.clientWidth >= 1080) {
                 try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
                 sidebar = sidebar || 'visible';
             } else {
                 sidebar = 'hidden';
-                sidebar_toggle.checked = false;
             }
-            if (sidebar === 'visible') {
-                sidebar_toggle.checked = true;
-            } else {
-                html.classList.remove('sidebar-visible');
-            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
@@ -130,14 +113,13 @@
                             <i class="fa fa-paint-brush"></i>
                         </button>
                         <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
-                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
                         </ul>
-                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
                             <i class="fa fa-search"></i>
                         </button>
                     </div>
@@ -157,12 +139,7 @@
 
                 <div id="search-wrapper" class="hidden">
                     <form id="searchbar-outer" class="searchbar-outer">
-                        <div class="search-wrapper">
-                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
-                            <div class="spinner-wrapper">
-                                <i class="fa fa-spinner fa-spin"></i>
-                            </div>
-                        </div>
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
                     </form>
                     <div id="searchresults-outer" class="searchresults-outer hidden">
                         <div id="searchresults-header" class="searchresults-header"></div>
@@ -184,7 +161,7 @@
                     <main>
                         <h2 id="ডেটা-টাইপ"><a class="header" href="#ডেটা-টাইপ">ডেটা টাইপ</a></h2>
 <p>রাস্ট-এর প্রতিটি ভ্যালুর একটি নির্দিষ্ট <em>ডেটা টাইপ</em> থাকে, যা রাস্টকে বলে দেয় কী ধরনের ডেটা নির্দিষ্ট করা হচ্ছে যাতে এটি সেই ডেটার সাথে কীভাবে কাজ করতে হবে তা জানতে পারে। আমরা দুটি ডেটা টাইপের উপসেট দেখব: স্কেলার (scalar) এবং কম্পাউন্ড (compound)।</p>
-<p>মনে রাখবেন যে রাস্ট একটি <em>স্ট্যাটিক্যালি টাইপড</em> ল্যাঙ্গুয়েজ, যার মানে হল কম্পাইল করার সময় এটিকে অবশ্যই সমস্ত ভ্যারিয়েবলের টাইপ জানতে হবে। কম্পাইলার সাধারণত আমরা কোন টাইপ ব্যবহার করতে চাই তা ভ্যালু এবং আমরা কীভাবে এটি ব্যবহার করি তার উপর ভিত্তি করে অনুমান করতে পারে। যখন অনেকগুলো টাইপ সম্ভব হয়, যেমন অধ্যায় ২-এর <a href="ch02-00-guessing-game-tutorial.html#comparing-the-guess-to-the-secret-number">"অনুমানের সাথে গোপন সংখ্যার তুলনা"</a> বিভাগে আমরা যখন <code>parse</code> ব্যবহার করে একটি <code>String</code>-কে একটি নিউমেরিক টাইপে রূপান্তর করেছিলাম, তখন আমাদের অবশ্যই একটি টাইপ অ্যানোটেশন যোগ করতে হবে, যেমন:</p>
+<p>মনে রাখবেন যে রাস্ট একটি <em>স্ট্যাটিক্যালি টাইপড</em> ল্যাঙ্গুয়েজ, যার মানে হল কম্পাইল করার সময় এটিকে অবশ্যই সমস্ত ভ্যারিয়েবলের টাইপ জানতে হবে। কম্পাইলার সাধারণত আমরা কোন টাইপ ব্যবহার করতে চাই তা ভ্যালু এবং আমরা কীভাবে এটি ব্যবহার করি তার উপর ভিত্তি করে অনুমান করতে পারে। যখন অনেকগুলো টাইপ সম্ভব হয়, যেমন অধ্যায় ২-এর <a href="ch02-00-guessing-game-tutorial.html#comparing-the-guess-to-the-secret-number">“অনুমানের সাথে গোপন সংখ্যার তুলনা”</a> বিভাগে আমরা যখন <code>parse</code> ব্যবহার করে একটি <code>String</code>-কে একটি নিউমেরিক টাইপে রূপান্তর করেছিলাম, তখন আমাদের অবশ্যই একটি টাইপ অ্যানোটেশন যোগ করতে হবে, যেমন:</p>
 <pre><pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>let guess: u32 = "42".parse().expect("Not a number!");
@@ -236,10 +213,10 @@ error: could not compile `no_type_annotations` (bin "no_type_annotations") due t
 </tbody></table>
 </div>
 <p>তাহলে আপনি কীভাবে জানবেন কোন ধরনের ইন্টিজার ব্যবহার করবেন? আপনি যদি অনিশ্চিত হন, রাস্টের ডিফল্টগুলো সাধারণত শুরু করার জন্য ভাল জায়গা: ইন্টিজার টাইপগুলো ডিফল্টভাবে <code>i32</code> হয়। <code>isize</code> বা <code>usize</code> ব্যবহার করার প্রাথমিক পরিস্থিতি হল কোনো ধরনের কালেকশন ইনডেক্স করার সময়।</p>
-<blockquote>
+<section class="note" aria-role="note">
 <h5 id="ইনটিজার-ওভারফলো-integer-overflow"><a class="header" href="#ইনটিজার-ওভারফলো-integer-overflow">ইন্টিজার ওভারফ্লো (Integer Overflow)</a></h5>
-<p>ধরা যাক আপনার কাছে <code>u8</code> টাইপের একটি ভ্যারিয়েবল আছে যা ০ থেকে ২৫৫ এর মধ্যে মান ধারণ করতে পারে। আপনি যদি ভ্যারিয়েবলটিকে সেই পরিসরের বাইরের কোনো মানে পরিবর্তন করার চেষ্টা করেন, যেমন ২৫৬, তাহলে <em>ইন্টিজার ওভারফ্লো</em> ঘটবে, যা দুটি আচরণের একটির কারণ হতে পারে। আপনি যখন ডিবাগ মোডে কম্পাইল করছেন, তখন রাস্ট ইন্টিজার ওভারফ্লোর জন্য চেক অন্তর্ভুক্ত করে যা এই আচরণ ঘটলে আপনার প্রোগ্রামকে রানটাইমে <em>প্যানিক</em> (panic) করায়। রাস্ট <em>প্যানিকিং</em> শব্দটি ব্যবহার করে যখন একটি প্রোগ্রাম একটি এরর সহ বন্ধ হয়ে যায়; আমরা অধ্যায় ৯-এর <a href="ch09-01-unrecoverable-errors-with-panic.html">"Unrecoverable Errors with <code>panic!</code>"</a> বিভাগে প্যানিক নিয়ে আরও गहराई से আলোচনা করব।</p>
-<p>আপনি যখন <code>--release</code> ফ্ল্যাগ দিয়ে রিলিজ মোডে কম্পাইল করছেন, তখন রাস্ট প্যানিক সৃষ্টিকারী ইন্টিজার ওভারফ্লোর জন্য চেক অন্তর্ভুক্ত করে <em>না</em>। পরিবর্তে, যদি ওভারফ্লো ঘটে, রাস্ট <em>টু'স কমপ্লিমেন্ট র‍্যাপিং</em> (two’s complement wrapping) করে। সংক্ষেপে, টাইপটি যে সর্বোচ্চ মান ধারণ করতে পারে তার চেয়ে বড় মানগুলো "র‍্যাপ অ্যারাউন্ড" করে টাইপটি যে সর্বনিম্ন মান ধারণ করতে পারে সেখানে চলে আসে। একটি <code>u8</code>-এর ক্ষেত্রে, মান ২৫৬ হয়ে যায় ০, মান ২৫৭ হয়ে যায় ১, এবং এভাবেই চলতে থাকে। প্রোগ্রামটি প্যানিক করবে না, কিন্তু ভ্যারিয়েবলটির একটি এমন মান থাকবে যা সম্ভবত আপনি যা আশা করেছিলেন তা নয়। ইন্টিজার ওভারফ্লোর র‍্যাপিং আচরণের উপর নির্ভর করা একটি এরর হিসাবে বিবেচিত হয়।</p>
+<p>ধরা যাক আপনার কাছে <code>u8</code> টাইপের একটি ভ্যারিয়েবল আছে যা ০ থেকে ২৫৫ এর মধ্যে মান ধারণ করতে পারে। আপনি যদি ভ্যারিয়েবলটিকে সেই পরিসরের বাইরের কোনো মানে পরিবর্তন করার চেষ্টা করেন, যেমন ২৫৬, তাহলে <em>ইন্টিজার ওভারফ্লো</em> ঘটবে, যা দুটি আচরণের একটির কারণ হতে পারে। আপনি যখন ডিবাগ মোডে কম্পাইল করছেন, তখন রাস্ট ইন্টিজার ওভারফ্লোর জন্য চেক অন্তর্ভুক্ত করে যা এই আচরণ ঘটলে আপনার প্রোগ্রামকে রানটাইমে <em>প্যানিক</em> (panic) করায়। রাস্ট <em>প্যানিকিং</em> শব্দটি ব্যবহার করে যখন একটি প্রোগ্রাম একটি এরর সহ বন্ধ হয়ে যায়; আমরা অধ্যায় ৯-এর <a href="ch09-01-unrecoverable-errors-with-panic.html">“Unrecoverable Errors with <code>panic!</code>”</a> বিভাগে প্যানিক নিয়ে আরও गहराई से আলোচনা করব।</p>
+<p>আপনি যখন <code>--release</code> ফ্ল্যাগ দিয়ে রিলিজ মোডে কম্পাইল করছেন, তখন রাস্ট প্যানিক সৃষ্টিকারী ইন্টিজার ওভারফ্লোর জন্য চেক অন্তর্ভুক্ত করে <em>না</em>। পরিবর্তে, যদি ওভারফ্লো ঘটে, রাস্ট <em>টু’স কমপ্লিমেন্ট র‍্যাপিং</em> (two’s complement wrapping) করে। সংক্ষেপে, টাইপটি যে সর্বোচ্চ মান ধারণ করতে পারে তার চেয়ে বড় মানগুলো “র‍্যাপ অ্যারাউন্ড” করে টাইপটি যে সর্বনিম্ন মান ধারণ করতে পারে সেখানে চলে আসে। একটি <code>u8</code>-এর ক্ষেত্রে, মান ২৫৬ হয়ে যায় ০, মান ২৫৭ হয়ে যায় ১, এবং এভাবেই চলতে থাকে। প্রোগ্রামটি প্যানিক করবে না, কিন্তু ভ্যারিয়েবলটির একটি এমন মান থাকবে যা সম্ভবত আপনি যা আশা করেছিলেন তা নয়। ইন্টিজার ওভারফ্লোর র‍্যাপিং আচরণের উপর নির্ভর করা একটি এরর হিসাবে বিবেচিত হয়।</p>
 <p>ওভারফ্লোর সম্ভাবনা স্পষ্টভাবে পরিচালনা করার জন্য, আপনি প্রিমিটিভ নিউমেরিক টাইপগুলোর জন্য স্ট্যান্ডার্ড লাইব্রেরি দ্বারা প্রদত্ত এই মেথডগুলোর পরিবার ব্যবহার করতে পারেন:</p>
 <ul>
 <li><code>wrapping_*</code> মেথড, যেমন <code>wrapping_add</code>, দিয়ে সমস্ত মোডে র‍্যাপ করুন।</li>
@@ -247,7 +224,7 @@ error: could not compile `no_type_annotations` (bin "no_type_annotations") due t
 <li><code>overflowing_*</code> মেথড দিয়ে মান এবং একটি বুলিয়ান যা নির্দেশ করে ওভারফ্লো হয়েছে কিনা তা প্রদান করুন।</li>
 <li><code>saturating_*</code> মেথড দিয়ে মানের সর্বনিম্ন বা সর্বোচ্চ মানে স্যাচুরেট করুন।</li>
 </ul>
-</blockquote>
+</section>
 <h4 id="ফলোটিং-পযেনট-টাইপ-floating-point-types"><a class="header" href="#ফলোটিং-পযেনট-টাইপ-floating-point-types">ফ্লোটিং-পয়েন্ট টাইপ (Floating-Point Types)</a></h4>
 <p>রাস্ট-এ <em>ফ্লোটিং-পয়েন্ট নাম্বার</em>, যা দশমিক বিন্দুযুক্ত সংখ্যা, এর জন্য দুটি প্রিমিটিভ টাইপও রয়েছে। রাস্টের ফ্লোটিং-পয়েন্ট টাইপগুলো হল <code>f32</code> এবং <code>f64</code>, যা যথাক্রমে ৩২ বিট এবং ৬৪ বিট আকারের। ডিফল্ট টাইপ হল <code>f64</code> কারণ আধুনিক সিপিইউগুলিতে, এটি <code>f32</code>-এর মতো প্রায় একই গতির কিন্তু আরও বেশি নির্ভুলতা (precision) দিতে সক্ষম। সমস্ত ফ্লোটিং-পয়েন্ট টাইপ সাইনড।</p>
 <p>এখানে একটি উদাহরণ যা ফ্লোটিং-পয়েন্ট নাম্বারগুলোকে কার্যকর অবস্থায় দেখায়:</p>
@@ -287,7 +264,7 @@ error: could not compile `no_type_annotations` (bin "no_type_annotations") due t
 
     let f: bool = false; // with explicit type annotation
 }</code></pre></pre>
-<p>বুলিয়ান মান ব্যবহার করার প্রধান উপায় হল কন্ডিশনাল, যেমন একটি <code>if</code> এক্সপ্রেশন। আমরা <a href="ch03-05-control-flow.html#control-flow">"কন্ট্রোল ফ্লো"</a> বিভাগে রাস্ট-এ <code>if</code> এক্সপ্রেশন কীভাবে কাজ করে তা কভার করব।</p>
+<p>বুলিয়ান মান ব্যবহার করার প্রধান উপায় হল কন্ডিশনাল, যেমন একটি <code>if</code> এক্সপ্রেশন। আমরা <a href="ch03-05-control-flow.html#control-flow">“কন্ট্রোল ফ্লো”</a> বিভাগে রাস্ট-এ <code>if</code> এক্সপ্রেশন কীভাবে কাজ করে তা কভার করব।</p>
 <h4 id="কযারেকটার-টাইপ-the-character-type"><a class="header" href="#কযারেকটার-টাইপ-the-character-type">ক্যারেক্টার টাইপ (The Character Type)</a></h4>
 <p>রাস্টের <code>char</code> টাইপ হল ভাষার সবচেয়ে আদিম বর্ণানুক্রমিক টাইপ। এখানে <code>char</code> মান ঘোষণা করার কিছু উদাহরণ দেওয়া হল:</p>
 <p><span class="filename">ফাইলের নাম: src/main.rs</span></p>
@@ -296,7 +273,7 @@ error: could not compile `no_type_annotations` (bin "no_type_annotations") due t
     let z: char = 'ℤ'; // with explicit type annotation
     let heart_eyed_cat = '😻';
 }</code></pre></pre>
-<p>লক্ষ্য করুন যে আমরা <code>char</code> লিটারেলগুলোকে একক উদ্ধৃতি (single quotes) দিয়ে নির্দিষ্ট করি, স্ট্রিং লিটারেলের বিপরীতে, যা দ্বৈত উদ্ধৃতি (double quotes) ব্যবহার করে। রাস্টের <code>char</code> টাইপ চার বাইট আকারের এবং একটি ইউনিকোড স্কেলার মান (Unicode Scalar Value) উপস্থাপন করে, যার মানে এটি শুধু ASCII-এর চেয়ে অনেক বেশি কিছু উপস্থাপন করতে পারে। অ্যাকসেন্টেড অক্ষর; চীনা, জাপানি এবং কোরিয়ান অক্ষর; ইমোজি; এবং শূন্য-প্রস্থের স্পেস সবই রাস্ট-এ বৈধ <code>char</code> মান। ইউনিকোড স্কেলার মান <code>U+0000</code> থেকে <code>U+D7FF</code> এবং <code>U+E000</code> থেকে <code>U+10FFFF</code> পর্যন্ত অন্তর্ভুক্ত। তবে, ইউনিকোডে "ক্যারেক্টার" realmente একটি ধারণা নয়, তাই "ক্যারেক্টার" বলতে আপনার মানবিক অনুভূতি রাস্ট-এ একটি <code>char</code> যা তার সাথে নাও মিলতে পারে। আমরা এই বিষয়টি অধ্যায় ৮-এর <a href="ch08-02-strings.html#storing-utf-8-encoded-text-with-strings">"Storing UTF-8 Encoded Text with Strings"</a> বিভাগে বিস্তারিতভাবে আলোচনা করব।</p>
+<p>লক্ষ্য করুন যে আমরা <code>char</code> লিটারেলগুলোকে একক উদ্ধৃতি (single quotes) দিয়ে নির্দিষ্ট করি, স্ট্রিং লিটারেলের বিপরীতে, যা দ্বৈত উদ্ধৃতি (double quotes) ব্যবহার করে। রাস্টের <code>char</code> টাইপ চার বাইট আকারের এবং একটি ইউনিকোড স্কেলার মান (Unicode Scalar Value) উপস্থাপন করে, যার মানে এটি শুধু ASCII-এর চেয়ে অনেক বেশি কিছু উপস্থাপন করতে পারে। অ্যাকসেন্টেড অক্ষর; চীনা, জাপানি এবং কোরিয়ান অক্ষর; ইমোজি; এবং শূন্য-প্রস্থের স্পেস সবই রাস্ট-এ বৈধ <code>char</code> মান। ইউনিকোড স্কেলার মান <code>U+0000</code> থেকে <code>U+D7FF</code> এবং <code>U+E000</code> থেকে <code>U+10FFFF</code> পর্যন্ত অন্তর্ভুক্ত। তবে, ইউনিকোডে “ক্যারেক্টার” realmente একটি ধারণা নয়, তাই “ক্যারেক্টার” বলতে আপনার মানবিক অনুভূতি রাস্ট-এ একটি <code>char</code> যা তার সাথে নাও মিলতে পারে। আমরা এই বিষয়টি অধ্যায় ৮-এর <a href="ch08-02-strings.html#storing-utf-8-encoded-text-with-strings">“Storing UTF-8 Encoded Text with Strings”</a> বিভাগে বিস্তারিতভাবে আলোচনা করব।</p>
 <h3 id="কমপাউনড-টাইপ-compound-types"><a class="header" href="#কমপাউনড-টাইপ-compound-types">কম্পাউন্ড টাইপ (Compound Types)</a></h3>
 <p><em>কম্পাউন্ড টাইপ</em> একাধিক মানকে একটি টাইপে গ্রুপ করতে পারে। রাস্টের দুটি প্রিমিটিভ কম্পাউন্ড টাইপ রয়েছে: টাপল (tuples) এবং অ্যারে (arrays)।</p>
 <h4 id="টাপল-টাইপ-the-tuple-type"><a class="header" href="#টাপল-টাইপ-the-tuple-type">টাপল টাইপ (The Tuple Type)</a></h4>
@@ -450,7 +427,6 @@ note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 
         <!-- Custom JS scripts -->
         <script src="ferris.js"></script>
-
 
 
     </div>

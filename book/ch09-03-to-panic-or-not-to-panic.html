@@ -24,9 +24,9 @@
         <link rel="stylesheet" href="fonts/fonts.css">
 
         <!-- Highlight.js Stylesheets -->
-        <link rel="stylesheet" id="highlight-css" href="highlight.css">
-        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
-        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
         <link rel="stylesheet" href="ferris.css">
@@ -35,34 +35,21 @@
         <link rel="stylesheet" href="theme/listing.css">
 
 
-        <!-- Provide site root and default themes to javascript -->
+        <!-- Provide site root to javascript -->
         <script>
-            const path_to_root = "";
-            const default_light_theme = "light";
-            const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex.js";
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc.js"></script>
     </head>
     <body>
-    <div id="mdbook-help-container">
-        <div id="mdbook-help-popup">
-            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
-            <div>
-                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
-                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
-                <p>Press <kbd>?</kbd> to show this help</p>
-                <p>Press <kbd>Esc</kbd> to hide this help</p>
-            </div>
-        </div>
-    </div>
     <div id="body-container">
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
         <script>
             try {
-                let theme = localStorage.getItem('mdbook-theme');
-                let sidebar = localStorage.getItem('mdbook-sidebar');
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
 
                 if (theme.startsWith('"') && theme.endsWith('"')) {
                     localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
@@ -76,8 +63,7 @@
 
         <!-- Set the theme before any content is loaded, prevents flash -->
         <script>
-            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
-            let theme;
+            var theme;
             try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
             if (theme === null || theme === undefined) { theme = default_theme; }
             const html = document.documentElement;
@@ -90,20 +76,17 @@
 
         <!-- Hide / unhide sidebar before it is displayed -->
         <script>
-            let sidebar = null;
-            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
             if (document.body.clientWidth >= 1080) {
                 try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
                 sidebar = sidebar || 'visible';
             } else {
                 sidebar = 'hidden';
-                sidebar_toggle.checked = false;
             }
-            if (sidebar === 'visible') {
-                sidebar_toggle.checked = true;
-            } else {
-                html.classList.remove('sidebar-visible');
-            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
@@ -130,14 +113,13 @@
                             <i class="fa fa-paint-brush"></i>
                         </button>
                         <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
-                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
                         </ul>
-                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
                             <i class="fa fa-search"></i>
                         </button>
                     </div>
@@ -157,12 +139,7 @@
 
                 <div id="search-wrapper" class="hidden">
                     <form id="searchbar-outer" class="searchbar-outer">
-                        <div class="search-wrapper">
-                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
-                            <div class="spinner-wrapper">
-                                <i class="fa fa-spinner fa-spin"></i>
-                            </div>
-                        </div>
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
                     </form>
                     <div id="searchresults-outer" class="searchresults-outer hidden">
                         <div id="searchresults-header" class="searchresults-header"></div>
@@ -211,9 +188,9 @@
 <p>যখন আপনার কোড এমন একটি অপারেশন সম্পাদন করে যা অবৈধ মান ব্যবহার করে কল করা হলে ব্যবহারকারীকে ঝুঁকির মধ্যে ফেলতে পারে, তখন আপনার কোডকে প্রথমে মানগুলি বৈধ কিনা তা যাচাই করা উচিত এবং মানগুলি বৈধ না হলে প্যানিক করা উচিত। এটি মূলত নিরাপত্তার কারণে: অবৈধ ডেটার উপর অপারেশন করার চেষ্টা আপনার কোডকে দুর্বলতার সম্মুখীন করতে পারে। এটিই প্রধান কারণ যে স্ট্যান্ডার্ড লাইব্রেরি <code>panic!</code> কল করবে যদি আপনি সীমার বাইরে মেমরি অ্যাক্সেসের চেষ্টা করেন: বর্তমান ডেটা স্ট্রাকচারের অন্তর্গত নয় এমন মেমরি অ্যাক্সেস করার চেষ্টা একটি সাধারণ নিরাপত্তা সমস্যা। ফাংশনগুলির প্রায়শই <em>চুক্তি</em> (contracts) থাকে: তাদের আচরণ শুধুমাত্র তখনই নিশ্চিত করা হয় যদি ইনপুটগুলি নির্দিষ্ট প্রয়োজনীয়তা পূরণ করে। চুক্তি লঙ্ঘন হলে প্যানিক করা অর্থপূর্ণ কারণ একটি চুক্তি লঙ্ঘন সর্বদা একটি কলার-সাইড বাগ নির্দেশ করে, এবং এটি এমন এক ধরনের এরর নয় যা আপনি চান কলিং কোডকে স্পষ্টভাবে হ্যান্ডেল করতে হোক। আসলে, কলিং কোডের পুনরুদ্ধার করার কোনো যুক্তিসঙ্গত উপায় নেই; কলিং <em>প্রোগ্রামারদের</em> কোড ঠিক করতে হবে। একটি ফাংশনের জন্য চুক্তি, বিশেষ করে যখন একটি লঙ্ঘন প্যানিক ঘটাবে, ফাংশনের জন্য API ডকুমেন্টেশনে ব্যাখ্যা করা উচিত।</p>
 <p>তবে, আপনার সমস্ত ফাংশনে প্রচুর এরর চেক থাকা দীর্ঘ এবং বিরক্তিকর হবে। সৌভাগ্যবশত, আপনি Rust-এর টাইপ সিস্টেম (এবং এইভাবে কম্পাইলার দ্বারা করা টাইপ চেকিং) ব্যবহার করে আপনার জন্য অনেক চেক করতে পারেন। যদি আপনার ফাংশনের একটি নির্দিষ্ট টাইপ প্যারামিটার হিসাবে থাকে, আপনি আপনার কোডের যুক্তি নিয়ে এগিয়ে যেতে পারেন এটা জেনে যে কম্পাইলার ইতিমধ্যে নিশ্চিত করেছে যে আপনার কাছে একটি বৈধ মান আছে। উদাহরণস্বরূপ, যদি আপনার কাছে একটি <code>Option</code>-এর পরিবর্তে একটি টাইপ থাকে, আপনার প্রোগ্রাম <em>কিছু না</em> থাকার পরিবর্তে <em>কিছু</em> থাকার আশা করে। আপনার কোডকে তখন <code>Some</code> এবং <code>None</code> ভ্যারিয়েন্টের জন্য দুটি কেস হ্যান্ডেল করতে হবে না: এটি শুধুমাত্র নিশ্চিতভাবে একটি মান থাকার জন্য একটি কেস থাকবে। আপনার ফাংশনে কিছুই পাস করার চেষ্টা করা কোড এমনকি কম্পাইলও হবে না, তাই আপনার ফাংশনকে রানটাইমে সেই কেসটি পরীক্ষা করতে হবে না। আরেকটি উদাহরণ হলো একটি আনসাইন্ড ইন্টিজার টাইপ যেমন <code>u32</code> ব্যবহার করা, যা নিশ্চিত করে যে প্যারামিটারটি কখনই নেতিবাচক নয়।</p>
 <h3 id="বৈধতা-যাচাইযের-জনয-কাসটম-টাইপ-তৈরি-করা-creating-custom-types-for-validation"><a class="header" href="#বৈধতা-যাচাইযের-জনয-কাসটম-টাইপ-তৈরি-করা-creating-custom-types-for-validation">বৈধতা যাচাইয়ের জন্য কাস্টম টাইপ তৈরি করা (Creating Custom Types for Validation)</a></h3>
-<p>আসুন আমরা একটি বৈধ মান নিশ্চিত করার জন্য Rust-এর টাইপ সিস্টেম ব্যবহার করার ধারণাটিকে এক ধাপ এগিয়ে নিয়ে যাই এবং বৈধতা যাচাইয়ের জন্য একটি কাস্টম টাইপ তৈরি করার দিকে নজর দিই। অধ্যায় ২-এর অনুমান করার গেমটি মনে করুন যেখানে আমাদের কোড ব্যবহারকারীকে ১ থেকে ১০০-এর মধ্যে একটি সংখ্যা অনুমান করতে বলেছিল। আমরা আমাদের গোপন সংখ্যার সাথে এটি পরীক্ষা করার আগে ব্যবহারকারীর অনুমানটি সেই সংখ্যাগুলির মধ্যে ছিল কিনা তা কখনই যাচাই করিনি; আমরা কেবল যাচাই করেছি যে অনুমানটি পজিটিভ ছিল। এই ক্ষেত্রে, পরিণতি খুব গুরুতর ছিল না: আমাদের "Too high" বা "Too low" আউটপুট এখনও সঠিক হতো। কিন্তু ব্যবহারকারীকে বৈধ অনুমানের দিকে পরিচালিত করা এবং ব্যবহারকারী যখন সীমার বাইরের একটি সংখ্যা অনুমান করে তার জন্য ভিন্ন আচরণ করা একটি দরকারী উন্নতি হবে, যখন ব্যবহারকারী, উদাহরণস্বরূপ, অক্ষরের পরিবর্তে অক্ষর টাইপ করে।</p>
+<p>আসুন আমরা একটি বৈধ মান নিশ্চিত করার জন্য Rust-এর টাইপ সিস্টেম ব্যবহার করার ধারণাটিকে এক ধাপ এগিয়ে নিয়ে যাই এবং বৈধতা যাচাইয়ের জন্য একটি কাস্টম টাইপ তৈরি করার দিকে নজর দিই। অধ্যায় ২-এর অনুমান করার গেমটি মনে করুন যেখানে আমাদের কোড ব্যবহারকারীকে ১ থেকে ১০০-এর মধ্যে একটি সংখ্যা অনুমান করতে বলেছিল। আমরা আমাদের গোপন সংখ্যার সাথে এটি পরীক্ষা করার আগে ব্যবহারকারীর অনুমানটি সেই সংখ্যাগুলির মধ্যে ছিল কিনা তা কখনই যাচাই করিনি; আমরা কেবল যাচাই করেছি যে অনুমানটি পজিটিভ ছিল। এই ক্ষেত্রে, পরিণতি খুব গুরুতর ছিল না: আমাদের “Too high” বা “Too low” আউটপুট এখনও সঠিক হতো। কিন্তু ব্যবহারকারীকে বৈধ অনুমানের দিকে পরিচালিত করা এবং ব্যবহারকারী যখন সীমার বাইরের একটি সংখ্যা অনুমান করে তার জন্য ভিন্ন আচরণ করা একটি দরকারী উন্নতি হবে, যখন ব্যবহারকারী, উদাহরণস্বরূপ, অক্ষরের পরিবর্তে অক্ষর টাইপ করে।</p>
 <p>এটি করার একটি উপায় হতে পারে অনুমানটিকে শুধুমাত্র একটি <code>u32</code> এর পরিবর্তে একটি <code>i32</code> হিসাবে পার্স করা যাতে সম্ভাব্য নেতিবাচক সংখ্যা அனுமதிக்க হয়, এবং তারপর সংখ্যাটি সীমার মধ্যে আছে কিনা তার জন্য একটি চেক যোগ করা, যেমন:</p>
-<Listing file-name="src/main.rs">
+<p>src/main.rs</p>
 <pre><code class="language-rust ignore"><span class="boring">use rand::Rng;
 </span><span class="boring">use std::cmp::Ordering;
 </span><span class="boring">use std::io;
@@ -255,11 +232,10 @@
 </span><span class="boring">        }
 </span>    }
 <span class="boring">}</span></code></pre>
-</Listing>
 <p><code>if</code> এক্সপ্রেশনটি পরীক্ষা করে যে আমাদের মান সীমার বাইরে কিনা, ব্যবহারকারীকে সমস্যা সম্পর্কে জানায়, এবং লুপের পরবর্তী পুনরাবৃত্তি শুরু করতে এবং আরেকটি অনুমানের জন্য জিজ্ঞাসা করতে <code>continue</code> কল করে। <code>if</code> এক্সপ্রেশনের পরে, আমরা <code>guess</code> এবং গোপন সংখ্যার মধ্যে তুলনা নিয়ে এগিয়ে যেতে পারি এটা জেনে যে <code>guess</code> ১ থেকে ১০০-এর মধ্যে রয়েছে।</p>
 <p>তবে, এটি একটি আদর্শ সমাধান নয়: যদি এটি একেবারে গুরুত্বপূর্ণ হতো যে প্রোগ্রামটি শুধুমাত্র ১ থেকে ১০০-এর মধ্যে মান নিয়ে কাজ করবে, এবং এটির এই প্রয়োজনীয়তা সহ অনেক ফাংশন থাকত, তবে প্রতিটি ফাংশনে এইরকম একটি চেক থাকা ক্লান্তিকর হতো (এবং পারফরম্যান্সের উপর প্রভাব ফেলতে পারতো)।</p>
 <p>পরিবর্তে, আমরা একটি ডেডিকেটেড মডিউলে একটি নতুন টাইপ তৈরি করতে পারি এবং বৈধতা যাচাইগুলি সর্বত্র পুনরাবৃত্তি করার পরিবর্তে টাইপের একটি ইনস্ট্যান্স তৈরি করার জন্য একটি ফাংশনে রাখতে পারি। এইভাবে, ফাংশনগুলির জন্য তাদের সিগনেচারে নতুন টাইপ ব্যবহার করা এবং তারা যে মানগুলি পায় তা আত্মবিশ্বাসের সাথে ব্যবহার করা নিরাপদ। লিস্টিং ৯-১৩ একটি <code>Guess</code> টাইপ সংজ্ঞায়িত করার একটি উপায় দেখায় যা শুধুমাত্র তখনই <code>Guess</code>-এর একটি ইনস্ট্যান্স তৈরি করবে যদি <code>new</code> ফাংশনটি ১ থেকে ১০০-এর মধ্যে একটি মান পায়।</p>
-<Listing number="9-13" caption="একটি `Guess` টাইপ যা শুধুমাত্র ১ থেকে ১০০-এর মধ্যে মান নিয়ে চলবে" file-name="src/guessing_game.rs">
+<p>src/guessing_game.rs</p>
 <pre><pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>pub struct Guess {
@@ -280,7 +256,7 @@ impl Guess {
     }
 }
 <span class="boring">}</span></code></pre></pre>
-</Listing>
+<p>Listing 9-13: একটি <code>Guess</code> টাইপ যা শুধুমাত্র ১ থেকে ১০০-এর মধ্যে মান নিয়ে চলবে</p>
 <p>উল্লেখ্য যে <em>src/guessing_game.rs</em>-এর এই কোডটি <em>src/lib.rs</em>-এ একটি মডিউল ডিক্লারেশন <code>mod guessing_game;</code> যোগ করার উপর নির্ভর করে যা আমরা এখানে দেখাইনি। এই নতুন মডিউলের ফাইলের মধ্যে, আমরা সেই মডিউলে <code>Guess</code> নামে একটি struct সংজ্ঞায়িত করি যার একটি <code>value</code> নামের ফিল্ড আছে যা একটি <code>i32</code> ধারণ করে। এখানেই সংখ্যাটি সংরক্ষণ করা হবে।</p>
 <p>তারপর আমরা <code>Guess</code>-এর উপর <code>new</code> নামে একটি অ্যাসোসিয়েটেড ফাংশন ইমপ্লিমেন্ট করি যা <code>Guess</code> মানের ইনস্ট্যান্স তৈরি করে। <code>new</code> ফাংশনটি <code>value</code> নামে একটি প্যারামিটার থাকার জন্য সংজ্ঞায়িত করা হয়েছে যার টাইপ <code>i32</code> এবং একটি <code>Guess</code> রিটার্ন করার জন্য। <code>new</code> ফাংশনের বডির কোডটি <code>value</code> পরীক্ষা করে নিশ্চিত করে যে এটি ১ থেকে ১০০-এর মধ্যে আছে। যদি <code>value</code> এই পরীক্ষাটি পাস না করে, আমরা একটি <code>panic!</code> কল করি, যা কলিং কোড লিখছেন এমন প্রোগ্রামারকে সতর্ক করবে যে তাদের একটি বাগ আছে যা তাদের ঠিক করতে হবে, কারণ এই সীমার বাইরের একটি <code>value</code> দিয়ে একটি <code>Guess</code> তৈরি করা <code>Guess::new</code> যে চুক্তির উপর নির্ভর করছে তা লঙ্ঘন করবে। <code>Guess::new</code> যে শর্তে প্যানিক করতে পারে তা তার পাবলিক-ফেসিং API ডকুমেন্টেশনে আলোচনা করা উচিত; আমরা অধ্যায় ১৪-তে আপনার তৈরি করা API ডকুমেন্টেশনে একটি <code>panic!</code>-এর সম্ভাবনা নির্দেশকারী ডকুমেন্টেশন কনভেনশনগুলি কভার করব। যদি <code>value</code> পরীক্ষাটি পাস করে, আমরা একটি নতুন <code>Guess</code> তৈরি করি যার <code>value</code> ফিল্ড <code>value</code> প্যারামিটারে সেট করা হয় এবং <code>Guess</code> রিটার্ন করি।</p>
 <p>এর পরে, আমরা <code>value</code> নামে একটি মেথড ইমপ্লিমেন্ট করি যা <code>self</code> ধার নেয়, অন্য কোনো প্যারামিটার নেই, এবং একটি <code>i32</code> রিটার্ন করে। এই ধরনের মেথডকে কখনও কখনও <em>getter</em> বলা হয় কারণ এর উদ্দেশ্য হলো এর ফিল্ড থেকে কিছু ডেটা পাওয়া এবং তা রিটার্ন করা। এই পাবলিক মেথডটি প্রয়োজনীয় কারণ <code>Guess</code> struct-এর <code>value</code> ফিল্ডটি প্রাইভেট। এটা গুরুত্বপূর্ণ যে <code>value</code> ফিল্ডটি প্রাইভেট হোক যাতে <code>Guess</code> struct ব্যবহারকারী কোড সরাসরি <code>value</code> সেট করতে அனுமதிக்க না হয়: <code>guessing_game</code> মডিউলের বাইরের কোডকে একটি <code>Guess</code>-এর ইনস্ট্যান্স তৈরি করার জন্য <em>অবশ্যই</em> <code>Guess::new</code> ফাংশন ব্যবহার করতে হবে, যার ফলে নিশ্চিত করা হয় যে <code>Guess::new</code> ফাংশনের শর্ত দ্বারা পরীক্ষা করা হয়নি এমন কোনো <code>value</code> সহ একটি <code>Guess</code> থাকার কোনো উপায় নেই।</p>
@@ -336,7 +312,6 @@ impl Guess {
 
         <!-- Custom JS scripts -->
         <script src="ferris.js"></script>
-
 
 
     </div>

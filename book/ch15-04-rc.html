@@ -24,9 +24,9 @@
         <link rel="stylesheet" href="fonts/fonts.css">
 
         <!-- Highlight.js Stylesheets -->
-        <link rel="stylesheet" id="highlight-css" href="highlight.css">
-        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
-        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
         <link rel="stylesheet" href="ferris.css">
@@ -35,34 +35,21 @@
         <link rel="stylesheet" href="theme/listing.css">
 
 
-        <!-- Provide site root and default themes to javascript -->
+        <!-- Provide site root to javascript -->
         <script>
-            const path_to_root = "";
-            const default_light_theme = "light";
-            const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex.js";
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc.js"></script>
     </head>
     <body>
-    <div id="mdbook-help-container">
-        <div id="mdbook-help-popup">
-            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
-            <div>
-                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
-                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
-                <p>Press <kbd>?</kbd> to show this help</p>
-                <p>Press <kbd>Esc</kbd> to hide this help</p>
-            </div>
-        </div>
-    </div>
     <div id="body-container">
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
         <script>
             try {
-                let theme = localStorage.getItem('mdbook-theme');
-                let sidebar = localStorage.getItem('mdbook-sidebar');
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
 
                 if (theme.startsWith('"') && theme.endsWith('"')) {
                     localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
@@ -76,8 +63,7 @@
 
         <!-- Set the theme before any content is loaded, prevents flash -->
         <script>
-            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
-            let theme;
+            var theme;
             try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
             if (theme === null || theme === undefined) { theme = default_theme; }
             const html = document.documentElement;
@@ -90,20 +76,17 @@
 
         <!-- Hide / unhide sidebar before it is displayed -->
         <script>
-            let sidebar = null;
-            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
             if (document.body.clientWidth >= 1080) {
                 try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
                 sidebar = sidebar || 'visible';
             } else {
                 sidebar = 'hidden';
-                sidebar_toggle.checked = false;
             }
-            if (sidebar === 'visible') {
-                sidebar_toggle.checked = true;
-            } else {
-                html.classList.remove('sidebar-visible');
-            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
@@ -130,14 +113,13 @@
                             <i class="fa fa-paint-brush"></i>
                         </button>
                         <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
-                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
                         </ul>
-                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
                             <i class="fa fa-search"></i>
                         </button>
                     </div>
@@ -157,12 +139,7 @@
 
                 <div id="search-wrapper" class="hidden">
                     <form id="searchbar-outer" class="searchbar-outer">
-                        <div class="search-wrapper">
-                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
-                            <div class="spinner-wrapper">
-                                <i class="fa fa-spinner fa-spin"></i>
-                            </div>
-                        </div>
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
                     </form>
                     <div id="searchresults-outer" class="searchresults-outer hidden">
                         <div id="searchresults-header" class="searchresults-header"></div>
@@ -194,7 +171,7 @@
 <p><span class="caption">Figure 15-3: দুটি লিস্ট, <code>b</code> এবং <code>c</code>, তৃতীয় একটি লিস্ট <code>a</code>-এর মালিকানা শেয়ার করছে</span></p>
 <p>আমরা <code>a</code> লিস্ট তৈরি করব যা <code>5</code> এবং তারপর <code>10</code> ধারণ করবে। তারপর আমরা আরও দুটি লিস্ট তৈরি করব: <code>b</code> যা <code>3</code> দিয়ে শুরু হবে এবং <code>c</code> যা <code>4</code> দিয়ে শুরু হবে। <code>b</code> এবং <code>c</code> উভয় লিস্টই তারপর প্রথম <code>a</code> লিস্টে চলবে যা <code>5</code> এবং <code>10</code> ধারণ করে। অন্য কথায়, উভয় লিস্টই <code>5</code> এবং <code>10</code> ধারণকারী প্রথম লিস্টটি শেয়ার করবে।</p>
 <p><code>Box&lt;T&gt;</code> দিয়ে আমাদের <code>List</code>-এর সংজ্ঞা ব্যবহার করে এই পরিস্থিতিটি ইমপ্লিমেন্ট করার চেষ্টা করলে কাজ করবে না, যেমনটি Listing 15-17-এ দেখানো হয়েছে।</p>
-<Listing number="15-17" file-name="src/main.rs" caption="`Box<T>` ব্যবহার করে দুটি লিস্ট তৃতীয় একটি লিস্টের মালিকানা শেয়ার করার চেষ্টা করলে যে অনুমতি নেই তা দেখানো হচ্ছে">
+<p>src/main.rs</p>
 <pre><code class="language-rust ignore does_not_compile">enum List {
     Cons(i32, Box&lt;List&gt;),
     Nil,
@@ -207,7 +184,7 @@ fn main() {
     let b = Cons(3, Box::new(a));
     let c = Cons(4, Box::new(a));
 }</code></pre>
-</Listing>
+<p>Listing 15-17: <code>Box&lt;T&gt;</code> ব্যবহার করে দুটি লিস্ট তৃতীয় একটি লিস্টের মালিকানা শেয়ার করার চেষ্টা করলে যে অনুমতি নেই তা দেখানো হচ্ছে</p>
 <p>যখন আমরা এই কোডটি কম্পাইল করি, তখন আমরা এই এররটি পাই:</p>
 <pre><code class="language-console">$ cargo run
    Compiling cons-list v0.1.0 (file:///projects/cons-list)
@@ -227,7 +204,7 @@ error: could not compile `cons-list` (bin "cons-list") due to 1 previous error
 <p><code>Cons</code> ভ্যারিয়েন্টগুলো তাদের ধারণ করা ডেটার মালিক, তাই যখন আমরা <code>b</code> লিস্ট তৈরি করি, <code>a</code> কে <code>b</code>-তে মুভ (move) করা হয় এবং <code>b</code> <code>a</code>-এর মালিক হয়ে যায়। তারপর, যখন আমরা <code>c</code> তৈরি করার সময় আবার <code>a</code> ব্যবহার করার চেষ্টা করি, তখন আমাদের অনুমতি দেওয়া হয় না কারণ <code>a</code> মুভ হয়ে গেছে।</p>
 <p>আমরা <code>Cons</code>-এর সংজ্ঞা পরিবর্তন করে রেফারেন্স ধারণ করতে পারতাম, কিন্তু তাহলে আমাদের লাইফটাইম প্যারামিটার (lifetime parameters) নির্দিষ্ট করতে হতো। লাইফটাইম প্যারামিটার নির্দিষ্ট করার মাধ্যমে, আমরা নির্দিষ্ট করতাম যে লিস্টের প্রতিটি উপাদান অন্তত পুরো লিস্টের সমান সময়কাল বেঁচে থাকবে। Listing 15-17-এর উপাদান এবং লিস্টের ক্ষেত্রে এটি সত্য, কিন্তু সব পরিস্থিতিতে নয়।</p>
 <p>এর পরিবর্তে, আমরা আমাদের <code>List</code>-এর সংজ্ঞা পরিবর্তন করে <code>Box&lt;T&gt;</code>-এর জায়গায় <code>Rc&lt;T&gt;</code> ব্যবহার করব, যেমনটি Listing 15-18-এ দেখানো হয়েছে। প্রতিটি <code>Cons</code> ভ্যারিয়েন্ট এখন একটি ভ্যালু এবং একটি <code>List</code>-কে নির্দেশকারী একটি <code>Rc&lt;T&gt;</code> ধারণ করবে। যখন আমরা <code>b</code> তৈরি করব, তখন <code>a</code>-এর মালিকানা নেওয়ার পরিবর্তে, আমরা <code>a</code>-এর ধারণ করা <code>Rc&lt;List&gt;</code>-কে ক্লোন করব, যার ফলে রেফারেন্সের সংখ্যা এক থেকে দুইয়ে বৃদ্ধি পাবে এবং <code>a</code> এবং <code>b</code> উভয়কেই সেই <code>Rc&lt;List&gt;</code>-এর ডেটার মালিকানা শেয়ার করতে দেবে। আমরা <code>c</code> তৈরি করার সময়ও <code>a</code> কে ক্লোন করব, যার ফলে রেফারেন্সের সংখ্যা দুই থেকে তিনে বৃদ্ধি পাবে। প্রতিবার যখন আমরা <code>Rc::clone</code> কল করব, <code>Rc&lt;List&gt;</code>-এর ভেতরের ডেটার রেফারেন্স কাউন্ট বাড়বে, এবং ডেটা ততক্ষণ পর্যন্ত পরিষ্কার করা হবে না যতক্ষণ না পর্যন্ত তার রেফারেন্স সংখ্যা শূন্য হয়।</p>
-<Listing number="15-18" file-name="src/main.rs" caption="`Rc<T>` ব্যবহার করে `List`-এর একটি সংজ্ঞা">
+<p>src/main.rs</p>
 <pre><pre class="playground"><code class="language-rust edition2024">enum List {
     Cons(i32, Rc&lt;List&gt;),
     Nil,
@@ -241,13 +218,13 @@ fn main() {
     let b = Cons(3, Rc::clone(&amp;a));
     let c = Cons(4, Rc::clone(&amp;a));
 }</code></pre></pre>
-</Listing>
+<p>Listing 15-18: <code>Rc&lt;T&gt;</code> ব্যবহার করে <code>List</code>-এর একটি সংজ্ঞা</p>
 <p>আমাদের <code>Rc&lt;T&gt;</code>-কে স্কোপে আনার জন্য একটি <code>use</code> স্টেটমেন্ট যোগ করতে হবে কারণ এটি প্রিলিউডে (prelude) নেই। <code>main</code>-এ, আমরা <code>5</code> এবং <code>10</code> ধারণকারী লিস্ট তৈরি করি এবং এটিকে <code>a</code>-তে একটি নতুন <code>Rc&lt;List&gt;</code>-এ সংরক্ষণ করি। তারপর, যখন আমরা <code>b</code> এবং <code>c</code> তৈরি করি, আমরা <code>Rc::clone</code> ফাংশনটি কল করি এবং <code>a</code>-এর <code>Rc&lt;List&gt;</code>-এর একটি রেফারেন্স আর্গুমেন্ট হিসাবে পাস করি।</p>
 <p>আমরা <code>Rc::clone(&amp;a)</code>-এর পরিবর্তে <code>a.clone()</code> কল করতে পারতাম, কিন্তু রাস্টের কনভেনশন হলো এই ক্ষেত্রে <code>Rc::clone</code> ব্যবহার করা। <code>Rc::clone</code>-এর ইমপ্লিমেন্টেশন বেশিরভাগ টাইপের <code>clone</code> ইমপ্লিমেন্টেশনের মতো সমস্ত ডেটার একটি ডিপ কপি (deep copy) তৈরি করে না। <code>Rc::clone</code>-এর কল শুধুমাত্র রেফারেন্স কাউন্ট বাড়ায়, যা খুব বেশি সময় নেয় না। ডেটার ডিপ কপি অনেক সময় নিতে পারে। রেফারেন্স কাউন্টিংয়ের জন্য <code>Rc::clone</code> ব্যবহার করে, আমরা ডিপ-কপি ধরনের ক্লোন এবং রেফারেন্স কাউন্ট বাড়ায় এমন ধরনের ক্লোনের মধ্যে দৃশ্যমানভাবে পার্থক্য করতে পারি। কোডে পারফরম্যান্স সমস্যা খোঁজার সময়, আমাদের কেবল ডিপ-কপি ক্লোনগুলো বিবেচনা করতে হবে এবং <code>Rc::clone</code>-এর কলগুলোকে উপেক্ষা করা যেতে পারে।</p>
 <h3 id="একটি-rct-কলোন-করা-রেফারেনস-কাউনট-বাডায"><a class="header" href="#একটি-rct-কলোন-করা-রেফারেনস-কাউনট-বাডায">একটি <code>Rc&lt;T&gt;</code> ক্লোন করা রেফারেন্স কাউন্ট বাড়ায়</a></h3>
 <p>চলুন Listing 15-18-এর আমাদের কার্যকরী উদাহরণটি পরিবর্তন করি যাতে আমরা দেখতে পারি <code>a</code>-তে থাকা <code>Rc&lt;List&gt;</code>-এর রেফারেন্স তৈরি এবং ড্রপ করার সাথে সাথে রেফারেন্স কাউন্ট কীভাবে পরিবর্তিত হয়।</p>
 <p>Listing 15-19-এ, আমরা <code>main</code>-কে পরিবর্তন করব যাতে <code>c</code> লিস্টের চারপাশে একটি অভ্যন্তরীণ স্কোপ থাকে; তাহলে আমরা দেখতে পাব <code>c</code> স্কোপের বাইরে চলে গেলে রেফারেন্স কাউন্ট কীভাবে পরিবর্তিত হয়।</p>
-<Listing number="15-19" file-name="src/main.rs" caption="রেফারেন্স কাউন্ট প্রিন্ট করা">
+<p>src/main.rs</p>
 <pre><pre class="playground"><code class="language-rust edition2024"><span class="boring">enum List {
 </span><span class="boring">    Cons(i32, Rc&lt;List&gt;),
 </span><span class="boring">    Nil,
@@ -269,7 +246,7 @@ fn main() {
     }
     println!("count after c goes out of scope = {}", Rc::strong_count(&amp;a));
 }</code></pre></pre>
-</Listing>
+<p>Listing 15-19: রেফারেন্স কাউন্ট প্রিন্ট করা</p>
 <p>প্রোগ্রামের প্রতিটি পয়েন্টে যেখানে রেফারেন্স কাউন্ট পরিবর্তিত হয়, আমরা রেফারেন্স কাউন্ট প্রিন্ট করি, যা আমরা <code>Rc::strong_count</code> ফাংশন কল করে পাই। এই ফাংশনটির নাম <code>strong_count</code> কারণ <code>Rc&lt;T&gt;</code> টাইপের একটি <code>weak_count</code>-ও আছে; আমরা [“<code>Weak&lt;T&gt;</code> ব্যবহার করে রেফারেন্স সাইকেল প্রতিরোধ করা”][preventing-ref-cycles] অংশে দেখব <code>weak_count</code> কীসের জন্য ব্যবহৃত হয়।</p>
 <p>এই কোডটি নিম্নলিখিত প্রিন্ট করে:</p>
 <pre><code class="language-console">$ cargo run
@@ -332,7 +309,6 @@ count after c goes out of scope = 2
 
         <!-- Custom JS scripts -->
         <script src="ferris.js"></script>
-
 
 
     </div>

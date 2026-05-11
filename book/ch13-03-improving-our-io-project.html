@@ -24,9 +24,9 @@
         <link rel="stylesheet" href="fonts/fonts.css">
 
         <!-- Highlight.js Stylesheets -->
-        <link rel="stylesheet" id="highlight-css" href="highlight.css">
-        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
-        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
         <link rel="stylesheet" href="ferris.css">
@@ -35,34 +35,21 @@
         <link rel="stylesheet" href="theme/listing.css">
 
 
-        <!-- Provide site root and default themes to javascript -->
+        <!-- Provide site root to javascript -->
         <script>
-            const path_to_root = "";
-            const default_light_theme = "light";
-            const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex.js";
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc.js"></script>
     </head>
     <body>
-    <div id="mdbook-help-container">
-        <div id="mdbook-help-popup">
-            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
-            <div>
-                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
-                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
-                <p>Press <kbd>?</kbd> to show this help</p>
-                <p>Press <kbd>Esc</kbd> to hide this help</p>
-            </div>
-        </div>
-    </div>
     <div id="body-container">
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
         <script>
             try {
-                let theme = localStorage.getItem('mdbook-theme');
-                let sidebar = localStorage.getItem('mdbook-sidebar');
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
 
                 if (theme.startsWith('"') && theme.endsWith('"')) {
                     localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
@@ -76,8 +63,7 @@
 
         <!-- Set the theme before any content is loaded, prevents flash -->
         <script>
-            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
-            let theme;
+            var theme;
             try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
             if (theme === null || theme === undefined) { theme = default_theme; }
             const html = document.documentElement;
@@ -90,20 +76,17 @@
 
         <!-- Hide / unhide sidebar before it is displayed -->
         <script>
-            let sidebar = null;
-            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
             if (document.body.clientWidth >= 1080) {
                 try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
                 sidebar = sidebar || 'visible';
             } else {
                 sidebar = 'hidden';
-                sidebar_toggle.checked = false;
             }
-            if (sidebar === 'visible') {
-                sidebar_toggle.checked = true;
-            } else {
-                html.classList.remove('sidebar-visible');
-            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
@@ -130,14 +113,13 @@
                             <i class="fa fa-paint-brush"></i>
                         </button>
                         <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
-                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
                         </ul>
-                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
                             <i class="fa fa-search"></i>
                         </button>
                     </div>
@@ -157,12 +139,7 @@
 
                 <div id="search-wrapper" class="hidden">
                     <form id="searchbar-outer" class="searchbar-outer">
-                        <div class="search-wrapper">
-                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
-                            <div class="spinner-wrapper">
-                                <i class="fa fa-spinner fa-spin"></i>
-                            </div>
-                        </div>
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
                     </form>
                     <div id="searchresults-outer" class="searchresults-outer hidden">
                         <div id="searchresults-header" class="searchresults-header"></div>
@@ -186,7 +163,7 @@
 <p>ইটারেটর সম্পর্কে আমাদের এই নতুন জ্ঞানের মাধ্যমে, আমরা Chapter 12-এর I/O প্রজেক্টকে উন্নত করতে পারি। ইটারেটর ব্যবহার করে কোডের কিছু অংশ আরও স্পষ্ট এবং সংক্ষিপ্ত করা সম্ভব। আসুন দেখি কীভাবে ইটারেটর আমাদের <code>Config::build</code> ফাংশন এবং <code>search</code> ফাংশনের ইমপ্লিমেন্টেশনকে উন্নত করতে পারে।</p>
 <h3 id="ইটারেটর-বযবহার-করে-clone-সরানো"><a class="header" href="#ইটারেটর-বযবহার-করে-clone-সরানো">ইটারেটর ব্যবহার করে <code>clone</code> সরানো</a></h3>
 <p>Listing 12-6-এ, আমরা এমন কোড যোগ করেছিলাম যা <code>String</code> ভ্যালুর একটি স্লাইস (slice) নিত এবং স্লাইসে ইনডেক্সিং করে ও ভ্যালুগুলো ক্লোন (cloning) করে <code>Config</code> struct-এর একটি ইনস্ট্যান্স তৈরি করত, যার ফলে <code>Config</code> struct সেই ভ্যালুগুলোর মালিকানা (own) পেত। Listing 13-17-এ, আমরা <code>Config::build</code> ফাংশনের ইমপ্লিমেন্টেশনটি পুনরায় তুলে ধরেছি, যা Listing 12-23-এ ছিল।</p>
-<Listing number="13-17" file-name="src/main.rs" caption="Listing 12-23 থেকে `Config::build` ফাংশনের পুনঃউপস্থাপন">
+<p>src/main.rs</p>
 <pre><code class="language-rust ignore"><span class="boring">use std::env;
 </span><span class="boring">use std::error::Error;
 </span><span class="boring">use std::fs;
@@ -248,7 +225,7 @@
 </span><span class="boring">
 </span><span class="boring">    Ok(())
 </span><span class="boring">}</span></code></pre>
-</Listing>
+<p>Listing 13-17: Listing 12-23 থেকে <code>Config::build</code> ফাংশনের পুনঃউপস্থাপন</p>
 <p>সেই সময়ে, আমরা বলেছিলাম অদক্ষ <code>clone</code> কলগুলো নিয়ে চিন্তা না করতে, কারণ আমরা ভবিষ্যতে সেগুলো সরিয়ে ফেলব। এখন সেই সময় এসেছে!</p>
 <p>এখানে আমাদের <code>clone</code> প্রয়োজন হয়েছিল কারণ <code>args</code> প্যারামিটারে আমাদের <code>String</code> এলিমেন্টসহ একটি স্লাইস ছিল, কিন্তু <code>build</code> ফাংশন <code>args</code>-এর মালিক ছিল না। <code>Config</code> ইনস্ট্যান্সের মালিকানা রিটার্ন করার জন্য, আমাদের <code>Config</code>-এর <code>query</code> এবং <code>file_path</code> ফিল্ডের ভ্যালুগুলো ক্লোন করতে হয়েছিল যাতে <code>Config</code> ইনস্ট্যান্স তার ভ্যালুগুলোর মালিকানা পেতে পারে।</p>
 <p>ইটারেটর সম্পর্কে আমাদের নতুন জ্ঞানের মাধ্যমে, আমরা <code>build</code> ফাংশনটি পরিবর্তন করে স্লাইস ধার (borrow) করার পরিবর্তে আর্গুমেন্ট হিসেবে একটি ইটারেটরের মালিকানা নিতে পারি। আমরা স্লাইসের দৈর্ঘ্য পরীক্ষা করা এবং নির্দিষ্ট লোকেশনে ইনডেক্স করার কোডের পরিবর্তে ইটারেটরের কার্যকারিতা ব্যবহার করব। এটি <code>Config::build</code> ফাংশনটি কী করছে তা আরও স্পষ্ট করবে কারণ ইটারেটর ভ্যালুগুলো অ্যাক্সেস করবে।</p>
@@ -320,7 +297,7 @@
 </span><span class="boring">    Ok(())
 </span><span class="boring">}</span></code></pre>
 <p>আমরা প্রথমে <code>main</code> ফাংশনের শুরুটি পরিবর্তন করব, যা Listing 12-24-এ ছিল। এবার আমরা Listing 13-18-এর কোডটি ব্যবহার করব, যা একটি ইটারেটর ব্যবহার করে। এটি ততক্ষণ পর্যন্ত কম্পাইল হবে না যতক্ষণ না আমরা <code>Config::build</code> আপডেট করছি।</p>
-<Listing number="13-18" file-name="src/main.rs" caption="`env::args`-এর রিটার্ন ভ্যালু `Config::build`-এ পাস করা">
+<p>src/main.rs</p>
 <pre><code class="language-rust ignore does_not_compile"><span class="boring">use std::env;
 </span><span class="boring">use std::error::Error;
 </span><span class="boring">use std::fs;
@@ -382,10 +359,10 @@
 </span><span class="boring">
 </span><span class="boring">    Ok(())
 </span><span class="boring">}</span></code></pre>
-</Listing>
+<p>Listing 13-18: <code>env::args</code>-এর রিটার্ন ভ্যালু <code>Config::build</code>-এ পাস করা</p>
 <p><code>env::args</code> ফাংশনটি একটি ইটারেটর রিটার্ন করে! ইটারেটরের ভ্যালুগুলোকে একটি ভেক্টরে সংগ্রহ করে তারপর <code>Config::build</code>-এ একটি স্লাইস পাস করার পরিবর্তে, এখন আমরা <code>env::args</code> থেকে রিটার্ন করা ইটারেটরের মালিকানা সরাসরি <code>Config::build</code>-কে পাস করছি।</p>
 <p>এরপর, আমাদের <code>Config::build</code>-এর ডেফিনিশন আপডেট করতে হবে। আসুন <code>Config::build</code>-এর সিগনেচার (signature) পরিবর্তন করে Listing 13-19-এর মতো করি। এটি এখনও কম্পাইল হবে না, কারণ আমাদের ফাংশনের বডি আপডেট করতে হবে।</p>
-<Listing number="13-19" file-name="src/main.rs" caption="ইটারেটর আশা করার জন্য `Config::build`-এর সিগনেচার আপডেট করা">
+<p>src/main.rs</p>
 <pre><code class="language-rust ignore does_not_compile"><span class="boring">use std::env;
 </span><span class="boring">use std::error::Error;
 </span><span class="boring">use std::fs;
@@ -448,13 +425,13 @@
 </span><span class="boring">
 </span><span class="boring">    Ok(())
 </span><span class="boring">}</span></code></pre>
-</Listing>
+<p>Listing 13-19: ইটারেটর আশা করার জন্য <code>Config::build</code>-এর সিগনেচার আপডেট করা</p>
 <p><code>env::args</code> ফাংশনের জন্য স্ট্যান্ডার্ড লাইব্রেরি ডকুমেন্টেশন দেখায় যে এটি যে ইটারেটর রিটার্ন করে তার টাইপ হলো <code>std::env::Args</code>, এবং সেই টাইপটি <code>Iterator</code> ট্রেইট ইমপ্লিমেন্ট করে এবং <code>String</code> ভ্যালু রিটার্ন করে।</p>
-<p>আমরা <code>Config::build</code> ফাংশনের সিগনেচার আপডেট করেছি যাতে <code>args</code> প্যারামিটারটির <code>&amp;[String]</code>-এর পরিবর্তে <code>impl Iterator&lt;Item = String&gt;</code> ট্রেইট বাউন্ডসহ একটি জেনেরিক টাইপ থাকে। Chapter 10-এর <a href="ch10-02-traits.html#traits-as-parameters">"Traits as Parameters"</a><!-- ignore --> বিভাগে আলোচনা করা <code>impl Trait</code> সিনট্যাক্সের এই ব্যবহারটির অর্থ হলো <code>args</code> যেকোনো টাইপের হতে পারে যা <code>Iterator</code> ট্রেইট ইমপ্লিমেন্ট করে এবং <code>String</code> আইটেম রিটার্ন করে।</p>
+<p>আমরা <code>Config::build</code> ফাংশনের সিগনেচার আপডেট করেছি যাতে <code>args</code> প্যারামিটারটির <code>&amp;[String]</code>-এর পরিবর্তে <code>impl Iterator&lt;Item = String&gt;</code> ট্রেইট বাউন্ডসহ একটি জেনেরিক টাইপ থাকে। Chapter 10-এর <a href="ch10-02-traits.html#traits-as-parameters">“Traits as Parameters”</a><!-- ignore --> বিভাগে আলোচনা করা <code>impl Trait</code> সিনট্যাক্সের এই ব্যবহারটির অর্থ হলো <code>args</code> যেকোনো টাইপের হতে পারে যা <code>Iterator</code> ট্রেইট ইমপ্লিমেন্ট করে এবং <code>String</code> আইটেম রিটার্ন করে।</p>
 <p>যেহেতু আমরা <code>args</code>-এর মালিকানা নিচ্ছি এবং এর উপর ইটারেট করে <code>args</code>-কে পরিবর্তন (mutate) করব, তাই আমরা <code>args</code> প্যারামিটারের স্পেসিফিকেশনে <code>mut</code> কীওয়ার্ড যোগ করে এটিকে মিউটেবল করতে পারি।</p>
 <h4 id="ইনডেকসিং-এর-পরিবরতে-iterator-টরেইট-মেথড-বযবহার-করা"><a class="header" href="#ইনডেকসিং-এর-পরিবরতে-iterator-টরেইট-মেথড-বযবহার-করা">ইনডেক্সিং এর পরিবর্তে <code>Iterator</code> ট্রেইট মেথড ব্যবহার করা</a></h4>
 <p>এরপর, আমরা <code>Config::build</code>-এর বডি ঠিক করব। যেহেতু <code>args</code>, <code>Iterator</code> ট্রেইট ইমপ্লিমেন্ট করে, আমরা জানি যে আমরা এর উপর <code>next</code> মেথড কল করতে পারি! Listing 13-20, Listing 12-23-এর কোডটি <code>next</code> মেথড ব্যবহার করার জন্য আপডেট করে।</p>
-<Listing number="13-20" file-name="src/main.rs" caption="`Config::build`-এর বডি ইটারেটর মেথড ব্যবহার করার জন্য পরিবর্তন করা">
+<p>src/main.rs</p>
 <pre><code class="language-rust ignore noplayground"><span class="boring">use std::env;
 </span><span class="boring">use std::error::Error;
 </span><span class="boring">use std::fs;
@@ -521,11 +498,11 @@
 </span><span class="boring">
 </span><span class="boring">    Ok(())
 </span><span class="boring">}</span></code></pre>
-</Listing>
+<p>Listing 13-20: <code>Config::build</code>-এর বডি ইটারেটর মেথড ব্যবহার করার জন্য পরিবর্তন করা</p>
 <p>মনে রাখবেন <code>env::args</code>-এর রিটার্ন ভ্যালুর প্রথম মানটি হলো প্রোগ্রামের নাম। আমরা সেটি উপেক্ষা করে পরবর্তী ভ্যালুটি পেতে চাই, তাই প্রথমে আমরা <code>next</code> কল করি এবং রিটার্ন ভ্যালু নিয়ে কিছুই করি না। তারপর আমরা <code>Config</code>-এর <code>query</code> ফিল্ডে যে ভ্যালু রাখতে চাই তা পেতে আবার <code>next</code> কল করি। যদি <code>next</code> একটি <code>Some</code> রিটার্ন করে, আমরা ভ্যালুটি এক্সট্র্যাক্ট করতে একটি <code>match</code> ব্যবহার করি। যদি এটি <code>None</code> রিটার্ন করে, তার মানে যথেষ্ট আর্গুমেন্ট দেওয়া হয়নি এবং আমরা একটি <code>Err</code> ভ্যালু দিয়ে আগেভাগেই রিটার্ন করি। আমরা <code>file_path</code> ভ্যালুর জন্যও একই কাজ করি।</p>
 <h3 id="ইটারেটর-অযাডাপটার-দিয়ে-কোড-আরও-সপষট-করা"><a class="header" href="#ইটারেটর-অযাডাপটার-দিয়ে-কোড-আরও-সপষট-করা">ইটারেটর অ্যাডাপ্টার দিয়ে কোড আরও স্পষ্ট করা</a></h3>
 <p>আমরা আমাদের I/O প্রজেক্টের <code>search</code> ফাংশনেও ইটারেটরের সুবিধা নিতে পারি, যা এখানে Listing 13-21-এ পুনঃপ্রস্তুত করা হয়েছে যেমনটি Listing 12-19-এ ছিল।</p>
-<Listing number="13-21" file-name="src/lib.rs" caption="Listing 12-19 থেকে `search` ফাংশনের ইমপ্লিমেন্টেশন">
+<p>src/lib.rs</p>
 <pre><code class="language-rust ignore">pub fn search&lt;'a&gt;(query: &amp;str, contents: &amp;'a str) -&gt; Vec&lt;&amp;'a str&gt; {
     let mut results = Vec::new();
 
@@ -553,9 +530,9 @@
 </span><span class="boring">        assert_eq!(vec!["safe, fast, productive."], search(query, contents));
 </span><span class="boring">    }
 </span><span class="boring">}</span></code></pre>
-</Listing>
+<p>Listing 13-21: Listing 12-19 থেকে <code>search</code> ফাংশনের ইমপ্লিমেন্টেশন</p>
 <p>আমরা এই কোডটি ইটারেটর অ্যাডাপ্টার মেথড ব্যবহার করে আরও সংক্ষিপ্তভাবে লিখতে পারি। এটি করলে আমরা একটি মিউটেবল অন্তর্বর্তী <code>results</code> ভেক্টর এড়াতে পারি। ফাংশনাল প্রোগ্রামিং স্টাইল কোডকে আরও স্পষ্ট করার জন্য মিউটেবল স্টেট (mutable state) কমানো পছন্দ করে। মিউটেবল স্টেট অপসারণ ভবিষ্যতে সমান্তরালভাবে সার্চিং করার জন্য একটি enhancement সক্ষম করতে পারে কারণ আমাদের <code>results</code> ভেক্টরের কনকারেন্ট অ্যাক্সেস পরিচালনা করতে হবে না। Listing 13-22 এই পরিবর্তনটি দেখায়।</p>
-<Listing number="13-22" file-name="src/lib.rs" caption="`search` ফাংশনের ইমপ্লিমেন্টেশনে ইটারেটর অ্যাডাপ্টার মেথড ব্যবহার করা">
+<p>src/lib.rs</p>
 <pre><code class="language-rust ignore">pub fn search&lt;'a&gt;(query: &amp;str, contents: &amp;'a str) -&gt; Vec&lt;&amp;'a str&gt; {
     contents
         .lines()
@@ -610,7 +587,7 @@
 </span><span class="boring">        );
 </span><span class="boring">    }
 </span><span class="boring">}</span></code></pre>
-</Listing>
+<p>Listing 13-22: <code>search</code> ফাংশনের ইমপ্লিমেন্টেশনে ইটারেটর অ্যাডাপ্টার মেথড ব্যবহার করা</p>
 <p>স্মরণ করুন যে <code>search</code> ফাংশনের উদ্দেশ্য হলো <code>contents</code>-এর মধ্যে <code>query</code> ধারণকারী সমস্ত লাইন রিটার্ন করা। Listing 13-16-এর <code>filter</code> উদাহরণের মতো, এই কোডটি <code>filter</code> অ্যাডাপ্টার ব্যবহার করে শুধুমাত্র সেই লাইনগুলো রাখে যার জন্য <code>line.contains(query)</code> <code>true</code> রিটার্ন করে। তারপর আমরা <code>collect</code> দিয়ে মিলে যাওয়া লাইনগুলোকে অন্য একটি ভেক্টরে সংগ্রহ করি। অনেক সহজ! <code>search_case_insensitive</code> ফাংশনেও ইটারেটর মেথড ব্যবহার করার জন্য নির্দ্বিধায় একই পরিবর্তন করুন।</p>
 <p>আরও উন্নতির জন্য, <code>collect</code> কলটি সরিয়ে দিয়ে এবং রিটার্ন টাইপ পরিবর্তন করে <code>impl Iterator&lt;Item = &amp;'a str&gt;</code> করে <code>search</code> ফাংশন থেকে একটি ইটারেটর রিটার্ন করুন যাতে ফাংশনটি একটি ইটারেটর অ্যাডাপ্টার হয়ে যায়। লক্ষ্য করুন যে আপনাকে টেস্টগুলোও আপডেট করতে হবে! এই পরিবর্তন করার আগে এবং পরে আপনার <code>minigrep</code> টুল ব্যবহার করে একটি বড় ফাইল সার্চ করে আচরণের পার্থক্য পর্যবেক্ষণ করুন। এই পরিবর্তনের আগে, প্রোগ্রামটি সমস্ত ফলাফল সংগ্রহ না করা পর্যন্ত কোনো ফলাফল প্রিন্ট করবে না, কিন্তু পরিবর্তনের পরে, প্রতিটি মিলে যাওয়া লাইন খুঁজে পাওয়ার সাথে সাথে ফলাফলগুলো প্রিন্ট হবে কারণ <code>run</code> ফাংশনের <code>for</code> লুপ ইটারেটরের অলসতার (laziness) সুবিধা নিতে সক্ষম।</p>
 <!-- Old heading. Do not remove or links may break. -->
@@ -666,7 +643,6 @@
 
         <!-- Custom JS scripts -->
         <script src="ferris.js"></script>
-
 
 
     </div>

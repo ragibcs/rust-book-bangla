@@ -24,9 +24,9 @@
         <link rel="stylesheet" href="fonts/fonts.css">
 
         <!-- Highlight.js Stylesheets -->
-        <link rel="stylesheet" id="highlight-css" href="highlight.css">
-        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
-        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
         <link rel="stylesheet" href="ferris.css">
@@ -35,34 +35,21 @@
         <link rel="stylesheet" href="theme/listing.css">
 
 
-        <!-- Provide site root and default themes to javascript -->
+        <!-- Provide site root to javascript -->
         <script>
-            const path_to_root = "";
-            const default_light_theme = "light";
-            const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex.js";
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc.js"></script>
     </head>
     <body>
-    <div id="mdbook-help-container">
-        <div id="mdbook-help-popup">
-            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
-            <div>
-                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
-                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
-                <p>Press <kbd>?</kbd> to show this help</p>
-                <p>Press <kbd>Esc</kbd> to hide this help</p>
-            </div>
-        </div>
-    </div>
     <div id="body-container">
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
         <script>
             try {
-                let theme = localStorage.getItem('mdbook-theme');
-                let sidebar = localStorage.getItem('mdbook-sidebar');
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
 
                 if (theme.startsWith('"') && theme.endsWith('"')) {
                     localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
@@ -76,8 +63,7 @@
 
         <!-- Set the theme before any content is loaded, prevents flash -->
         <script>
-            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
-            let theme;
+            var theme;
             try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
             if (theme === null || theme === undefined) { theme = default_theme; }
             const html = document.documentElement;
@@ -90,20 +76,17 @@
 
         <!-- Hide / unhide sidebar before it is displayed -->
         <script>
-            let sidebar = null;
-            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
             if (document.body.clientWidth >= 1080) {
                 try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
                 sidebar = sidebar || 'visible';
             } else {
                 sidebar = 'hidden';
-                sidebar_toggle.checked = false;
             }
-            if (sidebar === 'visible') {
-                sidebar_toggle.checked = true;
-            } else {
-                html.classList.remove('sidebar-visible');
-            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
@@ -130,14 +113,13 @@
                             <i class="fa fa-paint-brush"></i>
                         </button>
                         <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
-                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
                         </ul>
-                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
                             <i class="fa fa-search"></i>
                         </button>
                     </div>
@@ -157,12 +139,7 @@
 
                 <div id="search-wrapper" class="hidden">
                     <form id="searchbar-outer" class="searchbar-outer">
-                        <div class="search-wrapper">
-                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
-                            <div class="spinner-wrapper">
-                                <i class="fa fa-spinner fa-spin"></i>
-                            </div>
-                        </div>
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
                     </form>
                     <div id="searchresults-outer" class="searchresults-outer hidden">
                         <div id="searchresults-header" class="searchresults-header"></div>
@@ -188,7 +165,7 @@
 <p>এগোনোর সময় একটি বিষয় লক্ষ্য করার মতো: এই পরিবর্তনগুলোর কোনোটিই সেই কোডের অংশকে প্রভাবিত করবে না যা ক্লোজার এক্সিকিউট করার কাজ করে, তাই আমরা যদি একটি <code>async runtime</code>-এর জন্য থ্রেড পুল ব্যবহার করতাম, তাহলেও সবকিছু একই থাকত।</p>
 <h3 id="threadpool-এর-উপর-drop-টরেইট-ইমপলিমেনট-করা"><a class="header" href="#threadpool-এর-উপর-drop-টরেইট-ইমপলিমেনট-করা"><code>ThreadPool</code>-এর উপর <code>Drop</code> ট্রেইট ইমপ্লিমেন্ট করা</a></h3>
 <p>চলুন আমাদের থ্রেড পুলের উপর <code>Drop</code> ইমপ্লিমেন্ট করার মাধ্যমে শুরু করি। যখন পুলটি ড্রপ করা হবে, আমাদের সমস্ত থ্রেড <code>join</code> করা উচিত যাতে তারা তাদের কাজ শেষ করতে পারে। লিস্টিং ২১-২২-এ <code>Drop</code> ইমপ্লিমেন্টেশনের একটি প্রথম প্রচেষ্টা দেখানো হয়েছে; এই কোডটি এখনও ঠিকভাবে কাজ করবে না।</p>
-<Listing number="21-22" file-name="src/lib.rs" caption="থ্রেড পুল স্কোপের বাইরে চলে গেলে প্রতিটি থ্রেডকে জয়েন করা">
+<p>src/lib.rs</p>
 <pre><code class="language-rust ignore does_not_compile"><span class="boring">use std::{
 </span><span class="boring">    sync::{Arc, Mutex, mpsc},
 </span><span class="boring">    thread,
@@ -265,7 +242,7 @@
 </span><span class="boring">        Worker { id, thread }
 </span><span class="boring">    }
 </span><span class="boring">}</span></code></pre>
-</Listing>
+<p>Listing 21-22: থ্রেড পুল স্কোপের বাইরে চলে গেলে প্রতিটি থ্রেডকে জয়েন করা</p>
 <p>প্রথমে আমরা থ্রেড পুলের প্রতিটি <code>workers</code>-এর মধ্যে দিয়ে লুপ করি। আমরা এর জন্য <code>&amp;mut</code> ব্যবহার করি কারণ <code>self</code> একটি মিউটেবল রেফারেন্স এবং আমাদের <code>worker</code>-কেও মিউটেট করতে হবে। প্রতিটি <code>worker</code>-এর জন্য, আমরা একটি বার্তা প্রিন্ট করি যে এই নির্দিষ্ট <code>Worker</code> ইনস্ট্যান্সটি শাট ডাউন হচ্ছে, এবং তারপর আমরা সেই <code>Worker</code> ইনস্ট্যান্সের থ্রেডে <code>join</code> কল করি। যদি <code>join</code> কল ব্যর্থ হয়, আমরা Rust-কে প্যানিক করতে এবং একটি অসুন্দর শাটডাউনে যেতে <code>unwrap</code> ব্যবহার করি।</p>
 <p>এই কোডটি কম্পাইল করার সময় আমরা যে এররটি পাই তা এখানে দেওয়া হলো:</p>
 <pre><code class="language-console">$ cargo check
@@ -288,7 +265,7 @@ error: could not compile `hello` (lib) due to 1 previous error
 <p>যাইহোক, এই পরিস্থিতিটি শুধুমাত্র <code>Worker</code> ড্রপ করার সময়ই আসত। এর বিনিময়ে, আমাদের <code>worker.thread</code> অ্যাক্সেস করার সময় সব জায়গায় একটি <code>Option&lt;thread::JoinHandle&lt;()&gt;&gt;</code> নিয়ে কাজ করতে হতো। ইডিওম্যাটিক Rust <code>Option</code> অনেক ব্যবহার করে, কিন্তু যখন আপনি নিজেকে এমন কিছুকে <code>Option</code>-এ র‍্যাপ করতে দেখেন যা আপনি জানেন সবসময় উপস্থিত থাকবে, শুধুমাত্র এই ধরনের একটি workaround হিসেবে, তখন আপনার কোডকে আরও পরিষ্কার এবং কম এরর-প্রোন করতে বিকল্প পদ্ধতির সন্ধান করা একটি ভাল ধারণা।</p>
 <p>এই ক্ষেত্রে, একটি ভালো বিকল্প বিদ্যমান: <code>Vec::drain</code> মেথড। এটি একটি রেঞ্জ প্যারামিটার গ্রহণ করে যা ভেক্টর থেকে কোন আইটেমগুলো সরাতে হবে তা নির্দিষ্ট করে এবং সেই আইটেমগুলোর একটি ইটারেটর রিটার্ন করে। <code>..</code> রেঞ্জ সিনট্যাক্স পাস করলে ভেক্টর থেকে <em>প্রতিটি</em> ভ্যালু সরিয়ে দেওয়া হবে।</p>
 <p>তাই আমাদের <code>ThreadPool</code> <code>drop</code> ইমপ্লিমেন্টেশনটি এভাবে আপডেট করতে হবে:</p>
-<Listing file-name="src/lib.rs">
+<p>src/lib.rs</p>
 <pre><pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span><span class="boring">use std::{
@@ -368,13 +345,12 @@ error: could not compile `hello` (lib) due to 1 previous error
 </span><span class="boring">    }
 </span><span class="boring">}
 </span><span class="boring">}</span></code></pre></pre>
-</Listing>
 <p>এটি কম্পাইলার এরর সমাধান করে এবং আমাদের কোডে অন্য কোনো পরিবর্তনের প্রয়োজন হয় না। লক্ষ্য করুন যে, যেহেতু প্যানিক করার সময় ড্রপ কল করা যেতে পারে, তাই <code>unwrap</code>-ও প্যানিক করতে পারে এবং একটি ডাবল প্যানিক ঘটাতে পারে, যা প্রোগ্রামটি অবিলম্বে ক্র্যাশ করে এবং চলমান যেকোনো পরিচ্ছন্নতার কাজ শেষ করে দেয়। এটি একটি উদাহরণ প্রোগ্রামের জন্য ঠিক আছে, কিন্তু প্রোডাকশন কোডের জন্য সুপারিশ করা হয় না।</p>
 <h3 id="থরেডগুলোকে-জব-শোনা-বনধ-করার-জনয-সংকেত-দেওযা"><a class="header" href="#থরেডগুলোকে-জব-শোনা-বনধ-করার-জনয-সংকেত-দেওযা">থ্রেডগুলোকে জব শোনা বন্ধ করার জন্য সংকেত দেওয়া</a></h3>
 <p>আমরা যে সমস্ত পরিবর্তন করেছি, তাতে আমাদের কোড কোনো ওয়ার্নিং ছাড়াই কম্পাইল হচ্ছে। যাইহোক, খারাপ খবর হলো এই কোডটি এখনও আমাদের কাঙ্ক্ষিত উপায়ে কাজ করছে না। মূল বিষয় হলো <code>Worker</code> ইনস্ট্যান্সের থ্রেড দ্বারা চালিত ক্লোজারগুলোর লজিক: এই মুহূর্তে, আমরা <code>join</code> কল করছি, কিন্তু এটি থ্রেডগুলোকে শাট ডাউন করবে না, কারণ তারা জব খোঁজার জন্য চিরতরে <code>loop</code> করতে থাকে। যদি আমরা আমাদের <code>drop</code>-এর বর্তমান ইমপ্লিমেন্টেশন দিয়ে আমাদের <code>ThreadPool</code> ড্রপ করার চেষ্টা করি, তাহলে প্রধান থ্রেডটি চিরতরে ব্লক হয়ে যাবে, প্রথম থ্রেডটি শেষ হওয়ার জন্য অপেক্ষা করতে থাকবে।</p>
 <p>এই সমস্যাটি সমাধান করার জন্য, আমাদের <code>ThreadPool</code> <code>drop</code> ইমপ্লিমেন্টেশনে একটি পরিবর্তন এবং তারপর <code>Worker</code> লুপে একটি পরিবর্তন প্রয়োজন হবে।</p>
 <p>প্রথমে আমরা <code>ThreadPool</code> <code>drop</code> ইমপ্লিমেন্টেশন পরিবর্তন করে থ্রেডগুলো শেষ হওয়ার জন্য অপেক্ষা করার আগে স্পষ্টভাবে <code>sender</code> ড্রপ করব। লিস্টিং ২১-২৩ <code>ThreadPool</code>-এ <code>sender</code>-কে স্পষ্টভাবে ড্রপ করার পরিবর্তনগুলো দেখায়। থ্রেডের মতো নয়, এখানে আমাদের <code>sender</code>-কে <code>ThreadPool</code> থেকে <code>Option::take</code> দিয়ে মুভ করার জন্য একটি <code>Option</code> ব্যবহার করতে <em>হবে</em>।</p>
-<Listing number="21-23" file-name="src/lib.rs" caption="`Worker` থ্রেড জয়েন করার আগে `sender`-কে স্পষ্টভাবে ড্রপ করা">
+<p>src/lib.rs</p>
 <pre><code class="language-rust noplayground not_desired_behavior"><span class="boring">use std::{
 </span><span class="boring">    sync::{Arc, Mutex, mpsc},
 </span><span class="boring">    thread,
@@ -459,9 +435,9 @@ impl Drop for ThreadPool {
 </span><span class="boring">        Worker { id, thread }
 </span><span class="boring">    }
 </span><span class="boring">}</span></code></pre>
-</Listing>
+<p>Listing 21-23: <code>Worker</code> থ্রেড জয়েন করার আগে <code>sender</code>-কে স্পষ্টভাবে ড্রপ করা</p>
 <p><code>sender</code> ড্রপ করা চ্যানেলটি বন্ধ করে দেয়, যা নির্দেশ করে যে আর কোনো মেসেজ পাঠানো হবে না। যখন এটি ঘটে, তখন <code>Worker</code> ইনস্ট্যান্সগুলো ইনফিনিট লুপে যে <code>recv</code> কলগুলো করে, সেগুলি সব একটি এরর রিটার্ন করবে। লিস্টিং ২১-২৪-এ, আমরা <code>Worker</code> লুপটি পরিবর্তন করি যাতে সেই ক্ষেত্রে লুপ থেকে সুন্দরভাবে প্রস্থান করা যায়, যার মানে হলো <code>ThreadPool</code> <code>drop</code> ইমপ্লিমেন্টেশন যখন তাদের উপর <code>join</code> কল করবে তখন থ্রেডগুলো শেষ হয়ে যাবে।</p>
-<Listing number="21-24" file-name="src/lib.rs" caption="`recv` একটি এরর রিটার্ন করলে স্পষ্টভাবে লুপ থেকে বেরিয়ে আসা">
+<p>src/lib.rs</p>
 <pre><code class="language-rust noplayground"><span class="boring">use std::{
 </span><span class="boring">    sync::{Arc, Mutex, mpsc},
 </span><span class="boring">    thread,
@@ -551,9 +527,9 @@ impl Drop for ThreadPool {
         Worker { id, thread }
     }
 }</code></pre>
-</Listing>
+<p>Listing 21-24: <code>recv</code> একটি এরর রিটার্ন করলে স্পষ্টভাবে লুপ থেকে বেরিয়ে আসা</p>
 <p>এই কোডটি বাস্তবে দেখার জন্য, চলুন <code>main</code> পরিবর্তন করি যাতে সার্ভারটি সুন্দরভাবে শাট ডাউন করার আগে মাত্র দুটি রিকোয়েস্ট গ্রহণ করে, যেমনটি লিস্টিং ২১-২৫ এ দেখানো হয়েছে।</p>
-<Listing number="21-25" file-name="src/main.rs" caption="লুপ থেকে প্রস্থান করে দুটি রিকোয়েস্ট সার্ভ করার পর সার্ভার শাট ডাউন করা">
+<p>src/main.rs</p>
 <pre><code class="language-rust ignore"><span class="boring">use hello::ThreadPool;
 </span><span class="boring">use std::{
 </span><span class="boring">    fs,
@@ -599,7 +575,7 @@ impl Drop for ThreadPool {
 </span><span class="boring">
 </span><span class="boring">    stream.write_all(response.as_bytes()).unwrap();
 </span><span class="boring">}</span></code></pre>
-</Listing>
+<p>Listing 21-25: লুপ থেকে প্রস্থান করে দুটি রিকোয়েস্ট সার্ভ করার পর সার্ভার শাট ডাউন করা</p>
 <p>আপনি চাইবেন না যে একটি বাস্তব-বিশ্বের ওয়েব সার্ভার মাত্র দুটি রিকোয়েস্ট সার্ভ করার পর শাট ডাউন হয়ে যাক। এই কোডটি শুধু দেখাচ্ছে যে সুন্দরভাবে শাটডাউন এবং পরিচ্ছন্নতার প্রক্রিয়াটি সঠিকভাবে কাজ করছে।</p>
 <p><code>take</code> মেথডটি <code>Iterator</code> ট্রেইটে সংজ্ঞায়িত এবং এটি ইটারেশনকে সর্বোচ্চ প্রথম দুটি আইটেমে সীমাবদ্ধ করে। <code>ThreadPool</code> <code>main</code>-এর শেষে স্কোপের বাইরে চলে যাবে, এবং <code>drop</code> ইমপ্লিমেন্টেশনটি চলবে।</p>
 <p><code>cargo run</code> দিয়ে সার্ভারটি শুরু করুন, এবং তিনটি রিকোয়েস্ট করুন। তৃতীয় রিকোয়েস্টটি এরর দেওয়া উচিত, এবং আপনার টার্মিনালে আপনি এই ধরনের আউটপুট দেখতে পাবেন:</p>
@@ -633,7 +609,7 @@ Shutting down worker 3
 <p>এই নির্দিষ্ট এক্সিকিউশনের একটি আকর্ষণীয় দিক লক্ষ্য করুন: <code>ThreadPool</code> <code>sender</code>-কে ড্রপ করেছে, এবং কোনো <code>Worker</code> এরর পাওয়ার আগেই, আমরা <code>Worker</code> 0 কে <code>join</code> করার চেষ্টা করেছি। <code>Worker</code> 0 এখনও <code>recv</code> থেকে কোনো এরর পায়নি, তাই প্রধান থ্রেডটি <code>Worker</code> 0 শেষ হওয়ার জন্য অপেক্ষা করতে ব্লক হয়ে গেছে। এই সময়ের মধ্যে, <code>Worker</code> 3 একটি জব পেয়েছে এবং তারপর সমস্ত থ্রেড একটি এরর পেয়েছে। যখন <code>Worker</code> 0 শেষ হয়েছে, প্রধান থ্রেডটি বাকি <code>Worker</code> ইনস্ট্যান্সগুলো শেষ হওয়ার জন্য অপেক্ষা করেছে। সেই সময়ে, তারা সবাই তাদের লুপ থেকে বেরিয়ে গেছে এবং থেমে গেছে।</p>
 <p>অভিনন্দন! আমরা এখন আমাদের প্রজেক্ট সম্পন্ন করেছি; আমাদের একটি বেসিক ওয়েব সার্ভার আছে যা অ্যাসিঙ্ক্রোনাসভাবে সাড়া দেওয়ার জন্য একটি থ্রেড পুল ব্যবহার করে। আমরা সার্ভারের একটি সুন্দর শাটডাউন সম্পাদন করতে সক্ষম, যা পুলের সমস্ত থ্রেড পরিচ্ছন্ন করে।</p>
 <p>রেফারেন্সের জন্য এখানে সম্পূর্ণ কোড দেওয়া হলো:</p>
-<Listing file-name="src/main.rs">
+<p>src/main.rs</p>
 <pre><code class="language-rust ignore">use hello::ThreadPool;
 use std::{
     fs,
@@ -679,8 +655,7 @@ fn handle_connection(mut stream: TcpStream) {
 
     stream.write_all(response.as_bytes()).unwrap();
 }</code></pre>
-</Listing>
-<Listing file-name="src/lib.rs">
+<p>src/lib.rs</p>
 <pre><code class="language-rust noplayground">use std::{
     sync::{Arc, Mutex, mpsc},
     thread,
@@ -775,7 +750,6 @@ impl Worker {
         }
     }
 }</code></pre>
-</Listing>
 <p>আমরা এখানে আরও অনেক কিছু করতে পারি! আপনি যদি এই প্রজেক্টটি আরও উন্নত করতে চান, তবে এখানে কিছু ধারণা দেওয়া হলো:</p>
 <ul>
 <li><code>ThreadPool</code> এবং এর পাবলিক মেথডগুলিতে আরও ডকুমেন্টেশন যোগ করুন।</li>
@@ -834,7 +808,6 @@ impl Worker {
 
         <!-- Custom JS scripts -->
         <script src="ferris.js"></script>
-
 
 
     </div>

@@ -24,9 +24,9 @@
         <link rel="stylesheet" href="fonts/fonts.css">
 
         <!-- Highlight.js Stylesheets -->
-        <link rel="stylesheet" id="highlight-css" href="highlight.css">
-        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
-        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
         <link rel="stylesheet" href="ferris.css">
@@ -35,34 +35,21 @@
         <link rel="stylesheet" href="theme/listing.css">
 
 
-        <!-- Provide site root and default themes to javascript -->
+        <!-- Provide site root to javascript -->
         <script>
-            const path_to_root = "";
-            const default_light_theme = "light";
-            const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex.js";
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc.js"></script>
     </head>
     <body>
-    <div id="mdbook-help-container">
-        <div id="mdbook-help-popup">
-            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
-            <div>
-                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
-                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
-                <p>Press <kbd>?</kbd> to show this help</p>
-                <p>Press <kbd>Esc</kbd> to hide this help</p>
-            </div>
-        </div>
-    </div>
     <div id="body-container">
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
         <script>
             try {
-                let theme = localStorage.getItem('mdbook-theme');
-                let sidebar = localStorage.getItem('mdbook-sidebar');
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
 
                 if (theme.startsWith('"') && theme.endsWith('"')) {
                     localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
@@ -76,8 +63,7 @@
 
         <!-- Set the theme before any content is loaded, prevents flash -->
         <script>
-            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
-            let theme;
+            var theme;
             try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
             if (theme === null || theme === undefined) { theme = default_theme; }
             const html = document.documentElement;
@@ -90,20 +76,17 @@
 
         <!-- Hide / unhide sidebar before it is displayed -->
         <script>
-            let sidebar = null;
-            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
             if (document.body.clientWidth >= 1080) {
                 try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
                 sidebar = sidebar || 'visible';
             } else {
                 sidebar = 'hidden';
-                sidebar_toggle.checked = false;
             }
-            if (sidebar === 'visible') {
-                sidebar_toggle.checked = true;
-            } else {
-                html.classList.remove('sidebar-visible');
-            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
@@ -130,14 +113,13 @@
                             <i class="fa fa-paint-brush"></i>
                         </button>
                         <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
-                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
                         </ul>
-                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
                             <i class="fa fa-search"></i>
                         </button>
                     </div>
@@ -157,12 +139,7 @@
 
                 <div id="search-wrapper" class="hidden">
                     <form id="searchbar-outer" class="searchbar-outer">
-                        <div class="search-wrapper">
-                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
-                            <div class="spinner-wrapper">
-                                <i class="fa fa-spinner fa-spin"></i>
-                            </div>
-                        </div>
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
                     </form>
                     <div id="searchresults-outer" class="searchresults-outer hidden">
                         <div id="searchresults-header" class="searchresults-header"></div>
@@ -191,17 +168,17 @@
 <p>একটি টাইপের আচরণ হলো সেইসব মেথড যা আমরা সেই টাইপের উপর কল করতে পারি। বিভিন্ন টাইপ একই আচরণ শেয়ার করে যদি আমরা সেই সব টাইপের উপর একই মেথড কল করতে পারি। Trait ডেফিনিশন হলো মেথড সিগনেচারগুলোকে একসাথে গ্রুপ করার একটি উপায়, যা কোনো উদ্দেশ্য পূরণের জন্য প্রয়োজনীয় আচরণের একটি সেট ডিফাইন করে।</p>
 <p>উদাহরণস্বরূপ, ধরা যাক আমাদের একাধিক struct আছে যা বিভিন্ন ধরনের এবং পরিমাণের টেক্সট ধারণ করে: একটি <code>NewsArticle</code> struct যা একটি নির্দিষ্ট অবস্থানে ফাইল করা সংবাদ ধরে রাখে এবং একটি <code>SocialPost</code> যা সর্বোচ্চ ২৮০ অক্ষর ধারণ করতে পারে, সাথে মেটাডেটা যা নির্দেশ করে এটি একটি নতুন পোস্ট, একটি রিপোস্ট, বা অন্য কোনো পোস্টের উত্তর ছিল কিনা।</p>
 <p>আমরা <code>aggregator</code> নামে একটি মিডিয়া অ্যাগ্রিগেটর লাইব্রেরি ক্রেট তৈরি করতে চাই যা <code>NewsArticle</code> বা <code>SocialPost</code> ইনস্ট্যান্সে সংরক্ষিত ডেটার সারাংশ প্রদর্শন করতে পারে। এটি করার জন্য, আমাদের প্রতিটি টাইপ থেকে একটি সারাংশ প্রয়োজন, এবং আমরা একটি ইনস্ট্যান্সের উপর <code>summarize</code> মেথড কল করে সেই সারাংশটি অনুরোধ করব। লিস্টিং ১০-১২ একটি পাবলিক <code>Summary</code> trait-এর ডেফিনিশন দেখায় যা এই আচরণটি প্রকাশ করে।</p>
-<Listing number="10-12" file-name="src/lib.rs" caption="একটি `Summary` ট্রেইট যা `summarize` মেথড দ্বারা প্রদত্ত আচরণ নিয়ে গঠিত">
+<p>src/lib.rs</p>
 <pre><code class="language-rust noplayground">pub trait Summary {
     fn summarize(&amp;self) -&gt; String;
 }</code></pre>
-</Listing>
+<p>Listing 10-12: একটি <code>Summary</code> ট্রেইট যা <code>summarize</code> মেথড দ্বারা প্রদত্ত আচরণ নিয়ে গঠিত</p>
 <p>এখানে, আমরা <code>trait</code> কিওয়ার্ড ব্যবহার করে একটি trait ডিক্লেয়ার করি এবং তারপর trait-এর নাম, যা এই ক্ষেত্রে <code>Summary</code>। আমরা trait-টিকে <code>pub</code> হিসেবেও ডিক্লেয়ার করি যাতে এই ক্রেটের উপর নির্ভরশীল ক্রেটগুলোও এই trait ব্যবহার করতে পারে, যেমনটি আমরা কয়েকটি উদাহরণে দেখব। কার্লি ব্র্যাকেটের ভিতরে, আমরা মেথড সিগনেচারগুলো ডিক্লেয়ার করি যা এই trait ইমপ্লিমেন্ট করা টাইপগুলোর আচরণ বর্ণনা করে, যা এই ক্ষেত্রে <code>fn summarize(&amp;self) -&gt; String</code>।</p>
 <p>মেথড সিগনেচারের পরে, কার্লি ব্র্যাকেটের মধ্যে একটি ইমপ্লিমেন্টেশন প্রদান করার পরিবর্তে, আমরা একটি সেমিকোলন ব্যবহার করি। এই trait ইমপ্লিমেন্ট করা প্রতিটি টাইপকে অবশ্যই মেথডের বডির জন্য নিজস্ব কাস্টম আচরণ প্রদান করতে হবে। কম্পাইলার নিশ্চিত করবে যে <code>Summary</code> trait যুক্ত যেকোনো টাইপের <code>summarize</code> মেথডটি ঠিক এই সিগনেচার দিয়ে ডিফাইন করা থাকবে।</p>
 <p>একটি trait-এর বডিতে একাধিক মেথড থাকতে পারে: মেথড সিগনেচারগুলো প্রতি লাইনে একটি করে তালিকাভুক্ত করা হয় এবং প্রতিটি লাইন একটি সেমিকোলন দিয়ে শেষ হয়।</p>
 <h3 id="একটি-টাইপের-উপর-টরেইট-ইমপলিমেনট-করা"><a class="header" href="#একটি-টাইপের-উপর-টরেইট-ইমপলিমেনট-করা">একটি টাইপের উপর ট্রেইট ইমপ্লিমেন্ট করা</a></h3>
 <p>এখন যেহেতু আমরা <code>Summary</code> trait-এর মেথডগুলোর কাঙ্ক্ষিত সিগনেচার ডিফাইন করেছি, আমরা এটিকে আমাদের মিডিয়া অ্যাগ্রিগেটরের টাইপগুলোতে ইমপ্লিমেন্ট করতে পারি। লিস্টিং ১০-১৩ <code>NewsArticle</code> struct-এর উপর <code>Summary</code> trait-এর একটি ইমপ্লিমেন্টেশন দেখায় যা <code>summarize</code>-এর রিটার্ন ভ্যালু তৈরি করতে হেডলাইন, লেখক এবং অবস্থান ব্যবহার করে। <code>SocialPost</code> struct-এর জন্য, আমরা <code>summarize</code>-কে ইউজারের নাম এবং পোস্টের সম্পূর্ণ টেক্সট হিসেবে ডিফাইন করি, এই ধরে নিয়ে যে পোস্টের বিষয়বস্তু ইতিমধ্যে ২৮০ অক্ষরের মধ্যে সীমাবদ্ধ।</p>
-<Listing number="10-13" file-name="src/lib.rs" caption="`NewsArticle` এবং `SocialPost` টাইপের উপর `Summary` ট্রেইট ইমপ্লিমেন্ট করা">
+<p>src/lib.rs</p>
 <pre><code class="language-rust noplayground"><span class="boring">pub trait Summary {
 </span><span class="boring">    fn summarize(&amp;self) -&gt; String;
 </span><span class="boring">}
@@ -231,7 +208,7 @@ impl Summary for SocialPost {
         format!("{}: {}", self.username, self.content)
     }
 }</code></pre>
-</Listing>
+<p>Listing 10-13: <code>NewsArticle</code> এবং <code>SocialPost</code> টাইপের উপর <code>Summary</code> ট্রেইট ইমপ্লিমেন্ট করা</p>
 <p>একটি টাইপের উপর একটি trait ইমপ্লিমেন্ট করা সাধারণ মেথড ইমপ্লিমেন্ট করার মতোই। পার্থক্য হলো <code>impl</code>-এর পরে, আমরা যে trait-টি ইমপ্লিমেন্ট করতে চাই তার নাম লিখি, তারপর <code>for</code> কিওয়ার্ড ব্যবহার করি এবং তারপর যে টাইপের জন্য trait-টি ইমপ্লিমেন্ট করতে চাই তার নাম নির্দিষ্ট করি। <code>impl</code> ব্লকের মধ্যে, আমরা trait ডেফিনিশনে সংজ্ঞায়িত মেথড সিগনেচারগুলো রাখি। প্রতিটি সিগনেচারের পরে সেমিকোলন যোগ করার পরিবর্তে, আমরা কার্লি ব্র্যাকেট ব্যবহার করি এবং নির্দিষ্ট টাইপের জন্য trait-এর মেথডগুলোর যে নির্দিষ্ট আচরণ আমরা চাই তা দিয়ে মেথড বডি পূরণ করি।</p>
 <p>এখন যেহেতু লাইব্রেরিটি <code>NewsArticle</code> এবং <code>SocialPost</code>-এর উপর <code>Summary</code> trait ইমপ্লিমেন্ট করেছে, ক্রেটের ব্যবহারকারীরা <code>NewsArticle</code> এবং <code>SocialPost</code>-এর ইনস্ট্যান্সের উপর trait মেথডগুলো কল করতে পারবে ঠিক যেভাবে আমরা সাধারণ মেথড কল করি। একমাত্র পার্থক্য হলো ব্যবহারকারীকে অবশ্যই trait এবং টাইপ উভয়কেই স্কোপে আনতে হবে। এখানে একটি উদাহরণ দেওয়া হলো যে কীভাবে একটি বাইনারি ক্রেট আমাদের <code>aggregator</code> লাইব্রেরি ক্রেট ব্যবহার করতে পারে:</p>
 <pre><code class="language-rust ignore">use aggregator::{SocialPost, Summary};
@@ -254,7 +231,7 @@ fn main() {
 <h3 id="ডিফলট-ইমপলিমেনটেশন-default-implementations"><a class="header" href="#ডিফলট-ইমপলিমেনটেশন-default-implementations">ডিফল্ট ইমপ্লিমেন্টেশন (Default Implementations)</a></h3>
 <p>কখনও কখনও একটি trait-এর কিছু বা সমস্ত মেথডের জন্য ডিফল্ট আচরণ থাকা দরকারী, প্রতিটি টাইপের উপর সমস্ত মেথডের জন্য ইমপ্লিমেন্টেশন দাবি করার পরিবর্তে। তারপর, যখন আমরা কোনো নির্দিষ্ট টাইপের উপর trait-টি ইমপ্লিমেন্ট করি, তখন আমরা প্রতিটি মেথডের ডিফল্ট আচরণ রাখতে বা ওভাররাইড করতে পারি।</p>
 <p>লিস্টিং ১০-১৪-এ, আমরা <code>Summary</code> trait-এর <code>summarize</code> মেথডের জন্য একটি ডিফল্ট স্ট্রিং নির্দিষ্ট করি, শুধুমাত্র মেথড সিগনেচার ডিফাইন করার পরিবর্তে, যেমনটি আমরা লিস্টিং ১০-১২-এ করেছিলাম।</p>
-<Listing number="10-14" file-name="src/lib.rs" caption="`summarize` মেথডের একটি ডিফল্ট ইমপ্লিমেন্টেশন সহ `Summary` ট্রেইট ডিফাইন করা">
+<p>src/lib.rs</p>
 <pre><code class="language-rust noplayground">pub trait Summary {
     fn summarize(&amp;self) -&gt; String {
         String::from("(Read more...)")
@@ -282,7 +259,7 @@ fn main() {
 </span><span class="boring">        format!("{}: {}", self.username, self.content)
 </span><span class="boring">    }
 </span><span class="boring">}</span></code></pre>
-</Listing>
+<p>Listing 10-14: <code>summarize</code> মেথডের একটি ডিফল্ট ইমপ্লিমেন্টেশন সহ <code>Summary</code> ট্রেইট ডিফাইন করা</p>
 <p><code>NewsArticle</code>-এর ইনস্ট্যান্সগুলোর সারাংশ তৈরি করতে ডিফল্ট ইমপ্লিমেন্টেশন ব্যবহার করার জন্য, আমরা <code>impl Summary for NewsArticle {}</code> দিয়ে একটি খালি <code>impl</code> ব্লক নির্দিষ্ট করি।</p>
 <p>যদিও আমরা আর সরাসরি <code>NewsArticle</code>-এ <code>summarize</code> মেথড ডিফাইন করছি না, আমরা একটি ডিফল্ট ইমপ্লিমেন্টেশন সরবরাহ করেছি এবং নির্দিষ্ট করেছি যে <code>NewsArticle</code> <code>Summary</code> trait ইমপ্লিমেন্ট করে। ফলস্বরূপ, আমরা এখনও একটি <code>NewsArticle</code>-এর ইনস্ট্যান্সে <code>summarize</code> মেথড কল করতে পারি, এভাবে:</p>
 <pre><code class="language-rust ignore"><span class="boring">use aggregator::{self, NewsArticle, Summary};
@@ -528,7 +505,7 @@ where
 <p>কম্পাইলারে <code>impl Trait</code> সিনট্যাক্স কীভাবে ইমপ্লিমেন্ট করা হয়েছে তার সীমাবদ্ধতার কারণে একটি <code>NewsArticle</code> বা একটি <code>SocialPost</code> রিটার্ন করা অনুমোদিত নয়। আমরা চ্যাপ্টার ১৮-এর “ভিন্ন ধরনের মানের জন্য ট্রেইট অবজেক্ট ব্যবহার করা” বিভাগে এই আচরণ সহ একটি ফাংশন কীভাবে লিখতে হয় তা আলোচনা করব।</p>
 <h3 id="টরেইট-বাউনড-বযবহার-করে-শরতসাপেকষে-মেথড-ইমপলিমেনট-করা"><a class="header" href="#টরেইট-বাউনড-বযবহার-করে-শরতসাপেকষে-মেথড-ইমপলিমেনট-করা">ট্রেইট বাউন্ড ব্যবহার করে শর্তসাপেক্ষে মেথড ইমপ্লিমেন্ট করা</a></h3>
 <p>জেনেরিক টাইপ প্যারামিটার ব্যবহার করে একটি <code>impl</code> ব্লকের সাথে একটি trait bound ব্যবহার করে, আমরা নির্দিষ্ট trait ইমপ্লিমেন্ট করে এমন টাইপগুলোর জন্য শর্তসাপেক্ষে মেথড ইমপ্লিমেন্ট করতে পারি। উদাহরণস্বরূপ, লিস্টিং ১০-১৫-এর <code>Pair&lt;T&gt;</code> টাইপটি সর্বদা <code>Pair&lt;T&gt;</code>-এর একটি নতুন ইনস্ট্যান্স রিটার্ন করার জন্য <code>new</code> ফাংশন ইমপ্লিমেন্ট করে (চ্যাপ্টার ৫-এর “মেথড ডিফাইন করা” বিভাগ থেকে মনে করুন যে <code>Self</code> হলো <code>impl</code> ব্লকের টাইপের একটি টাইপ অ্যালিয়াস, যা এই ক্ষেত্রে <code>Pair&lt;T&gt;</code>)। কিন্তু পরবর্তী <code>impl</code> ব্লকে, <code>Pair&lt;T&gt;</code> কেবল তখনই <code>cmp_display</code> মেথডটি ইমপ্লিমেন্ট করে যদি তার অভ্যন্তরীণ টাইপ <code>T</code> <code>PartialOrd</code> trait ইমপ্লিমেন্ট করে যা তুলনা সক্ষম করে <em>এবং</em> <code>Display</code> trait ইমপ্লিমেন্ট করে যা প্রিন্টিং সক্ষম করে।</p>
-<Listing number="10-15" file-name="src/lib.rs" caption="ট্রেইট বাউন্ডের উপর নির্ভর করে একটি জেনেরিক টাইপের উপর শর্তসাপেক্ষে মেথড ইমপ্লিমেন্ট করা">
+<p>src/lib.rs</p>
 <pre><code class="language-rust noplayground">use std::fmt::Display;
 
 struct Pair&lt;T&gt; {
@@ -551,7 +528,7 @@ impl&lt;T: Display + PartialOrd&gt; Pair&lt;T&gt; {
         }
     }
 }</code></pre>
-</Listing>
+<p>Listing 10-15: ট্রেইট বাউন্ডের উপর নির্ভর করে একটি জেনেরিক টাইপের উপর শর্তসাপেক্ষে মেথড ইমপ্লিমেন্ট করা</p>
 <p>আমরা trait bounds সন্তুষ্ট করে এমন যেকোনো টাইপের জন্য একটি trait শর্তসাপেক্ষে ইমপ্লিমেন্ট করতে পারি। এই ধরনের ইমপ্লিমেন্টেশনকে <em>blanket implementations</em> বলা হয় এবং এটি Rust স্ট্যান্ডার্ড লাইব্রেরিতে ব্যাপকভাবে ব্যবহৃত হয়। উদাহরণস্বরূপ, স্ট্যান্ডার্ড লাইব্রেরি <code>Display</code> trait ইমপ্লিমেন্ট করে এমন যেকোনো টাইপের উপর <code>ToString</code> trait ইমপ্লিমেন্ট করে। স্ট্যান্ডার্ড লাইব্রেরিতে <code>impl</code> ব্লকটি এই কোডের মতো দেখতে:</p>
 <pre><code class="language-rust ignore">impl&lt;T: Display&gt; ToString for T {
     // --snip--
@@ -611,7 +588,6 @@ impl&lt;T: Display + PartialOrd&gt; Pair&lt;T&gt; {
 
         <!-- Custom JS scripts -->
         <script src="ferris.js"></script>
-
 
 
     </div>

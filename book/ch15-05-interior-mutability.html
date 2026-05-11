@@ -24,9 +24,9 @@
         <link rel="stylesheet" href="fonts/fonts.css">
 
         <!-- Highlight.js Stylesheets -->
-        <link rel="stylesheet" id="highlight-css" href="highlight.css">
-        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
-        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
         <link rel="stylesheet" href="ferris.css">
@@ -35,34 +35,21 @@
         <link rel="stylesheet" href="theme/listing.css">
 
 
-        <!-- Provide site root and default themes to javascript -->
+        <!-- Provide site root to javascript -->
         <script>
-            const path_to_root = "";
-            const default_light_theme = "light";
-            const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex.js";
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc.js"></script>
     </head>
     <body>
-    <div id="mdbook-help-container">
-        <div id="mdbook-help-popup">
-            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
-            <div>
-                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
-                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
-                <p>Press <kbd>?</kbd> to show this help</p>
-                <p>Press <kbd>Esc</kbd> to hide this help</p>
-            </div>
-        </div>
-    </div>
     <div id="body-container">
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
         <script>
             try {
-                let theme = localStorage.getItem('mdbook-theme');
-                let sidebar = localStorage.getItem('mdbook-sidebar');
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
 
                 if (theme.startsWith('"') && theme.endsWith('"')) {
                     localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
@@ -76,8 +63,7 @@
 
         <!-- Set the theme before any content is loaded, prevents flash -->
         <script>
-            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
-            let theme;
+            var theme;
             try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
             if (theme === null || theme === undefined) { theme = default_theme; }
             const html = document.documentElement;
@@ -90,20 +76,17 @@
 
         <!-- Hide / unhide sidebar before it is displayed -->
         <script>
-            let sidebar = null;
-            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
             if (document.body.clientWidth >= 1080) {
                 try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
                 sidebar = sidebar || 'visible';
             } else {
                 sidebar = 'hidden';
-                sidebar_toggle.checked = false;
             }
-            if (sidebar === 'visible') {
-                sidebar_toggle.checked = true;
-            } else {
-                html.classList.remove('sidebar-visible');
-            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
@@ -130,14 +113,13 @@
                             <i class="fa fa-paint-brush"></i>
                         </button>
                         <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
-                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
                         </ul>
-                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
                             <i class="fa fa-search"></i>
                         </button>
                     </div>
@@ -157,12 +139,7 @@
 
                 <div id="search-wrapper" class="hidden">
                     <form id="searchbar-outer" class="searchbar-outer">
-                        <div class="search-wrapper">
-                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
-                            <div class="spinner-wrapper">
-                                <i class="fa fa-spinner fa-spin"></i>
-                            </div>
-                        </div>
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
                     </form>
                     <div id="searchresults-outer" class="searchresults-outer hidden">
                         <div id="searchresults-header" class="searchresults-header"></div>
@@ -234,7 +211,7 @@ error: could not compile `borrowing` (bin "borrowing") due to 1 previous error
 <p>অন্যান্য ভাষায় যেমন অবজেক্ট আছে, রাস্ট-এ সেই অর্থে অবজেক্ট নেই, এবং রাস্টের স্ট্যান্ডার্ড লাইব্রেরিতে অন্য কিছু ভাষার মতো মক অবজেক্ট কার্যকারিতা বিল্ট-ইন নেই। তবে, আপনি অবশ্যই একটি struct তৈরি করতে পারেন যা একটি মক অবজেক্টের মতো একই উদ্দেশ্যে কাজ করবে।</p>
 <p>এখানে আমরা যে পরিস্থিতিটি পরীক্ষা করব: আমরা একটি লাইব্রেরি তৈরি করব যা একটি সর্বোচ্চ মানের (maximum value) বিপরীতে একটি মান ট্র্যাক করে এবং বর্তমান মানটি সর্বোচ্চ মানের কতটা কাছাকাছি তার উপর ভিত্তি করে বার্তা পাঠায়। এই লাইব্রেরিটি একজন ব্যবহারকারীর API কল করার কোটা ট্র্যাক করতে ব্যবহার করা যেতে পারে, উদাহরণস্বরূপ।</p>
 <p>আমাদের লাইব্রেরি শুধুমাত্র একটি মান সর্বোচ্চ মানের কতটা কাছাকাছি তা ট্র্যাক করার কার্যকারিতা এবং কোন সময়ে কী বার্তা হওয়া উচিত তা সরবরাহ করবে। আমাদের লাইব্রেরি ব্যবহারকারী অ্যাপ্লিকেশনগুলো থেকে বার্তা পাঠানোর ব্যবস্থা সরবরাহ করার আশা করা হবে: অ্যাপ্লিকেশনটি অ্যাপ্লিকেশনে একটি বার্তা রাখতে পারে, একটি ইমেল পাঠাতে পারে, একটি টেক্সট বার্তা পাঠাতে পারে, বা অন্য কিছু করতে পারে। লাইব্রেরিকে সেই বিস্তারিত জানার প্রয়োজন নেই। এটির যা প্রয়োজন তা হলো এমন কিছু যা আমরা <code>Messenger</code> নামে একটি ট্রেইট সরবরাহ করব তা ইমপ্লিমেন্ট করে। Listing 15-20 লাইব্রেরি কোডটি দেখায়।</p>
-<Listing number="15-20" file-name="src/lib.rs" caption="একটি লাইব্রেরি যা একটি মান সর্বোচ্চ মানের কতটা কাছাকাছি তা ট্র্যাক করে এবং মান নির্দিষ্ট স্তরে থাকলে সতর্ক করে">
+<p>src/lib.rs</p>
 <pre><code class="language-rust noplayground">pub trait Messenger {
     fn send(&amp;self, msg: &amp;str);
 }
@@ -273,10 +250,10 @@ where
         }
     }
 }</code></pre>
-</Listing>
+<p>Listing 15-20: একটি লাইব্রেরি যা একটি মান সর্বোচ্চ মানের কতটা কাছাকাছি তা ট্র্যাক করে এবং মান নির্দিষ্ট স্তরে থাকলে সতর্ক করে</p>
 <p>এই কোডের একটি গুরুত্বপূর্ণ অংশ হলো <code>Messenger</code> ট্রেইটের <code>send</code> নামে একটি মেথড আছে যা <code>self</code>-এর একটি immutable reference এবং বার্তার টেক্সট নেয়। এই ট্রেইটটি হলো সেই ইন্টারফেস যা আমাদের মক অবজেক্টকে ইমপ্লিমেন্ট করতে হবে যাতে মকটি একটি আসল অবজেক্টের মতো একইভাবে ব্যবহার করা যায়। অন্য গুরুত্বপূর্ণ অংশ হলো আমরা <code>LimitTracker</code>-এর <code>set_value</code> মেথডের আচরণ পরীক্ষা করতে চাই। আমরা <code>value</code> প্যারামিটারের জন্য যা পাস করি তা পরিবর্তন করতে পারি, কিন্তু <code>set_value</code> আমাদের assert করার জন্য কিছু রিটার্ন করে না। আমরা বলতে চাই যে যদি আমরা <code>Messenger</code> ট্রেইট ইমপ্লিমেন্ট করে এমন কিছু এবং <code>max</code>-এর জন্য একটি নির্দিষ্ট মান দিয়ে একটি <code>LimitTracker</code> তৈরি করি, যখন আমরা <code>value</code>-এর জন্য বিভিন্ন সংখ্যা পাস করি তখন মেসেঞ্জারকে উপযুক্ত বার্তা পাঠাতে বলা হয়।</p>
 <p>আমাদের একটি মক অবজেক্ট দরকার যা, <code>send</code> কল করার সময় ইমেল বা টেক্সট বার্তা পাঠানোর পরিবর্তে, শুধুমাত্র তাকে যে বার্তাগুলো পাঠাতে বলা হয়েছে সেগুলো ট্র্যাক করবে। আমরা মক অবজেক্টের একটি নতুন ইনস্ট্যান্স তৈরি করতে পারি, মক অবজেক্ট ব্যবহার করে এমন একটি <code>LimitTracker</code> তৈরি করতে পারি, <code>LimitTracker</code>-এর <code>set_value</code> মেথড কল করতে পারি, এবং তারপর পরীক্ষা করতে পারি যে মক অবজেক্টে আমাদের প্রত্যাশিত বার্তাগুলো আছে কিনা। Listing 15-21 একটি মক অবজেক্ট ইমপ্লিমেন্ট করার একটি প্রচেষ্টা দেখায়, কিন্তু borrow checker এটি অনুমোদন করবে না।</p>
-<Listing number="15-21" file-name="src/lib.rs" caption="একটি `MockMessenger` ইমপ্লিমেন্ট করার প্রচেষ্টা যা borrow checker দ্বারা অনুমোদিত নয়">
+<p>src/lib.rs</p>
 <pre><code class="language-rust ignore does_not_compile"><span class="boring">pub trait Messenger {
 </span><span class="boring">    fn send(&amp;self, msg: &amp;str);
 </span><span class="boring">}
@@ -348,7 +325,7 @@ mod tests {
         assert_eq!(mock_messenger.sent_messages.len(), 1);
     }
 }</code></pre>
-</Listing>
+<p>Listing 15-21: একটি <code>MockMessenger</code> ইমপ্লিমেন্ট করার প্রচেষ্টা যা borrow checker দ্বারা অনুমোদিত নয়</p>
 <p>এই টেস্ট কোডটি একটি <code>MockMessenger</code> struct সংজ্ঞায়িত করে যার <code>sent_messages</code> নামে একটি ফিল্ড আছে যেখানে <code>Vec&lt;String&gt;</code> মানের একটি ভেক্টর রয়েছে যা তাকে পাঠানো বার্তাগুলো ট্র্যাক করার জন্য। আমরা একটি <code>new</code> নামের associated function-ও সংজ্ঞায়িত করি যাতে খালি বার্তা তালিকা দিয়ে নতুন <code>MockMessenger</code> মান তৈরি করা সুবিধাজনক হয়। তারপর আমরা <code>MockMessenger</code>-এর জন্য <code>Messenger</code> ট্রেইট ইমপ্লিমেন্ট করি যাতে আমরা একটি <code>MockMessenger</code>-কে একটি <code>LimitTracker</code>-কে দিতে পারি। <code>send</code> মেথডের সংজ্ঞায়, আমরা প্যারামিটার হিসাবে পাস করা বার্তাটি নিই এবং এটিকে <code>MockMessenger</code>-এর <code>sent_messages</code> তালিকায় সংরক্ষণ করি।</p>
 <p>টেস্টে, আমরা পরীক্ষা করছি যে <code>LimitTracker</code>-কে <code>value</code> এমন কিছুতে সেট করতে বলা হলে কী হয় যা <code>max</code> মানের ৭৫ শতাংশের বেশি। প্রথমে আমরা একটি নতুন <code>MockMessenger</code> তৈরি করি, যা একটি খালি বার্তা তালিকা দিয়ে শুরু হবে। তারপর আমরা একটি নতুন <code>LimitTracker</code> তৈরি করি এবং এটিকে নতুন <code>MockMessenger</code>-এর একটি রেফারেন্স এবং <code>100</code>-এর একটি <code>max</code> মান দিই। আমরা <code>LimitTracker</code>-এর <code>set_value</code> মেথডটি <code>80</code> মান দিয়ে কল করি, যা ১০০-এর ৭৫ শতাংশের বেশি। তারপর আমরা assert করি যে <code>MockMessenger</code> যে বার্তাগুলোর তালিকা ট্র্যাক করছে তাতে এখন একটি বার্তা থাকা উচিত।</p>
 <p>তবে, এই টেস্টে একটি সমস্যা আছে, যেমনটি এখানে দেখানো হয়েছে:</p>
@@ -374,7 +351,7 @@ error: could not compile `limit-tracker` (lib test) due to 1 previous error
 </code></pre>
 <p>আমরা <code>MockMessenger</code>-কে বার্তাগুলোর ট্র্যাক রাখার জন্য মডিফাই করতে পারি না কারণ <code>send</code> মেথডটি <code>self</code>-এর একটি immutable reference নেয়। আমরা এরর টেক্সট থেকে <code>&amp;mut self</code> ব্যবহার করার পরামর্শটিও নিতে পারি না। আমরা শুধুমাত্র টেস্টিংয়ের জন্য <code>Messenger</code> ট্রেইট পরিবর্তন করতে চাই না। পরিবর্তে, আমাদের বিদ্যমান ডিজাইনের সাথে আমাদের টেস্ট কোড সঠিকভাবে কাজ করার একটি উপায় খুঁজে বের করতে হবে।</p>
 <p>এটি এমন একটি পরিস্থিতি যেখানে ইন্টেরিয়র মিউটেবিলিটি সাহায্য করতে পারে! আমরা <code>sent_messages</code>-কে একটি <code>RefCell&lt;T&gt;</code>-এর মধ্যে সংরক্ষণ করব, এবং তারপর <code>send</code> মেথড <code>sent_messages</code> পরিবর্তন করতে সক্ষম হবে যাতে আমরা যে বার্তাগুলো দেখেছি তা সংরক্ষণ করতে পারে। Listing 15-22 দেখাচ্ছে এটি কেমন দেখায়।</p>
-<Listing number="15-22" file-name="src/lib.rs" caption="`RefCell<T>` ব্যবহার করে একটি ভেতরের ভ্যালু পরিবর্তন করা যখন বাইরের ভ্যালুটি immutable হিসাবে বিবেচিত হয়">
+<p>src/lib.rs</p>
 <pre><code class="language-rust noplayground"><span class="boring">pub trait Messenger {
 </span><span class="boring">    fn send(&amp;self, msg: &amp;str);
 </span><span class="boring">}
@@ -448,7 +425,7 @@ mod tests {
         assert_eq!(mock_messenger.sent_messages.borrow().len(), 1);
     }
 }</code></pre>
-</Listing>
+<p>Listing 15-22: <code>RefCell&lt;T&gt;</code> ব্যবহার করে একটি ভেতরের ভ্যালু পরিবর্তন করা যখন বাইরের ভ্যালুটি immutable হিসাবে বিবেচিত হয়</p>
 <p><code>sent_messages</code> ফিল্ডটি এখন <code>Vec&lt;String&gt;</code>-এর পরিবর্তে <code>RefCell&lt;Vec&lt;String&gt;&gt;</code> টাইপের। <code>new</code> ফাংশনে, আমরা খালি ভেক্টরের চারপাশে একটি নতুন <code>RefCell&lt;Vec&lt;String&gt;&gt;</code> ইনস্ট্যান্স তৈরি করি।</p>
 <p><code>send</code> মেথডের ইমপ্লিমেন্টেশনের জন্য, প্রথম প্যারামিটারটি এখনও <code>self</code>-এর একটি immutable borrow, যা ট্রেইট সংজ্ঞার সাথে মেলে। আমরা <code>self.sent_messages</code>-এর <code>RefCell&lt;Vec&lt;String&gt;&gt;</code>-এর উপর <code>borrow_mut</code> কল করি যাতে <code>RefCell&lt;Vec&lt;String&gt;&gt;</code>-এর ভেতরের ভ্যালু, যা হলো ভেক্টর, তার একটি mutable reference পেতে পারি। তারপর আমরা ভেক্টরের mutable reference-এর উপর <code>push</code> কল করতে পারি যাতে টেস্টের সময় পাঠানো বার্তাগুলো ট্র্যাক রাখা যায়।</p>
 <p>শেষ যে পরিবর্তনটি আমাদের করতে হবে তা হলো assertion-এ: ভেতরের ভেক্টরে কতগুলো আইটেম আছে তা দেখতে, আমরা <code>RefCell&lt;Vec&lt;String&gt;&gt;</code>-এর উপর <code>borrow</code> কল করি যাতে ভেক্টরের একটি immutable reference পেতে পারি।</p>
@@ -457,7 +434,7 @@ mod tests {
 <p>Immutable এবং mutable reference তৈরি করার সময়, আমরা যথাক্রমে <code>&amp;</code> এবং <code>&amp;mut</code> সিনট্যাক্স ব্যবহার করি। <code>RefCell&lt;T&gt;</code>-এর সাথে, আমরা <code>borrow</code> এবং <code>borrow_mut</code> মেথড ব্যবহার করি, যা <code>RefCell&lt;T&gt;</code>-এর নিরাপদ API-এর অংশ। <code>borrow</code> মেথডটি স্মার্ট পয়েন্টার টাইপ <code>Ref&lt;T&gt;</code> রিটার্ন করে, এবং <code>borrow_mut</code> স্মার্ট পয়েন্টার টাইপ <code>RefMut&lt;T&gt;</code> রিটার্ন করে। উভয় টাইপই <code>Deref</code> ইমপ্লিমেন্ট করে, তাই আমরা তাদের সাধারণ reference-এর মতো ব্যবহার করতে পারি।</p>
 <p><code>RefCell&lt;T&gt;</code> ট্র্যাক রাখে যে বর্তমানে কতগুলো <code>Ref&lt;T&gt;</code> এবং <code>RefMut&lt;T&gt;</code> স্মার্ট পয়েন্টার সক্রিয় আছে। প্রতিবার যখন আমরা <code>borrow</code> কল করি, <code>RefCell&lt;T&gt;</code> তার সক্রিয় immutable borrow-এর সংখ্যা বাড়িয়ে দেয়। যখন একটি <code>Ref&lt;T&gt;</code> ভ্যালু স্কোপের বাইরে চলে যায়, immutable borrow-এর সংখ্যা ১ কমে যায়। ঠিক কম্পাইল-টাইম borrowing নিয়মের মতোই, <code>RefCell&lt;T&gt;</code> আমাদের যেকোনো সময়ে অনেকগুলো immutable borrow অথবা একটি mutable borrow রাখার অনুমতি দেয়।</p>
 <p>যদি আমরা এই নিয়মগুলো লঙ্ঘন করার চেষ্টা করি, তাহলে reference-এর ক্ষেত্রে যেমন কম্পাইলার এরর পেতাম, তার পরিবর্তে <code>RefCell&lt;T&gt;</code>-এর ইমপ্লিমেন্টেশন রানটাইমে প্যানিক করবে। Listing 15-23 Listing 15-22-এর <code>send</code>-এর ইমপ্লিমেন্টেশনের একটি পরিবর্তন দেখায়। আমরা ইচ্ছাকৃতভাবে একই স্কোপের জন্য দুটি সক্রিয় mutable borrow তৈরি করার চেষ্টা করছি যাতে দেখানো যায় যে <code>RefCell&lt;T&gt;</code> আমাদের রানটাইমে এটি করা থেকে বিরত রাখে।</p>
-<Listing number="15-23" file-name="src/lib.rs" caption="`RefCell<T>` যে প্যানিক করবে তা দেখতে একই স্কোপে দুটি mutable reference তৈরি করা">
+<p>src/lib.rs</p>
 <pre><code class="language-rust ignore panics"><span class="boring">pub trait Messenger {
 </span><span class="boring">    fn send(&amp;self, msg: &amp;str);
 </span><span class="boring">}
@@ -534,7 +511,7 @@ mod tests {
 </span><span class="boring">        assert_eq!(mock_messenger.sent_messages.borrow().len(), 1);
 </span><span class="boring">    }
 </span><span class="boring">}</span></code></pre>
-</Listing>
+<p>Listing 15-23: <code>RefCell&lt;T&gt;</code> যে প্যানিক করবে তা দেখতে একই স্কোপে দুটি mutable reference তৈরি করা</p>
 <p>আমরা <code>borrow_mut</code> থেকে রিটার্ন করা <code>RefMut&lt;T&gt;</code> স্মার্ট পয়েন্টারের জন্য <code>one_borrow</code> নামে একটি ভ্যারিয়েবল তৈরি করি। তারপর আমরা <code>two_borrow</code> ভ্যারিয়েবলে একইভাবে আরেকটি mutable borrow তৈরি করি। এটি একই স্কোপে দুটি mutable reference তৈরি করে, যা অনুমোদিত নয়। যখন আমরা আমাদের লাইব্রেরির জন্য টেস্ট চালাই, Listing 15-23-এর কোড কোনো এরর ছাড়াই কম্পাইল হবে, কিন্তু টেস্টটি ফেইল করবে:</p>
 <pre><code class="language-console">$ cargo test
    Compiling limit-tracker v0.1.0 (file:///projects/limit-tracker)
@@ -565,7 +542,7 @@ error: test failed, to rerun pass `--lib`
 <h3 id="rct-এবং-refcellt-একতরিত-করে-একাধিক-মালিকানাধীন-mutable-ডেটার-অনুমতি-দেওযা"><a class="header" href="#rct-এবং-refcellt-একতরিত-করে-একাধিক-মালিকানাধীন-mutable-ডেটার-অনুমতি-দেওযা"><code>Rc&lt;T&gt;</code> এবং <code>RefCell&lt;T&gt;</code> একত্রিত করে একাধিক মালিকানাধীন Mutable ডেটার অনুমতি দেওয়া</a></h3>
 <p><code>RefCell&lt;T&gt;</code> ব্যবহার করার একটি সাধারণ উপায় হলো <code>Rc&lt;T&gt;</code>-এর সাথে সংমিশ্রণ। মনে করুন <code>Rc&lt;T&gt;</code> আপনাকে কিছু ডেটার একাধিক owner रखने দেয়, কিন্তু এটি শুধুমাত্র সেই ডেটার immutable অ্যাক্সেস দেয়। যদি আপনার কাছে একটি <code>Rc&lt;T&gt;</code> থাকে যা একটি <code>RefCell&lt;T&gt;</code> ধারণ করে, আপনি এমন একটি ভ্যালু পেতে পারেন যার একাধিক owner থাকতে পারে <em>এবং</em> যা আপনি পরিবর্তন করতে পারেন!</p>
 <p>উদাহরণস্বরূপ, Listing 15-18-এর cons list উদাহরণটি মনে করুন যেখানে আমরা <code>Rc&lt;T&gt;</code> ব্যবহার করে একাধিক লিস্টকে অন্য একটি লিস্টের মালিকানা শেয়ার করার অনুমতি দিয়েছিলাম। যেহেতু <code>Rc&lt;T&gt;</code> শুধুমাত্র immutable ভ্যালু ধারণ করে, তাই আমরা একবার লিস্ট তৈরি করার পরে লিস্টের কোনো ভ্যালু পরিবর্তন করতে পারি না। চলুন লিস্টের ভ্যালুগুলো পরিবর্তন করার ক্ষমতার জন্য <code>RefCell&lt;T&gt;</code> যোগ করি। Listing 15-24 দেখাচ্ছে যে <code>Cons</code> সংজ্ঞায় একটি <code>RefCell&lt;T&gt;</code> ব্যবহার করে, আমরা সমস্ত লিস্টে সংরক্ষিত ভ্যালু পরিবর্তন করতে পারি।</p>
-<Listing number="15-24" file-name="src/main.rs" caption="`Rc<RefCell<i32>>` ব্যবহার করে এমন একটি `List` তৈরি করা যা আমরা পরিবর্তন করতে পারি">
+<p>src/main.rs</p>
 <pre><pre class="playground"><code class="language-rust edition2024">#[derive(Debug)]
 enum List {
     Cons(Rc&lt;RefCell&lt;i32&gt;&gt;, Rc&lt;List&gt;),
@@ -590,10 +567,10 @@ fn main() {
     println!("b after = {b:?}");
     println!("c after = {c:?}");
 }</code></pre></pre>
-</Listing>
+<p>Listing 15-24: <code>Rc&lt;RefCell&lt;i32&gt;&gt;</code> ব্যবহার করে এমন একটি <code>List</code> তৈরি করা যা আমরা পরিবর্তন করতে পারি</p>
 <p>আমরা <code>Rc&lt;RefCell&lt;i32&gt;&gt;</code>-এর একটি ইনস্ট্যান্স তৈরি করে <code>value</code> নামের একটি ভেরিয়েবলে সংরক্ষণ করি যাতে আমরা পরে সরাসরি এটি অ্যাক্সেস করতে পারি। তারপর আমরা <code>a</code>-তে একটি <code>List</code> তৈরি করি যার <code>Cons</code> ভ্যারিয়েন্ট <code>value</code> ধারণ করে। আমাদের <code>value</code> ক্লোন করতে হবে যাতে <code>a</code> এবং <code>value</code> উভয়েই ভেতরের <code>5</code> ভ্যালুর মালিকানা পায়, <code>value</code> থেকে <code>a</code>-তে মালিকানা হস্তান্তর না করে বা <code>a</code>-কে <code>value</code> থেকে borrow করতে না হয়।</p>
 <p>আমরা <code>a</code> লিস্টটিকে একটি <code>Rc&lt;T&gt;</code>-তে মুড়িয়ে দিই যাতে যখন আমরা <code>b</code> এবং <code>c</code> লিস্ট তৈরি করি, তারা উভয়েই <code>a</code>-কে নির্দেশ করতে পারে, যা আমরা Listing 15-18-এ করেছিলাম।</p>
-<p><code>a</code>, <code>b</code>, এবং <code>c</code>-তে লিস্ট তৈরি করার পরে, আমরা <code>value</code>-এর ভ্যালুতে 10 যোগ করতে চাই। আমরা <code>value</code>-এর উপর <code>borrow_mut</code> কল করে এটি করি, যা Chapter 5-এর ["Where’s the <code>-&gt;</code> Operator?"][wheres-the---operator]-এ আলোচনা করা স্বয়ংক্রিয় dereferencing ফিচার ব্যবহার করে <code>Rc&lt;T&gt;</code>-কে ভেতরের <code>RefCell&lt;T&gt;</code> ভ্যালুতে dereference করে। <code>borrow_mut</code> মেথডটি একটি <code>RefMut&lt;T&gt;</code> স্মার্ট পয়েন্টার রিটার্ন করে, এবং আমরা এর উপর dereference অপারেটর ব্যবহার করে ভেতরের ভ্যালু পরিবর্তন করি।</p>
+<p><code>a</code>, <code>b</code>, এবং <code>c</code>-তে লিস্ট তৈরি করার পরে, আমরা <code>value</code>-এর ভ্যালুতে 10 যোগ করতে চাই। আমরা <code>value</code>-এর উপর <code>borrow_mut</code> কল করে এটি করি, যা Chapter 5-এর [“Where’s the <code>-&gt;</code> Operator?”][wheres-the—operator]-এ আলোচনা করা স্বয়ংক্রিয় dereferencing ফিচার ব্যবহার করে <code>Rc&lt;T&gt;</code>-কে ভেতরের <code>RefCell&lt;T&gt;</code> ভ্যালুতে dereference করে। <code>borrow_mut</code> মেথডটি একটি <code>RefMut&lt;T&gt;</code> স্মার্ট পয়েন্টার রিটার্ন করে, এবং আমরা এর উপর dereference অপারেটর ব্যবহার করে ভেতরের ভ্যালু পরিবর্তন করি।</p>
 <p>যখন আমরা <code>a</code>, <code>b</code>, এবং <code>c</code> প্রিন্ট করি, আমরা দেখতে পাই যে তাদের সকলেরই <code>5</code>-এর পরিবর্তে পরিবর্তিত মান <code>15</code> রয়েছে:</p>
 <pre><code class="language-console">$ cargo run
    Compiling cons-list v0.1.0 (file:///projects/cons-list)
@@ -652,7 +629,6 @@ c after = Cons(RefCell { value: 4 }, Cons(RefCell { value: 15 }, Nil))
 
         <!-- Custom JS scripts -->
         <script src="ferris.js"></script>
-
 
 
     </div>

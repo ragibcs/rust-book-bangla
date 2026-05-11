@@ -161,3 +161,6 @@ Deref coercion বাস্তবে দেখতে, আসুন আমরা 
 প্রথম দুটি ক্ষেত্র একই, শুধুমাত্র দ্বিতীয়টি mutability ইমপ্লিমেন্ট করে। প্রথম ক্ষেত্রটি বলে যে যদি আপনার কাছে একটি `&T` থাকে, এবং `T` কোনো টাইপ `U`-এর জন্য `Deref` ইমপ্লিমেন্ট করে, আপনি স্বচ্ছভাবে একটি `&U` পেতে পারেন। দ্বিতীয় ক্ষেত্রটি বলে যে mutable reference-এর জন্য একই deref coercion ঘটে।
 
 তৃতীয় ক্ষেত্রটি আরও জটিল: রাস্ট একটি mutable reference-কে একটি immutable reference-এও রূপান্তর করবে। কিন্তু এর বিপরীতটি সম্ভব _নয়_: immutable reference কখনও mutable reference-এ রূপান্তরিত হবে না। borrowing-এর নিয়ম অনুযায়ী, যদি আপনার কাছে একটি mutable reference থাকে, তবে সেই mutable reference-টি অবশ্যই সেই ডেটার একমাত্র reference হতে হবে (অন্যথায়, প্রোগ্রামটি কম্পাইল হবে না)। একটি mutable reference-কে একটি immutable reference-এ রূপান্তরিত করলে borrowing-এর নিয়ম কখনও ভাঙবে না। একটি immutable reference-কে একটি mutable reference-এ রূপান্তরিত করার জন্য প্রয়োজন হবে যে প্রাথমিক immutable reference-টি সেই ডেটার একমাত্র immutable reference, কিন্তু borrowing-এর নিয়ম তার নিশ্চয়তা দেয় না। অতএব, রাস্ট এই ধারণা করতে পারে না যে একটি immutable reference-কে একটি mutable reference-এ রূপান্তরিত করা সম্ভব।
+
+[impl-trait]: ch10-02-traits.html#implementing-a-trait-on-a-type
+[tuple-structs]: ch05-01-defining-structs.html#using-tuple-structs-without-named-fields-to-create-different-types

@@ -1,6 +1,9 @@
 name: CI
 on: [push, pull_request]
 
+permissions:
+  contents: write
+
 jobs:
   test:
     name: Run tests
@@ -25,7 +28,7 @@ jobs:
         rustc -Vv
         mdbook --version
 
-    # mdBook does not currently have particularly good support for “external”
+    # mdBook does not currently have particularly good support for "external"
     # crates. To make the test suite work correctly with `trpl`, we must first
     # build `trpl` itself (`mdbook` will not do it), and then explicitly pass
     # its `deps` path as a library search path for `mdbook test`. That will make
@@ -102,3 +105,27 @@ jobs:
           https://raw.githubusercontent.com/rust-lang/rust/HEAD/src/tools/linkchecker/linkcheck.sh
         # TEMPORARILY DISABLED: linkchecker expects English anchors, many are in Bengali/Unicode
         # sh linkcheck.sh book
+
+  deploy:
+    name: Deploy to GitHub Pages
+    runs-on: ubuntu-latest
+    needs: [test, package_tests, lint]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install mdBook
+        run: |
+          mkdir -p bin
+          curl -sSL https://github.com/rust-lang/mdBook/releases/download/v0.4.45/mdbook-v0.4.45-x86_64-unknown-linux-gnu.tar.gz | tar -xz --directory=bin
+          echo "$(pwd)/bin" >> "${GITHUB_PATH}"
+
+      - name: Build book
+        run: mdbook build
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./book

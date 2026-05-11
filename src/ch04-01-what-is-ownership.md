@@ -155,7 +155,8 @@ let s = String::from("hello");
 মেমরি সুরক্ষা নিশ্চিত করার জন্য, `let s2 = s1;` লাইনের পরে, রাস্ট `s1`-কে আর বৈধ বলে মনে করে না। অতএব, `s1` স্কোপের বাইরে চলে গেলে রাস্টকে কিছুই মুক্ত করতে হবে না। `s2` তৈরি হওয়ার পরে `s1` ব্যবহার করার চেষ্টা করলে কী হয় তা দেখুন; এটি কাজ করবে না:
 
 ```rust,ignore,does_not_compile
-{{#rustdoc_include ../listings/ch04-understanding-ownership/no-listing-04-cant-use-after-move/src/main.rs:here}}```
+{{#rustdoc_include ../listings/ch04-understanding-ownership/no-listing-04-cant-use-after-move/src/main.rs:here}}
+```
 
 আপনি এই ধরনের একটি ত্রুটি পাবেন কারণ রাস্ট আপনাকে অবৈধ রেফারেন্স ব্যবহার করতে বাধা দেয়:
 

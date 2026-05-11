@@ -7,7 +7,8 @@
 <Listing number="13-10" file-name="src/main.rs" caption="একটি ইটারেটর তৈরি করা">
 
 ```rust
-{{#rustdoc_include ../listings/ch13-functional-features/listing-13-10/src/main.rs:here}}```
+{{#rustdoc_include ../listings/ch13-functional-features/listing-13-10/src/main.rs:here}}
+```
 
 </Listing>
 

@@ -260,7 +260,8 @@ don't want to include it for rustdoc testing purposes. -->
 <Listing number="9-11" caption="`Option<T>` ভ্যালুর উপর `?` অপারেটর ব্যবহার করা">
 
 ```rust
-{{#rustdoc_include ../listings/ch09-error-handling/listing-09-11/src/main.rs:here}}```
+{{#rustdoc_include ../listings/ch09-error-handling/listing-09-11/src/main.rs:here}}
+```
 
 </Listing>
 

@@ -155,7 +155,8 @@ use std::collections::HashMap;
 <Listing number="7-18" file-name="src/main.rs" caption="একই উপসর্গযুক্ত একাধিক আইটেমকে স্কোপে আনার জন্য একটি নেস্টেড পাথ নির্দিষ্ট করা">
 
 ```rust,ignore
-{{#rustdoc_include ../listings/ch07-managing-growing-projects/listing-07-18/src/main.rs:here}}```
+{{#rustdoc_include ../listings/ch07-managing-growing-projects/listing-07-18/src/main.rs:here}}
+```
 
 </Listing>
 

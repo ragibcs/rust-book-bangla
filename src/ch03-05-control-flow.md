@@ -27,7 +27,8 @@
 চলুন `number`-এর মান পরিবর্তন করে এমন একটি মান দিই যা শর্তটিকে `false` করে তোলে, দেখি কী হয়:
 
 ```rust,ignore
-{{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-27-if-false/src/main.rs:here}}```
+{{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-27-if-false/src/main.rs:here}}
+```
 
 প্রোগ্রামটি আবার চালান, এবং আউটপুট দেখুন:
 

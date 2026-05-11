@@ -63,7 +63,8 @@ Rust একটি element রেফারেন্স করার এই দু
 <Listing number="8-5" caption="পাঁচটি element যুক্ত একটি vector-এ ১০০তম index-এর element অ্যাক্সেস করার চেষ্টা">
 
 ```rust,should_panic,panics
-{{#rustdoc_include ../listings/ch08-common-collections/listing-08-05/src/main.rs:here}}```
+{{#rustdoc_include ../listings/ch08-common-collections/listing-08-05/src/main.rs:here}}
+```
 
 </Listing>
 

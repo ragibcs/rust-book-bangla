@@ -58,7 +58,8 @@ Reference এবং smart pointer-এর থেকে raw pointer ভিন্�
 <Listing number="20-2" caption="একটি নির্বিচারী মেমরি অ্যাড্রেসে একটি raw pointer তৈরি করা">
 
 ```rust
-{{#rustdoc_include ../listings/ch20-advanced-features/listing-20-02/src/main.rs:here}}```
+{{#rustdoc_include ../listings/ch20-advanced-features/listing-20-02/src/main.rs:here}}
+```
 
 </Listing>
 

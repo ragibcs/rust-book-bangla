@@ -32,7 +32,8 @@ _src/lib.rs_-এ, আমরা [অধ্যায় ১১][ch11-anatomy]<!-- ign
 <Listing number="12-16" file-name="src/lib.rs" caption="`search` ফাংশনটিকে এমনভাবে ডিফাইন করা যাতে এটি কল করলে প্যানিক না হয়।">
 
 ```rust,noplayground
-{{#rustdoc_include ../listings/ch12-an-io-project/listing-12-16/src/lib.rs:here}}```
+{{#rustdoc_include ../listings/ch12-an-io-project/listing-12-16/src/lib.rs:here}}
+```
 
 </Listing>
 

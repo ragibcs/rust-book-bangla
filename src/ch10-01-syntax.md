@@ -11,7 +11,8 @@
 <Listing number="10-4" file-name="src/main.rs" caption="দুটি ফাংশন যাদের মধ্যে কেবল তাদের নাম এবং সিগনেচারের টাইপ ভিন্ন">
 
 ```rust
-{{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-04/src/main.rs:here}}```
+{{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-04/src/main.rs:here}}
+```
 
 </Listing>
 

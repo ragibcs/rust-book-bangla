@@ -245,7 +245,8 @@
 <Listing number="19-22" caption="একটি আন্ডারস্কোর ব্যবহার করলে মান বাইন্ড হয় না।">
 
 ```rust
-{{#rustdoc_include ../listings/ch19-patterns-and-matching/listing-19-22/src/main.rs:here}}```
+{{#rustdoc_include ../listings/ch19-patterns-and-matching/listing-19-22/src/main.rs:here}}
+```
 
 </Listing>
 
